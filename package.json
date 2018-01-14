@@ -1,0 +1,24 @@
+{
+  "name": "taco",
+  "version": "1.0.0",
+  "description": "Html graphics for broadcast",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TwiztedDesign/taco.git"
+  },
+  "keywords": [
+    "taco",
+    "broadcast",
+    "graphics"
+  ],
+  "author": "Danny Umansky <dok.umansky@twizted-design.com> (http://www.twizted-design.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TwiztedDesign/taco/issues"
+  },
+  "homepage": "https://github.com/TwiztedDesign/taco#readme"
+}
