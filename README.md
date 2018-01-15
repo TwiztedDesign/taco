@@ -1,4 +1,4 @@
-# taco
+# 🌮 taco 🌮
 
 
 [![travis build](https://img.shields.io/travis/TwiztedDesign/taco.svg)](https://travis-ci.org/TwiztedDesign/taco)
