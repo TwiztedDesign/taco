@@ -4,7 +4,8 @@
   "description": "Html graphics for broadcast",
   "main": "dist/index.js",
   "scripts": {
-    "test": "mocha test/index.test.js -w",
+    "test": "mocha test/index.test.js",
+    "test:watch" : "mocha test/index.test.js -w",
     "prebuild": "rimraf dist",
     "build": "babel --copy-files --out-dir dist --ignore *.test.js src"
   },
