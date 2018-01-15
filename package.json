@@ -7,7 +7,10 @@
     "test": "mocha test/index.test.js",
     "test:watch": "mocha test/index.test.js -w",
     "prebuild": "rimraf dist",
-    "build": "babel --copy-files --out-dir dist --ignore *.test.js src"
+    "build" : "npm-run-all --parallel build:*",
+    "build:main": "babel --copy-files --out-dir dist --ignore *.test.js src",
+    "build:umd": "webpack --output-filename taco.js",
+    "build:umd.min": "webpack --output-filename taco.umd.min.js -p"
   },
   "repository": {
     "type": "git",
@@ -34,6 +37,7 @@
     "ghooks": "2.0.2",
     "json-loader": "0.5.7",
     "mocha": "4.1.0",
+    "npm-run-all": "4.1.2",
     "rimraf": "2.6.2",
     "webpack": "3.10.0"
   },
@@ -42,10 +46,9 @@
       "es2015"
     ]
   },
-
   "config": {
-    "ghooks" : {
-      "pre-commit" : "npm run test"
+    "ghooks": {
+      "pre-commit": "npm run test"
     }
   }
 }
