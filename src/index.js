@@ -1,4 +1,9 @@
+import {init} from './init.js';
+
 (function(w){
+
+
+    init(w);
 
 
     function sendMessage(type, payload){

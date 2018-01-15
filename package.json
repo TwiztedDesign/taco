@@ -1,10 +1,12 @@
 {
-  "name": "taco",
+  "name": "vf-taco",
   "version": "1.0.0",
   "description": "Html graphics for broadcast",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test/index.test.js -w",
+    "prebuild": "rimraf dist",
+    "build": "babel --copy-files --out-dir dist --ignore *.test.js src"
   },
   "repository": {
     "type": "git",
@@ -20,5 +22,19 @@
   "bugs": {
     "url": "https://github.com/TwiztedDesign/taco/issues"
   },
-  "homepage": "https://github.com/TwiztedDesign/taco#readme"
+  "homepage": "https://github.com/TwiztedDesign/taco#readme",
+  "devDependencies": {
+    "babel-cli": "6.26.0",
+    "babel-core": "6.26.0",
+    "babel-loader": "7.1.2",
+    "babel-preset-es2015": "6.24.1",
+    "chai": "4.1.2",
+    "json-loader": "0.5.7",
+    "mocha": "4.1.0",
+    "rimraf": "2.6.2",
+    "webpack": "3.10.0"
+  },
+  "babel" : {
+      "presets" : ["es2015"]
+  }
 }
