@@ -28,6 +28,8 @@ function addTemplate(name, data){
 module.exports = {
     onUpdate : function(cb){ updateCB = cb; },
     updateCB : updateCB,
-    add      : addTemplate
+    add      : addTemplate,
+    main     : main,
+    proxy    : proxy,
 
 };

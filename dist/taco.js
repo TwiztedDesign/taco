@@ -173,7 +173,9 @@ module.exports = {
         updateCB = cb;
     },
     updateCB: updateCB,
-    add: addTemplate
+    add: addTemplate,
+    main: main,
+    proxy: proxy
 
 };
 
