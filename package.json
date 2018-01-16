@@ -1,8 +1,8 @@
 {
   "name": "vf-taco",
-  "version": "1.0.1-beta.2",
+  "version": "1.0.1-beta.3",
   "description": "Html graphics for broadcast",
-  "main": "dist/index.js",
+  "main": "dist/taco.js",
   "scripts": {
     "test": "mocha test/index.test.js",
     "test:watch": "mocha test/index.test.js -w",
