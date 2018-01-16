@@ -1,3 +1,4 @@
+require('./listener').start();
 let window = window || global.window;
 
 function sendMessage(type, payload){

@@ -41,6 +41,13 @@ function messageHandler(message){
         handler(messageData.payload);
     }
 }
-if(window && window.addEventListener){
-    window.addEventListener('message', messageHandler);
-}
+
+
+module.exports = {
+    start : function(){
+        if(window && window.addEventListener){
+            window.addEventListener('message', messageHandler);
+        }
+    }
+};
+
