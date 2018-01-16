@@ -1,7 +1,7 @@
 let tacoData = require('./tacodata.js');
 
 function sendMessage(w, type, payload){
-    w.parent.postMessage(JSON.stringify({type : type, payload: payload}), '*');
+    w.postMessage(JSON.stringify({type : type, payload: payload}), '*');
 }
 
 
