@@ -171,7 +171,7 @@ module.exports = g;
 
 var _events = __webpack_require__(1);
 
-var _messenger = __webpack_require__(0);
+var send = __webpack_require__(0).send;
 
 var main = {},
     proxy = {};
@@ -180,7 +180,7 @@ var updateCB = void 0;
 var onChange = {
     set: function set(target, prop, value) {
         target[prop] = value;
-        (0, _messenger.send)(_events.USER_UPDATE, main);
+        send(_events.USER_UPDATE, main);
         return true;
     }
 };
@@ -188,7 +188,7 @@ var onChange = {
 function addTemplate(name, data) {
     main[name] = data;
     proxy[name] = new Proxy(data, onChange);
-    (0, _messenger.send)(_events.ADD, {
+    send(_events.ADD, {
         channel: name,
         data: data
     });
