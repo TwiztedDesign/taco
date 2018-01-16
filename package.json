@@ -1,6 +1,6 @@
 {
   "name": "vf-taco",
-  "version": "1.0.1-beta.4",
+  "version": "1.0.1-beta.5",
   "description": "Html graphics for broadcast",
   "main": "dist/taco.js",
   "scripts": {
