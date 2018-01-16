@@ -115,18 +115,18 @@ var tacoData = require('./tacodata.js');
 // var tacoProxyData = {};
 // var updateCB;
 
-var top = window;
-for(var i = 0 ; i < 5 ; i++) {
-    if(top.parent !== top){
-        try{
-            top.parent.document;
-            top = top.parent;
-        } catch(e){
-            break;
-        }
-    }
-
-}
+var top = window.parent;
+// for(var i = 0 ; i < 5 ; i++) {
+//     if(top.frameElement)
+//     if(top.parent !== top){
+//         try{
+//             top.parent.document;
+//             top = top.parent;
+//         } catch(e){
+//             break;
+//         }
+//     }
+// }
 
 window.addEventListener('message', receive);
 
