@@ -1,7 +1,10 @@
+import {UPDATE} from "./utils/events.js";
 let tacoData = require('./tacodata.js');
 
-function sendMessage(w, type, payload){
-    w.postMessage(JSON.stringify({type : type, payload: payload}), '*');
+let window = window || global.window;
+
+function sendMessage(type, payload){
+    (window || global.window).parent.postMessage(JSON.stringify({type : type, payload: payload}), '*');
 }
 
 
@@ -31,9 +34,8 @@ function getKey(data, keyToFind) {
     }
 }
 
-var handlers = {
-    'taco-update' : update
-};
+var handlers = {};
+handlers[UPDATE] = update;
 
 
 function messageHandler(message){
@@ -44,9 +46,10 @@ function messageHandler(message){
         handler(messageData.payload);
     }
 }
-
+if(window && window.addEventListener){
+    window.addEventListener('message', messageHandler);
+}
 
 module.exports = {
-    send : sendMessage,
-    receive : messageHandler
+    send : sendMessage
 };

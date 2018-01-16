@@ -1,5 +1,32 @@
+import {USER_UPDATE} from "./utils/events";
+import {ADD} from "./utils/events";
+import {send} from './messenger.js';
+
+let main = {}, proxy = {};
+let updateCB;
+
+var onChange = {
+    set : function(target, prop, value){
+        target[prop] = value;
+        send(USER_UPDATE, main);
+        return true;
+    }
+};
+
+function addTemplate(name, data){
+    main[name] = data;
+    proxy[name] = new Proxy(data, onChange);
+    send(ADD,{
+        channel : name,
+        data    : data
+    });
+    return proxy[name];
+}
+
+
 module.exports = {
-    main : {},
-    proxy : {},
-    updateCB : null
+    onUpdate : function(cb){ updateCB = cb; },
+    updateCB : updateCB,
+    add      : addTemplate
+
 };
