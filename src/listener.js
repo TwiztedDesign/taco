@@ -14,10 +14,7 @@ function update(data){
         }
 
     }
-
-    if(tacoData.updateCB){
-        tacoData.updateCB();
-    }
+    tacoData.updateCB();
 }
 
 function getKey(data, keyToFind) {

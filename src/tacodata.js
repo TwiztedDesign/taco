@@ -27,7 +27,7 @@ function addTemplate(name, data){
 
 module.exports = {
     onUpdate : function(cb){ updateCB = cb; },
-    updateCB : updateCB,
+    updateCB : function(){if(updateCB){ updateCB(); }},
     add      : addTemplate,
     main     : main,
     proxy    : proxy,

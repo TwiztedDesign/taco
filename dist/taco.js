@@ -148,7 +148,7 @@ var send = __webpack_require__(1).send;
 
 var main = {},
     proxy = {};
-var updateCB = void 0;
+var _updateCB = void 0;
 
 var onChange = {
     set: function set(target, prop, value) {
@@ -170,9 +170,13 @@ function addTemplate(name, data) {
 
 module.exports = {
     onUpdate: function onUpdate(cb) {
-        updateCB = cb;
+        _updateCB = cb;
     },
-    updateCB: updateCB,
+    updateCB: function updateCB() {
+        if (_updateCB) {
+            _updateCB();
+        }
+    },
     add: addTemplate,
     main: main,
     proxy: proxy
@@ -229,10 +233,7 @@ function update(data) {
             }
         }
     }
-
-    if (tacoData.updateCB) {
-        tacoData.updateCB();
-    }
+    tacoData.updateCB();
 }
 
 function getKey(data, keyToFind) {
