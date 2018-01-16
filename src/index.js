@@ -1,4 +1,6 @@
 // import {init} from './init.js';
+import {send} from './messenger.js';
+var tacoData = require('./tacodata.js');
 
 (function(w){
 
@@ -102,5 +104,60 @@
 
     w.onload = api.ready;
 
-})(window);
+})
 
+
+
+
+//
+// var tacoData = {};
+// var tacoProxyData = {};
+// var updateCB;
+
+var top = window;
+for(var i = 0 ; i < 5 ; i++) {
+    if(top.parent !== top){
+        try{
+            top.parent.document;
+            top = top.parent;
+        } catch(e){
+            break;
+        }
+    }
+
+}
+
+window.addEventListener('message', messageHandler);
+
+var onChange = {
+    set : function(target, prop, value){
+        target[prop] = value;
+        send('taco-user-update', tacoData.main);
+        return true;
+    }
+};
+
+
+
+function addTemplate(name, data){
+    tacoData.main[name] = data;
+    tacoData.proxy[name] = new Proxy(data, onChange);
+    send(top, 'taco-addtemplate',{
+        channel : name,
+        data    : data
+    });
+    return tacoData.proxy[name];
+}
+
+function onUpdate(cb){
+    tacoData.updateCB = cb;
+}
+
+window.onload = function(){
+    send(top, 'taco-ready');
+};
+
+module.exports = {
+    addTemplate : addTemplate,
+    onUpdate    : onUpdate,
+};

@@ -1,6 +1,6 @@
 {
   "name": "vf-taco",
-  "version": "1.0.1-beta.1",
+  "version": "1.0.1-beta.2",
   "description": "Html graphics for broadcast",
   "main": "dist/index.js",
   "scripts": {
@@ -8,10 +8,13 @@
     "test:watch": "mocha test/index.test.js -w",
     "prebuild": "rimraf dist",
     "build" : "npm-run-all --parallel build:*",
-    "build:main": "babel --copy-files --out-dir dist --ignore *.test.js src",
+    "!build:main": "babel --copy-files --out-dir dist --ignore *.test.js src",
     "build:umd": "webpack --output-filename taco.js",
-    "build:umd.min": "webpack --output-filename taco.umd.min.js -p"
+    "build:umd.min": "webpack --output-filename taco.min.js -p"
   },
+  "files" : [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TwiztedDesign/taco.git"
