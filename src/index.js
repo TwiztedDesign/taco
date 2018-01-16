@@ -1,5 +1,6 @@
 // import {init} from './init.js';
 import {send} from './messenger.js';
+import {receive} from './messenger.js';
 var tacoData = require('./tacodata.js');
 
 (function(w){
@@ -127,7 +128,7 @@ for(var i = 0 ; i < 5 ; i++) {
 
 }
 
-window.addEventListener('message', messageHandler);
+window.addEventListener('message', receive);
 
 var onChange = {
     set : function(target, prop, value){
