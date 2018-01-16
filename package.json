@@ -56,7 +56,8 @@
   },
   "config": {
     "ghooks": {
-      "pre-commit": "npm run cover"
+      "pre-commit": "npm run cover",
+      "pre-push" : "npm run build"
     }
   }
 }
