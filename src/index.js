@@ -1,9 +1,9 @@
-import {init} from './init.js';
+// import {init} from './init.js';
 
 (function(w){
 
 
-    init(w);
+    // init(w);
 
 
     function sendMessage(type, payload){
