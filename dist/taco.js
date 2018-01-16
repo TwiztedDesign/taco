@@ -97,7 +97,6 @@ module.exports = {
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global) {
 
-__webpack_require__(5).start();
 var window = window || global.window;
 
 function sendMessage(type, payload) {
@@ -189,6 +188,7 @@ var _messenger = __webpack_require__(1);
 
 var _events = __webpack_require__(0);
 
+__webpack_require__(5).start();
 var tacoData = __webpack_require__(3);
 var api = __webpack_require__(6);
 
