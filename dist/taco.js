@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -106,10 +106,93 @@ function sendMessage(type, payload) {
 module.exports = {
     send: sendMessage
 };
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _events = __webpack_require__(0);
+
+var _helpers = __webpack_require__(4);
+
+var send = __webpack_require__(1).send;
+
+var main = {},
+    proxy = {};
+var _updateCB = void 0;
+
+var onChange = {
+    set: function set(target, prop, value) {
+        target[prop] = value;
+        send(_events.USER_UPDATE, main);
+        return true;
+    }
+};
+
+function addTemplate(name, data) {
+    main[name] = data;
+    proxy[name] = new Proxy(data, onChange);
+    send(_events.ADD, {
+        channel: name,
+        data: data
+    });
+    return proxy[name];
+}
+
+function setValue(template, control, value) {
+    template = (0, _helpers.findKey)(main, template);
+    if (template) {
+        control = (0, _helpers.findKey)(main[template], control);
+    }
+    if (template && control) {
+        main[template][control] = value;
+        proxy[template][control] = value;
+    }
+}
+function getValue(template, control) {
+    template = (0, _helpers.findKey)(main, template);
+    if (template) {
+        return main[template][(0, _helpers.findKey)(main[template], control)];
+    }
+}
+
+function show(template) {
+    setValue(template, "visibility", true);
+}
+function hide(template) {
+    setValue(template, "visibility", false);
+}
+function toggle(template) {
+    var visibility = getValue(template, 'visibility');
+    if (visibility !== undefined) {
+        setValue(template, 'visibility', !visibility);
+    }
+}
+
+module.exports = {
+    main: main,
+    proxy: proxy,
+    onUpdate: function onUpdate(cb) {
+        _updateCB = cb;
+    },
+    updateCB: function updateCB() {
+        if (_updateCB) {
+            _updateCB();
+        }
+    },
+    add: addTemplate,
+    show: show,
+    hide: hide,
+    toggle: toggle
+
+};
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports) {
 
 var g;
@@ -136,55 +219,27 @@ module.exports = g;
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _events = __webpack_require__(0);
-
-var send = __webpack_require__(1).send;
-
-var main = {},
-    proxy = {};
-var _updateCB = void 0;
-
-var onChange = {
-    set: function set(target, prop, value) {
-        target[prop] = value;
-        send(_events.USER_UPDATE, main);
-        return true;
+function findKey(data, keyToFind) {
+    var keys = Object.keys(data);
+    for (var i = 0; i < keys.length; i++) {
+        if (keys[i].toLowerCase() === keyToFind.toLowerCase()) {
+            return keys[i];
+        }
     }
-};
-
-function addTemplate(name, data) {
-    main[name] = data;
-    proxy[name] = new Proxy(data, onChange);
-    send(_events.ADD, {
-        channel: name,
-        data: data
-    });
-    return proxy[name];
 }
 
 module.exports = {
-    onUpdate: function onUpdate(cb) {
-        _updateCB = cb;
-    },
-    updateCB: function updateCB() {
-        if (_updateCB) {
-            _updateCB();
-        }
-    },
-    add: addTemplate,
-    main: main,
-    proxy: proxy
-
+    findKey: findKey
 };
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -194,9 +249,9 @@ var _messenger = __webpack_require__(1);
 
 var _events = __webpack_require__(0);
 
-__webpack_require__(5).start();
-var tacoData = __webpack_require__(3);
-var api = __webpack_require__(6);
+__webpack_require__(6).start();
+var tacoData = __webpack_require__(2);
+var api = __webpack_require__(7);
 
 window.onload = function () {
     (0, _messenger.send)(_events.READY);
@@ -208,11 +263,14 @@ module.exports = {
     go: api.go,
     next: api.next,
     previous: api.previous,
-    home: api.home
+    home: api.home,
+    show: api.show,
+    hide: api.hide,
+    toggle: api.toggle
 };
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -220,13 +278,15 @@ module.exports = {
 
 var _events = __webpack_require__(0);
 
-var tacoData = __webpack_require__(3);
+var _helpers = __webpack_require__(4);
+
+var tacoData = __webpack_require__(2);
 
 var window = window || global.window;
 
 function update(data) {
     for (var template in tacoData.main) {
-        var key = getKey(data, template);
+        var key = (0, _helpers.findKey)(data, template);
         for (var control in tacoData.main[template]) {
             if (data[key] && data[key].hasOwnProperty(control)) {
                 tacoData.main[template][control] = data[key][control];
@@ -234,15 +294,6 @@ function update(data) {
         }
     }
     tacoData.updateCB();
-}
-
-function getKey(data, keyToFind) {
-    var keys = Object.keys(data);
-    for (var i = 0; i < keys.length; i++) {
-        if (keys[i].toLowerCase() === keyToFind.toLowerCase()) {
-            return keys[i];
-        }
-    }
 }
 
 var handlers = {};
@@ -264,10 +315,10 @@ module.exports = {
         }
     }
 };
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -276,6 +327,8 @@ module.exports = {
 var _messenger = __webpack_require__(1);
 
 var _events = __webpack_require__(0);
+
+var tacoData = __webpack_require__(2);
 
 function noop() {}
 
@@ -290,7 +343,10 @@ module.exports = {
     go: go,
     next: noop(),
     previous: noop(),
-    home: noop()
+    home: noop(),
+    show: tacoData.show,
+    hide: tacoData.hide,
+    toggle: tacoData.toogle
 };
 
 /***/ })

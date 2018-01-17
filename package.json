@@ -4,10 +4,10 @@
   "description": "Html graphics for broadcast",
   "main": "dist/taco.js",
   "scripts": {
-    "test": "mocha -R spec test/**/*.js --compilers js:babel-register && eslint src",
+    "test": "mocha -R spec \"test/**/*.test.js\" --recursive --require babel-register && eslint src",
     "cover": "nyc npm t",
-    "test:fix": "mocha test/index.test.js && eslint src --fix",
-    "test:watch": "mocha test/index.test.js -w",
+    "test:fix": "mocha \"test/**/*.test.js\" && eslint src --fix",
+    "test:watch": "mocha \"test/**/*.test.js\" -w",
     "prebuild": "rimraf dist",
     "build": "npm-run-all --parallel build:*",
     "!build:main": "babel --copy-files --out-dir dist --ignore *.test.js src",
@@ -58,5 +58,19 @@
     "ghooks": {
       "pre-commit": "npm run cover && npm run build"
     }
+  },
+  "nyc": {
+    "reporter": [
+      "lcov",
+      "text-summary"
+    ],
+    "all" : true,
+    "exclude" : [
+      "test/**/*.test.js",
+      "node_modules"
+    ],
+    "include": [
+      "src/**/*.js"
+    ]
   }
 }

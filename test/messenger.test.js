@@ -1,5 +1,5 @@
 let expect = require('chai').expect;
-let messenger = require('../src/messenger.js');
+let messenger = require('../src/utils/messenger.js');
 
 import jsdom from 'jsdom';
 

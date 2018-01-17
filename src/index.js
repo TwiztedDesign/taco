@@ -1,8 +1,8 @@
-import {send} from './messenger.js';
+import {send} from './utils/messenger.js';
 import {READY} from './utils/events.js';
-require('./listener').start();
-let tacoData = require('./tacodata.js');
-let api = require('./api.js');
+require('./utils/listener').start();
+let tacoData = require('./core/tacodata.js');
+let api = require('./core/api.js');
 
 window.onload = function(){
     send(READY);
@@ -14,5 +14,8 @@ module.exports = {
     go          : api.go,
     next        : api.next,
     previous    : api.previous,
-    home        : api.home
+    home        : api.home,
+    show        : api.show,
+    hide        : api.hide,
+    toggle      : api.toggle,
 };
