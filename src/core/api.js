@@ -21,5 +21,5 @@ module.exports = {
     home        : noop(),
     show        : tacoData.show,
     hide        : tacoData.hide,
-    toggle      : tacoData.toogle
+    toggle      : tacoData.toggle
 };
