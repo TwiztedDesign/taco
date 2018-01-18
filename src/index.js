@@ -17,6 +17,7 @@ window.onload = function(){
         send(MOUSE_MOVE);
     }
     document.body.addEventListener('touchstart', onTouch);
+    document.body.addEventListener('click', onTouch);
     document.body.addEventListener('mousemove', onMouseMove);
 };
 

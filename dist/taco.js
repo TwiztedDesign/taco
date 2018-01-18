@@ -273,6 +273,7 @@ window.onload = function () {
         (0, _messenger.send)(_events.MOUSE_MOVE);
     }
     document.body.addEventListener('touchstart', onTouch);
+    document.body.addEventListener('click', onTouch);
     document.body.addEventListener('mousemove', onMouseMove);
 };
 
