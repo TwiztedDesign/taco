@@ -6,6 +6,6 @@ module.exports = {
     "ADD"           : "taco-addtemplate",
     "UPDATE"        : "taco-update",
     "USER_UPDATE"   : "taco-user-update",
-    "MOUSE_IN"      : "taco-mouse-in",
+    "TOUCH"         : "taco-touch-element",
     "MOUSE_OUT"     : "taco-mouse-out"
 };
