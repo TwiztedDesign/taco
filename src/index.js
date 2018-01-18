@@ -13,8 +13,14 @@ window.onload = function(){
     function onTouch(e){
         send(TOUCH, e.target.tagName);
     }
+    let lastMouseMoveTime = 0;
     function onMouseMove(){
-        send(MOUSE_MOVE);
+        let mouseMoveTime = Date.now();
+        if(mouseMoveTime - lastMouseMoveTime < 100) {
+            send(MOUSE_MOVE);
+        }
+        lastMouseMoveTime = mouseMoveTime;
+
     }
     document.body.addEventListener('touchstart', onTouch);
     document.body.addEventListener('mousemove', onMouseMove);

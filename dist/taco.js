@@ -269,8 +269,13 @@ window.onload = function () {
     function onTouch(e) {
         (0, _messenger.send)(_events.TOUCH, e.target.tagName);
     }
+    var lastMouseMoveTime = 0;
     function onMouseMove() {
-        (0, _messenger.send)(_events.MOUSE_MOVE);
+        var mouseMoveTime = Date.now();
+        if (mouseMoveTime - lastMouseMoveTime < 100) {
+            (0, _messenger.send)(_events.MOUSE_MOVE);
+        }
+        lastMouseMoveTime = mouseMoveTime;
     }
     document.body.addEventListener('touchstart', onTouch);
     document.body.addEventListener('mousemove', onMouseMove);
