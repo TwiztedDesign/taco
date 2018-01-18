@@ -8,43 +8,62 @@ window.onload = function(){
     send(READY);
 };
 
-class XProduct extends HTMLElement {
+
+class MyElement extends HTMLElement {
     constructor() {
-        // Always call super first in constructor
         super();
+    }
 
-        // Create a standard img element and set its attributes.
-        var img = document.createElement('img');
-        img.alt = this.getAttribute('data-name');
-        img.src = this.getAttribute('data-img');
-        img.width = '150';
-        img.height = '150';
-        img.className = 'product-img';
+    connectedCallback() {
+        this.style.cursor = 'pointer';
+        this.style.userSelect = 'none';
+        this.render();
 
-        // Add the image to the custom element.
-        this.appendChild(img);
+        this.addEventListener('click', this.onClick);
+    }
 
-        // Add an event listener to the image.
-        img.addEventListener('click', () => {
-            window.location = this.getAttribute('data-url');
-        });
+    disconnectedCallback() {
+        this.removeEventListener('click', this.onClick);
+    }
 
-        // Create a link to the product.
-        var link = document.createElement('a');
-        link.innerText = this.getAttribute('data-name');
-        link.href = this.getAttribute('data-url');
-        link.className = 'product-name';
+    /**
+     * Render the content. Will render a
+     * happy face if the `happy` attribute
+     * is set, sad otherwise.
+     */
+    render() {
+        this.innerHTML = this.happy ? '&#x1f603;' : '&#x1f620;';
+    }
 
-        // Add the link to the custom element.
-        this.appendChild(link);
+    /**
+     * Click handler. Toggles the `happy`
+     * property.
+     */
+    onClick() {
+        this.happy = !this.happy;
+    }
+
+    static get observedAttributes() {
+        return ['happy'];
+    }
+
+    attributeChangedCallback() {
+        this.render();
+    }
+
+    get happy() {
+        return this.hasAttribute('happy');
+    }
+
+    set happy(value) {
+        if (value) {
+            this.setAttribute('happy', '');
+        } else {
+            this.removeAttribute('happy');
+        }
     }
 }
-
-// Define the new element
-customElements.define('x-product', XProduct);
-
-
-
+customElements.define('my-element', MyElement);
 
 module.exports = {
     addTemplate : tacoData.add,

@@ -245,6 +245,8 @@ module.exports = {
 "use strict";
 
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _messenger = __webpack_require__(1);
 
 var _events = __webpack_require__(0);
@@ -263,50 +265,80 @@ window.onload = function () {
     (0, _messenger.send)(_events.READY);
 };
 
-var XProduct = function (_HTMLElement) {
-    _inherits(XProduct, _HTMLElement);
+var MyElement = function (_HTMLElement) {
+    _inherits(MyElement, _HTMLElement);
 
-    function XProduct() {
-        _classCallCheck(this, XProduct);
+    function MyElement() {
+        _classCallCheck(this, MyElement);
 
-        // Create a standard img element and set its attributes.
-        var _this = _possibleConstructorReturn(this, (XProduct.__proto__ || Object.getPrototypeOf(XProduct)).call(this));
-        // Always call super first in constructor
-
-
-        var img = document.createElement('img');
-        img.alt = _this.getAttribute('data-name');
-        img.src = _this.getAttribute('data-img');
-        img.width = '150';
-        img.height = '150';
-        img.className = 'product-img';
-
-        // Add the image to the custom element.
-        _this.appendChild(img);
-
-        // Add an event listener to the image.
-        img.addEventListener('click', function () {
-            window.location = _this.getAttribute('data-url');
-        });
-
-        // Create a link to the product.
-        var link = document.createElement('a');
-        link.innerText = _this.getAttribute('data-name');
-        link.href = _this.getAttribute('data-url');
-        link.className = 'product-name';
-
-        // Add the link to the custom element.
-        _this.appendChild(link);
-        return _this;
+        return _possibleConstructorReturn(this, (MyElement.__proto__ || Object.getPrototypeOf(MyElement)).call(this));
     }
 
-    return XProduct;
+    _createClass(MyElement, [{
+        key: 'connectedCallback',
+        value: function connectedCallback() {
+            this.style.cursor = 'pointer';
+            this.style.userSelect = 'none';
+            this.render();
+
+            this.addEventListener('click', this.onClick);
+        }
+    }, {
+        key: 'disconnectedCallback',
+        value: function disconnectedCallback() {
+            this.removeEventListener('click', this.onClick);
+        }
+
+        /**
+         * Render the content. Will render a
+         * happy face if the `happy` attribute
+         * is set, sad otherwise.
+         */
+
+    }, {
+        key: 'render',
+        value: function render() {
+            this.innerHTML = this.happy ? '&#x1f603;' : '&#x1f620;';
+        }
+
+        /**
+         * Click handler. Toggles the `happy`
+         * property.
+         */
+
+    }, {
+        key: 'onClick',
+        value: function onClick() {
+            this.happy = !this.happy;
+        }
+    }, {
+        key: 'attributeChangedCallback',
+        value: function attributeChangedCallback() {
+            this.render();
+        }
+    }, {
+        key: 'happy',
+        get: function get() {
+            return this.hasAttribute('happy');
+        },
+        set: function set(value) {
+            if (value) {
+                this.setAttribute('happy', '');
+            } else {
+                this.removeAttribute('happy');
+            }
+        }
+    }], [{
+        key: 'observedAttributes',
+        get: function get() {
+            return ['happy'];
+        }
+    }]);
+
+    return MyElement;
 }(HTMLElement);
 
-// Define the new element
-
-
-customElements.define('x-product', XProduct);
+customElements.define('my-element', MyElement);
 
 module.exports = {
     addTemplate: tacoData.add,
@@ -339,13 +371,9 @@ function update(data) {
     for (var template in tacoData.main) {
         var key = (0, _helpers.findKey)(data, template);
         for (var item in data[key]) {
-            tacoData.main[key][item] = data[key][item];
+            var mainKey = (0, _helpers.findKey)(tacoData.main, key);
+            tacoData.main[mainKey][item] = data[key][item];
         }
-        // for(var control in tacoData.main[template]){
-        //     if(data[key] && data[key].hasOwnProperty(control)){
-        //         tacoData.main[template][control] = data[key][control];
-        //     }
-        // }
     }
     tacoData.updateCB();
 }

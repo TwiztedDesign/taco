@@ -1,0 +1,10 @@
+#box{
+    position: absolute;
+    width: 300px;
+    height: 200px;
+    background-color: red;
+    left: 50%;
+    top:50%;
+    transform: translate(-50%,-50%);
+    pointer-events: auto;
+}
