@@ -1,12 +1,26 @@
 import {send} from './utils/messenger.js';
 import {READY} from './utils/events.js';
+import {MOUSE_OUT} from './utils/events.js';
+import {MOUSE_IN} from './utils/events.js';
 require('./utils/listener').start();
 let tacoData = require('./core/tacodata.js');
 let api = require('./core/api.js');
 
+
 window.onload = function(){
     send(READY);
+    let children = document.body.children;
+    for (let i = 0; i < children.length; i++) {
+        children[i].addEventListener('mouseleave', function(){
+            send(MOUSE_OUT);
+        });
+        children[i].addEventListener('mouseenter', function(){
+            send(MOUSE_IN);
+        });
+
+    }
 };
+
 
 
 class MyElement extends HTMLElement {

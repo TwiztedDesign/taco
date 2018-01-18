@@ -87,7 +87,9 @@ module.exports = {
     "PREV": "taco-previous",
     "ADD": "taco-addtemplate",
     "UPDATE": "taco-update",
-    "USER_UPDATE": "taco-user-update"
+    "USER_UPDATE": "taco-user-update",
+    "MOUSE_IN": "taco-mouse-in",
+    "MOUSE_OUT": "taco-mouse-out"
 };
 
 /***/ }),
@@ -263,6 +265,15 @@ var api = __webpack_require__(7);
 
 window.onload = function () {
     (0, _messenger.send)(_events.READY);
+    var children = document.body.children;
+    for (var i = 0; i < children.length; i++) {
+        children[i].addEventListener('mouseleave', function () {
+            (0, _messenger.send)(_events.MOUSE_OUT);
+        });
+        children[i].addEventListener('mouseenter', function () {
+            (0, _messenger.send)(_events.MOUSE_IN);
+        });
+    }
 };
 
 var MyElement = function (_HTMLElement) {
