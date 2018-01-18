@@ -89,7 +89,7 @@ module.exports = {
     "UPDATE": "taco-update",
     "USER_UPDATE": "taco-user-update",
     "TOUCH": "taco-touch-element",
-    "MOUSE_OUT": "taco-mouse-out"
+    "MOUSE_MOVE": "taco-mouse-move"
 };
 
 /***/ }),
@@ -266,12 +266,14 @@ var api = __webpack_require__(7);
 window.onload = function () {
     (0, _messenger.send)(_events.READY);
 
-    document.body.addEventListener('touchstart', function (e) {
+    function onTouch(e) {
         (0, _messenger.send)(_events.TOUCH, e.target.tagName);
-    });
-    document.body.addEventListener('click', function (e) {
-        (0, _messenger.send)(_events.TOUCH, e.target.tagName);
-    });
+    }
+    function onMouseMove() {
+        (0, _messenger.send)(_events.MOUSE_MOVE);
+    }
+    document.body.addEventListener('touchstart', onTouch);
+    document.body.addEventListener('mousemove', onMouseMove);
 };
 
 var MyElement = function (_HTMLElement) {

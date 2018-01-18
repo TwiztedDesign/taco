@@ -7,5 +7,5 @@ module.exports = {
     "UPDATE"        : "taco-update",
     "USER_UPDATE"   : "taco-user-update",
     "TOUCH"         : "taco-touch-element",
-    "MOUSE_OUT"     : "taco-mouse-out"
+    "MOUSE_MOVE"    : "taco-mouse-move"
 };

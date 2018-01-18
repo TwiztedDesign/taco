@@ -1,6 +1,7 @@
 import {send} from './utils/messenger.js';
 import {READY} from './utils/events.js';
 import {TOUCH} from './utils/events.js';
+import {MOUSE_MOVE} from './utils/events.js';
 require('./utils/listener').start();
 let tacoData = require('./core/tacodata.js');
 let api = require('./core/api.js');
@@ -9,12 +10,14 @@ let api = require('./core/api.js');
 window.onload = function(){
     send(READY);
 
-    document.body.addEventListener('touchstart', function(e){
+    function onTouch(e){
         send(TOUCH, e.target.tagName);
-    });
-    document.body.addEventListener('click', function(e){
-        send(TOUCH, e.target.tagName);
-    });
+    }
+    function onMouseMove(){
+        send(MOUSE_MOVE);
+    }
+    document.body.addEventListener('touchstart', onTouch);
+    document.body.addEventListener('mousemove', onMouseMove);
 };
 
 
