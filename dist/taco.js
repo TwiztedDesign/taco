@@ -266,7 +266,10 @@ var api = __webpack_require__(7);
 window.onload = function () {
     (0, _messenger.send)(_events.READY);
 
-    document.body.addEventListener('touchstart click', function (e) {
+    document.body.addEventListener('touchstart', function (e) {
+        (0, _messenger.send)(_events.TOUCH, e.target.tagName);
+    });
+    document.body.addEventListener('click', function (e) {
         (0, _messenger.send)(_events.TOUCH, e.target.tagName);
     });
 };

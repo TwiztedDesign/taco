@@ -9,7 +9,10 @@ let api = require('./core/api.js');
 window.onload = function(){
     send(READY);
 
-    document.body.addEventListener('touchstart click', function(e){
+    document.body.addEventListener('touchstart', function(e){
+        send(TOUCH, e.target.tagName);
+    });
+    document.body.addEventListener('click', function(e){
         send(TOUCH, e.target.tagName);
     });
 };
