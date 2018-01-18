@@ -8,11 +8,14 @@ let window = window || global.window;
 function update(data){
     for(var template in tacoData.main) {
         var key = findKey(data, template);
-        for(var control in tacoData.main[template]){
-            if(data[key] && data[key].hasOwnProperty(control)){
-                tacoData.main[template][control] = data[key][control];
-            }
+        for(let item in data[key]){
+            tacoData.main[key][item] = data[key][item];
         }
+        // for(var control in tacoData.main[template]){
+        //     if(data[key] && data[key].hasOwnProperty(control)){
+        //         tacoData.main[template][control] = data[key][control];
+        //     }
+        // }
 
     }
     tacoData.updateCB();
