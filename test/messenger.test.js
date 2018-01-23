@@ -1,16 +1,16 @@
-let expect = require('chai').expect;
-let messenger = require('../src/utils/messenger.js');
+const expect = require('chai').expect;
+const messenger = require('../src/utils/messenger.js');
 
 import jsdom from 'jsdom';
 
-describe('Messenger', function () {
-    describe('send', function(){
-        it('should send a messege to the parent window object', function (done) {
+describe('Messenger', () =>{
+    describe('send', () =>{
+        it('should send a messege to the parent window object',  (done) =>{
             jsdom.env(
                 "<html></html>",
                 function(err, window) {
                     global.window = window;
-                    window.parent.addEventListener('message', function(e){
+                    window.parent.addEventListener('message', (e) =>{
                         var data = JSON.parse(e.data);
                         expect(data.type).to.equal('type');
                         expect(data.payload).to.equal('payload');
