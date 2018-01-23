@@ -1,9 +1,9 @@
-var expect = require('chai').expect;
+const expect = require('chai').expect;
 
 
-describe('Taco', function () {
-    describe('first test', function(){
-        it('should pass', function () {
+describe('Taco', () => {
+    describe('first test', () => {
+        it('should pass', () => {
             expect(true).to.be.true;
         })
     });
