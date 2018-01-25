@@ -2,9 +2,9 @@ let handlers = require('../core/handlers.js');
 
 
 function messageHandler(message){
-    var messageData = JSON.parse(message.data);
-    var type = messageData.type;
-    var handler = handlers[type];
+    let messageData = JSON.parse(message.data);
+    let type = messageData.type;
+    let handler = handlers[type];
     if(handler){
         handler(messageData.payload);
     }
