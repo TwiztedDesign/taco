@@ -264,7 +264,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 __webpack_require__(6).start();
 var tacoData = __webpack_require__(2);
-var api = __webpack_require__(7);
+var api = __webpack_require__(9);
 
 window.onload = function () {
     (0, _messenger.send)(_events.READY);
@@ -376,29 +376,9 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(global) {
 
-var _events = __webpack_require__(0);
 
-var _helpers = __webpack_require__(4);
-
-var tacoData = __webpack_require__(2);
-
-var window = window || global.window;
-
-function update(data) {
-    for (var template in tacoData.main) {
-        var key = (0, _helpers.findKey)(data, template);
-        for (var item in data[key]) {
-            var mainKey = (0, _helpers.findKey)(tacoData.main, key);
-            tacoData.main[mainKey][item] = data[key][item];
-        }
-    }
-    tacoData.updateCB();
-}
-
-var handlers = {};
-handlers[_events.UPDATE] = update;
+var handlers = __webpack_require__(7);
 
 function messageHandler(message) {
     var messageData = JSON.parse(message.data);
@@ -416,10 +396,51 @@ module.exports = {
         }
     }
 };
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
 /* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _updateHandler = __webpack_require__(8);
+
+var events = __webpack_require__(0);
+
+
+var handlers = {};
+handlers[events.UPDATE] = _updateHandler.update;
+
+module.exports = handlers;
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _helpers = __webpack_require__(4);
+
+var tacoData = __webpack_require__(2);
+
+
+module.exports = {
+    update: function update(data) {
+        for (var template in tacoData.main) {
+            var key = (0, _helpers.findKey)(data, template);
+            for (var item in data[key]) {
+                var mainKey = (0, _helpers.findKey)(tacoData.main, key);
+                tacoData.main[mainKey][item] = data[key][item];
+            }
+        }
+        tacoData.updateCB();
+    }
+};
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
