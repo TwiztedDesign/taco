@@ -3,7 +3,6 @@ import {ADD} from "../utils/events";
 import {findKey} from '../utils/helpers.js';
 let send = require('../utils/messenger.js').send;
 
-
 let main = {}, proxy = {};
 let updateCB;
 

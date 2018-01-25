@@ -5,7 +5,7 @@ import jsdom from 'jsdom';
 
 describe('Messenger', function () {
     describe('send', function(){
-        it('should send a messege to the parent window object', function (done) {
+        it('should send a message to the parent window object', function (done) {
             jsdom.env(
                 "<html></html>",
                 function(err, window) {
