@@ -229,11 +229,11 @@ var _events = __webpack_require__(0);
 
 __webpack_require__(6);
 
-__webpack_require__(12);
+__webpack_require__(7);
 
-__webpack_require__(8).start();
+__webpack_require__(9).start();
 var tacoData = __webpack_require__(2);
-var api = __webpack_require__(11);
+var api = __webpack_require__(12);
 
 window.onload = function () {
     (0, _messenger.send)(_events.READY);
@@ -323,6 +323,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 "use strict";
 
 
+__webpack_require__(8);
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -407,13 +416,13 @@ var MyElement = function (_HTMLElement) {
 customElements.define('my-element', MyElement);
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var handlers = __webpack_require__(9);
+var handlers = __webpack_require__(10);
 
 function messageHandler(message) {
     var messageData = JSON.parse(message.data);
@@ -433,13 +442,13 @@ module.exports = {
 };
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _updateHandler = __webpack_require__(10);
+var _updateHandler = __webpack_require__(11);
 
 var events = __webpack_require__(0);
 
@@ -450,7 +459,7 @@ handlers[events.UPDATE] = _updateHandler.update;
 module.exports = handlers;
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -475,7 +484,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -505,15 +514,6 @@ module.exports = {
     hide: tacoData.hide,
     toggle: tacoData.toggle
 };
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-__webpack_require__(7);
 
 /***/ })
 /******/ ]);

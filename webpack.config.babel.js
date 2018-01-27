@@ -3,7 +3,7 @@ const WebpackShellPlugin = require('webpack-shell-plugin');
 
 const include = join(__dirname, 'src');
 
-export default {
+module.exports =  {
     entry               : './src/index.js',
     output              : {
         filename        : "taco.js",
