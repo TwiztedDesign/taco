@@ -1,4 +1,4 @@
-var expect = require('chai').expect;
+let expect = require('chai').expect;
 let tacoData = require('../src/core/tacodata.js');
 
 describe('Taco', function () {

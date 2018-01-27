@@ -1,4 +1,4 @@
-var webpackConfig = require('./webpack.config.babel.js');
+let webpackConfig = require('./webpack.config.babel.js');
 
 module.exports = function(config){
     'use strict';

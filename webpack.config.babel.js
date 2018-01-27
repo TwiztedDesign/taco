@@ -37,4 +37,4 @@ module.exports =  {
             onBuildExit: 'node webpack.after.js'
         })
     ]
-}
+};
