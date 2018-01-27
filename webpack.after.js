@@ -1,7 +1,6 @@
 var fs = require('fs-extra');
 var config = require("./build.config.json");
 
-var filename = "taco";
 var files = ['taco.js','taco.js.map'];
 var source = './dist/';
 
