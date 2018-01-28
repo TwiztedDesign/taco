@@ -5,8 +5,8 @@ import {MOUSE_MOVE} from './utils/events.js';
 import "../scripts/custom-elements-es5-adapter.exec";
 import "./components/components.js";
 require('./utils/listener').start();
-let tacoData = require('./core/tacodata.js');
-let api = require('./core/api.js');
+const tacoData = require('./core/tacodata.js');
+const api = require('./core/api.js');
 
 window.onload = function(){
     send(READY);

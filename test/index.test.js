@@ -1,5 +1,5 @@
-let expect = require('chai').expect;
-let tacoData = require('../src/core/tacodata.js');
+const expect = require('chai').expect;
+const tacoData = require('../src/core/tacodata.js');
 
 describe('Taco', () => {
     describe('first test', () => {

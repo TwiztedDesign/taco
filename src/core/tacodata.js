@@ -6,7 +6,7 @@ let send = require('../utils/messenger.js').send;
 let main = {}, proxy = {};
 let updateCB;
 
-var onChange = {
+let onChange = {
     set : function(target, prop, value){
         target[prop] = value;
         send(USER_UPDATE, main);
@@ -48,7 +48,7 @@ function hide(template){
     setValue(template, "visibility", false);
 }
 function toggle(template){
-    var visibility = getValue(template, 'visibility');
+    let visibility = getValue(template, 'visibility');
     if(visibility !== undefined){
         setValue(template, 'visibility', !visibility);
     }
