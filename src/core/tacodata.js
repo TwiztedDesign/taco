@@ -2,7 +2,6 @@ import {USER_UPDATE} from "../utils/events";
 import {ADD} from "../utils/events";
 import {findKey} from '../utils/helpers.js';
 let send = require('../utils/messenger.js').send;
-// let _private = new WeakMap();
 
 class TacoData {
     constructor(){
@@ -16,7 +15,6 @@ class TacoData {
             }
         };
         this.updateCB = null;
-
     }
 
     onUpdate(cb){
