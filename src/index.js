@@ -3,8 +3,8 @@ import {READY} from './utils/events.js';
 import {TOUCH} from './utils/events.js';
 import {MOUSE_MOVE} from './utils/events.js';
 require('./utils/listener').start();
-let tacoData = require('./core/tacodata.js');
-let api = require('./core/api.js');
+const tacoData = require('./core/tacodata.js');
+const api = require('./core/api.js');
 
 
 window.onload = function(){
