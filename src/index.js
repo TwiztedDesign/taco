@@ -2,10 +2,12 @@ import {send} from './utils/messenger.js';
 import {READY} from './utils/events.js';
 import {TOUCH} from './utils/events.js';
 import {MOUSE_MOVE} from './utils/events.js';
+import "../scripts/custom-elements-es5-adapter.exec";
+import "./components/components.js";
 import {tacoData} from './core/tacodata.js';
 require('./utils/listener').start();
-const api = require('./core/api.js');
-
+let api = require('./core/api.js');
+import {observable, observe} from './observer/accessorObserver';
 
 window.onload = function(){
     send(READY);
@@ -26,64 +28,6 @@ window.onload = function(){
     document.body.addEventListener('mousemove', onMouseMove);
 };
 
-
-
-class MyElement extends HTMLElement {
-    constructor() {
-        super();
-    }
-
-    connectedCallback() {
-        this.style.cursor = 'pointer';
-        this.style.userSelect = 'none';
-        this.render();
-
-        this.addEventListener('click', this.onClick);
-    }
-
-    disconnectedCallback() {
-        this.removeEventListener('click', this.onClick);
-    }
-
-    /**
-     * Render the content. Will render a
-     * happy face if the `happy` attribute
-     * is set, sad otherwise.
-     */
-    render() {
-        this.innerHTML = this.happy ? '&#x1f603;' : '&#x1f620;';
-    }
-
-    /**
-     * Click handler. Toggles the `happy`
-     * property.
-     */
-    onClick() {
-        this.happy = !this.happy;
-    }
-
-    static get observedAttributes() {
-        return ['happy'];
-    }
-
-    attributeChangedCallback() {
-        this.render();
-    }
-
-    get happy() {
-        return this.hasAttribute('happy');
-    }
-
-    set happy(value) {
-        if (value) {
-            this.setAttribute('happy', '');
-        } else {
-            this.removeAttribute('happy');
-        }
-    }
-}
-customElements.define('my-element', MyElement);
-
 module.exports = {
     addTemplate : tacoData.add,
     onUpdate    : tacoData.onUpdate,
@@ -94,4 +38,6 @@ module.exports = {
     show        : api.show,
     hide        : api.hide,
     toggle      : api.toggle,
+    observe     : observe,
+    observable  : observable,
 };

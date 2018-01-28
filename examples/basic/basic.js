@@ -1,9 +1,10 @@
-console.log("Basic example");
-console.log(taco);
-
-
 window.onload = function(){
-    document.querySelector('#frame').addEventListener('mousemove', function () {
-        console.log('move');
+
+
+    var dragArea = taco.observable(document.getElementById("drag-area"));
+
+    taco.observe(function(){
+        document.getElementById("coordinates").innerHTML = dragArea.result.x + ' ' + dragArea.result.y;
     });
+
 };
