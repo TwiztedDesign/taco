@@ -231,9 +231,12 @@ __webpack_require__(6);
 
 __webpack_require__(7);
 
-__webpack_require__(9).start();
+var _accessorObserver = __webpack_require__(15);
+
+__webpack_require__(11).start();
 var tacoData = __webpack_require__(2);
-var api = __webpack_require__(12);
+var api = __webpack_require__(14);
+
 
 window.onload = function () {
     (0, _messenger.send)(_events.READY);
@@ -262,7 +265,9 @@ module.exports = {
     home: api.home,
     show: api.show,
     hide: api.hide,
-    toggle: api.toggle
+    toggle: api.toggle,
+    observe: _accessorObserver.observe,
+    observable: _accessorObserver.observable
 };
 
 /***/ }),
@@ -324,6 +329,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
 __webpack_require__(8);
+
+__webpack_require__(9);
 
 /***/ }),
 /* 8 */
@@ -422,7 +429,187 @@ customElements.define('my-element', MyElement);
 "use strict";
 
 
-var handlers = __webpack_require__(10);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var DragArea = function (_HTMLElement) {
+    _inherits(DragArea, _HTMLElement);
+
+    function DragArea() {
+        _classCallCheck(this, DragArea);
+
+        var _this = _possibleConstructorReturn(this, (DragArea.__proto__ || Object.getPrototypeOf(DragArea)).call(this));
+
+        _this._dragging = false;
+        _this._result = { x: 0, y: 0 };
+        return _this;
+    }
+
+    _createClass(DragArea, [{
+        key: 'connectedCallback',
+        value: function connectedCallback() {
+            this.style.cursor = 'pointer';
+            this.addEventListener('mousedown', this.mouseDown);
+            this.addEventListener('touchstart', this.touchStart);
+            this.addEventListener('mouseup', this.mouseUp);
+            this.addEventListener('touchend', this.touchEnd);
+            this.addEventListener('mousemove', this.mouseMove);
+            this.addEventListener('touchmove', this.touchMove);
+        }
+    }, {
+        key: 'disconnectedCallback',
+        value: function disconnectedCallback() {
+            this.removeEventListener('mousedown', this.mouseDown);
+            this.removeEventListener('touchstart', this.touchStart);
+            this.removeEventListener('mouseup', this.mouseUp);
+            this.removeEventListener('touchend', this.touchEnd);
+            this.removeEventListener('mousemove', this.mouseMove);
+            this.removeEventListener('touchmove', this.touchMove);
+        }
+    }, {
+        key: 'calc',
+        value: function calc(e) {
+            if (this._dragging) {
+                var bounds = this.getBoundingClientRect();
+                var x = 0;
+                var y = 0;
+                if (this.mode === "screen") {
+                    x = e.screenX;
+                    y = e.screenY;
+                } else if (this.mode === "linear") {
+
+                    x = this.minValueX + (e.clientX - bounds.left) / bounds.width * (this.maxValueX - this.minValueX);
+                    y = this.minValueY + (e.clientY - bounds.top) / bounds.height * (this.maxValueY - this.minValueY);
+                } else {
+                    x = e.clientX - bounds.left;
+                    y = e.clientY - bounds.top;
+                }
+
+                if (this.precision === "int") {
+                    x = Math.floor(x);
+                    y = Math.floor(y);
+                }
+
+                this._result.x = x;
+                this._result.y = y;
+
+                // console.log(x + " : " + y);
+            }
+        }
+    }, {
+        key: 'mouseDown',
+        value: function mouseDown(e) {
+            this._dragging = true;
+            this.calc(e);
+        }
+    }, {
+        key: 'touchStart',
+        value: function touchStart(e) {
+            this._dragging = true;
+            this.calc(e.originalEvent.touches[0]);
+        }
+    }, {
+        key: 'mouseUp',
+        value: function mouseUp() {
+            this._dragging = false;
+        }
+    }, {
+        key: 'touchEnd',
+        value: function touchEnd() {
+            this._dragging = false;
+        }
+    }, {
+        key: 'mouseMove',
+        value: function mouseMove(e) {
+            this.calc(e);
+        }
+    }, {
+        key: 'touchMove',
+        value: function touchMove(e) {
+            this.calc(e.originalEvent.touches[0]);
+        }
+    }, {
+        key: 'attributeChangedCallback',
+        value: function attributeChangedCallback() {}
+    }, {
+        key: 'observe',
+        value: function observe(cb) {
+            this._result = new Proxy(this._result, {
+                set: function set(target, prop, value) {
+                    target[prop] = value;
+                    if (cb) {
+                        cb(target);
+                    }
+                    return true;
+                }
+            });
+        }
+    }, {
+        key: 'isDragging',
+        get: function get() {
+            return this._dragging;
+        }
+    }, {
+        key: 'result',
+        get: function get() {
+            return this._result;
+        }
+    }, {
+        key: 'mode',
+        get: function get() {
+            return this.getAttribute("mode");
+        }
+    }, {
+        key: 'minValueX',
+        get: function get() {
+            return parseInt(this.getAttribute("min-value-x"));
+        }
+    }, {
+        key: 'minValueY',
+        get: function get() {
+            return parseInt(this.getAttribute("min-value-y"));
+        }
+    }, {
+        key: 'maxValueX',
+        get: function get() {
+            return parseInt(this.getAttribute("max-value-x"));
+        }
+    }, {
+        key: 'maxValueY',
+        get: function get() {
+            return parseInt(this.getAttribute("max-value-y"));
+        }
+    }, {
+        key: 'precision',
+        get: function get() {
+            return this.getAttribute("precision");
+        }
+    }], [{
+        key: 'observedAttributes',
+        get: function get() {
+            return ['result', 'mode', 'minValueX', 'minValueY', 'maxValueX', 'maxValueY', 'precision'];
+        }
+    }]);
+
+    return DragArea;
+}(HTMLElement);
+
+customElements.define('drag-area', DragArea);
+
+/***/ }),
+/* 10 */,
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var handlers = __webpack_require__(12);
 
 function messageHandler(message) {
     var messageData = JSON.parse(message.data);
@@ -442,13 +629,13 @@ module.exports = {
 };
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _updateHandler = __webpack_require__(11);
+var _updateHandler = __webpack_require__(13);
 
 var events = __webpack_require__(0);
 
@@ -459,7 +646,7 @@ handlers[events.UPDATE] = _updateHandler.update;
 module.exports = handlers;
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -484,7 +671,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -513,6 +700,61 @@ module.exports = {
     show: tacoData.show,
     hide: tacoData.hide,
     toggle: tacoData.toggle
+};
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var activeHandler = void 0;
+
+function observe(handler) {
+    activeHandler = handler;
+    handler();
+    activeHandler = undefined;
+}
+
+function observableProp(provider, prop) {
+    var value = provider[prop];
+    provider._handlers = [];
+    Object.defineProperty(provider, prop, {
+        get: function get() {
+            if (activeHandler) {
+                provider._handlers[prop] = activeHandler;
+            }
+            return value;
+        },
+        set: function set(newValue) {
+            value = newValue;
+            var handler = provider._handlers[prop];
+            if (handler) {
+                activeHandler = handler;
+                handler();
+                activeHandler = undefined;
+            }
+        }
+    });
+}
+
+function observable(provider) {
+    var props = Object.getOwnPropertyNames(provider);
+    for (var i = 0; i < props.length; i++) {
+        observableProp(provider, props[i]);
+        if (_typeof(provider[props[i]]) === 'object') {
+            observable(provider[props[i]]);
+        }
+    }
+    return provider;
+}
+
+module.exports = {
+    observe: observe,
+    observable: observable
 };
 
 /***/ })

@@ -1,83 +1,130 @@
-/******
- angular.module('td.directives')
+class DragArea extends HTMLElement {
+    constructor() {
+        super();
+        this._dragging = false;
+        this._result = {x:0, y:0};
+    }
 
- .directive('dragArea', [
- function() {
-            return {
-                restrict: 'E',
-                template: '<div></div>',
-                replace: true,
-                scope:{
-                    result      :"=",
-                    mode        :"=",
-                    minValueX   :"=",
-                    minValueY   :"=",
-                    maxValueX   :"=",
-                    maxValueY   :"=",
-                    precision   :"="
-                },
-                link: function (scope,element) {
-                    var isDragging=false;
+    connectedCallback() {
+        this.style.cursor = 'pointer';
+        this.addEventListener('mousedown', this.mouseDown);
+        this.addEventListener('touchstart', this.touchStart);
+        this.addEventListener('mouseup', this.mouseUp);
+        this.addEventListener('touchend', this.touchEnd);
+        this.addEventListener('mousemove', this.mouseMove);
+        this.addEventListener('touchmove', this.touchMove);
+    }
 
-                    element.mousedown(function(e){
-                        isDragging = true;
-                        calc(e);
-                    });
+    disconnectedCallback() {
+        this.removeEventListener('mousedown', this.mouseDown);
+        this.removeEventListener('touchstart', this.touchStart);
+        this.removeEventListener('mouseup', this.mouseUp);
+        this.removeEventListener('touchend', this.touchEnd);
+        this.removeEventListener('mousemove', this.mouseMove);
+        this.removeEventListener('touchmove', this.touchMove);
+    }
 
-                    element.bind( "touchstart", function(e){
-                        isDragging = true;
-                        calc(e.originalEvent.touches[0]);
-                    });
-
-                    element.mouseup(function(e){
-                        isDragging = false;
-                    });
-
-                    element.bind( "touchend", function(e){
-                        isDragging = false;
-                    });
-
-                    element.mousemove(function(e){
-                        calc(e);
-                    });
-
-                    element.bind( "touchmove", function(e){
-                        calc(e.originalEvent.touches[0]);
-                    });
-
-                    function calc(e){
-                        if(isDragging) {
-                            var bounds = element[0].getBoundingClientRect();
-                            var x = 0;
-                            var y = 0;
-                            if (scope.mode === "screen") {
-                                x = e.screenX;
-                                y = e.screenY;
-                            }
-                            else if (scope.mode === "linear") {
-
-                                x = scope.minValueX + (((e.clientX - bounds.left) / bounds.width) * (scope.maxValueX - scope.minValueX));
-                                y = scope.minValueY + (((e.clientY - bounds.top) / bounds.height) * (scope.maxValueY - scope.minValueY));
+    get isDragging() {
+        return this._dragging;
+    }
 
 
-                            } else {
-                                x = e.clientX - bounds.left;
-                                y = e.clientY - bounds.top;
-                            }
+    calc(e) {
+        if(this._dragging) {
+            let bounds = this.getBoundingClientRect();
+            let x = 0;
+            let y = 0;
+            if (this.mode === "screen") {
+                x = e.screenX;
+                y = e.screenY;
+            }
+            else if (this.mode === "linear") {
 
-                            if (scope.precision === "int") {
-                                x = Math.floor(x);
-                                y = Math.floor(y);
-                            }
-
-                            scope.result.x = x;
-                            scope.result.y = y;
+                x = this.minValueX + (((e.clientX - bounds.left) / bounds.width) * (this.maxValueX - this.minValueX));
+                y = this.minValueY + (((e.clientY - bounds.top) / bounds.height) * (this.maxValueY - this.minValueY));
 
 
-                            //console.log(x + " : " + y);
-                        }
-                    }
+            } else {
+                x = e.clientX - bounds.left;
+                y = e.clientY - bounds.top;
+            }
+
+            if (this.precision === "int") {
+                x = Math.floor(x);
+                y = Math.floor(y);
+            }
+
+            this._result.x = x;
+            this._result.y = y;
+
+
+            // console.log(x + " : " + y);
+        }
+    }
+
+
+    mouseDown(e) {
+        this._dragging = true;
+        this.calc(e);
+    }
+    touchStart(e) {
+        this._dragging = true;
+        this.calc(e.originalEvent.touches[0]);
+    }
+
+    mouseUp() {
+        this._dragging = false;
+    }
+    touchEnd() {
+        this._dragging = false;
+    }
+    mouseMove(e) {
+        this.calc(e);
+    }
+    touchMove(e){
+        this.calc(e.originalEvent.touches[0]);
+    }
+
+    static get observedAttributes() {
+        return ['result','mode', 'minValueX', 'minValueY', 'maxValueX', 'maxValueY', 'precision'];
+    }
+
+    attributeChangedCallback() {
+    }
+
+    observe(cb) {
+        this._result = new Proxy(this._result, {
+            set : function(target, prop, value){
+                target[prop] = value;
+                if(cb){
+                    cb(target);
                 }
-            };
-        }]);
- *****/
+                return true;
+            }
+        });
+    }
+
+    get result() {
+        return this._result;
+    }
+    get mode() {
+        return this.getAttribute("mode");
+    }
+    get minValueX() {
+        return parseInt(this.getAttribute("min-value-x"));
+    }
+    get minValueY() {
+        return parseInt(this.getAttribute("min-value-y"));
+    }
+    get maxValueX() {
+        return parseInt(this.getAttribute("max-value-x"));
+    }
+    get maxValueY() {
+        return parseInt(this.getAttribute("max-value-y"));
+    }
+    get precision() {
+        return this.getAttribute("precision");
+    }
+}
+
+customElements.define('drag-area', DragArea);

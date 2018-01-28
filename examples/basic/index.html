@@ -10,7 +10,11 @@
     <script src="basic.js"></script>
 </head>
 <body>
-    <div id="box"></div>
-    <my-element happy></my-element>
+    <!--<my-element happy></my-element>-->
+    <drag-area id="drag-area" class="drag-area" mode="linear" precision="int" min-value-x="0" max-value-x="50" min-value-y="0" max-value-y="300">
+        <h1>Drag me</h1>
+        <h1 id="coordinates"></h1>
+    </drag-area>
+
 </body>
 </html>

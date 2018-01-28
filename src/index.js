@@ -7,6 +7,7 @@ import "./components/components.js";
 require('./utils/listener').start();
 let tacoData = require('./core/tacodata.js');
 let api = require('./core/api.js');
+import {observable, observe} from './observer/accessorObserver';
 
 window.onload = function(){
     send(READY);
@@ -36,5 +37,7 @@ module.exports = {
     home        : api.home,
     show        : api.show,
     hide        : api.hide,
-    toggle      : api.toggle
+    toggle      : api.toggle,
+    observe     : observe,
+    observable  : observable,
 };
