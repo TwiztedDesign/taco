@@ -1,5 +1,5 @@
 const expect    = require('chai').expect;
-const messenger = require('../src/utils/messenger.js');
+const messenger = require('../../src/utils/messenger.js');
 
 describe('Messenger', function () {
     describe('send', function(){
