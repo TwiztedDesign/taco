@@ -1,7 +1,8 @@
 import {USER_UPDATE} from "../utils/events";
 import {ADD} from "../utils/events";
 import {findKey} from '../utils/helpers.js';
-let send = require('../utils/messenger.js').send;
+
+const send = require('../utils/messenger.js').send;
 
 class TacoData {
     constructor(){
