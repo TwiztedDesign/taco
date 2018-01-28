@@ -7,8 +7,8 @@ function noop(){}
 
 function go(target, time){
     send(GO,{
-        target : target,
-        time : time
+        target  : target,
+        time    : time
     });
 }
 

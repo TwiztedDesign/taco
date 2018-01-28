@@ -65,7 +65,6 @@ class TacoData {
 
 module.exports = {tacoData: new TacoData()};
 
-
 // let main = {}, proxy = {};
 // let updateCB;
 
