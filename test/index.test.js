@@ -1,5 +1,5 @@
 let expect = require('chai').expect;
-let tacoData = require('../src/core/tacodata.js');
+import {tacoData} from '../src/core/tacodata.js';
 
 describe('Taco', function () {
     describe('first test', function(){

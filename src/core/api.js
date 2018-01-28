@@ -1,6 +1,6 @@
 import {send} from '../utils/messenger.js';
 import {GO} from '../utils/events.js';
-let tacoData = require('./tacodata.js');
+import {tacoData} from '../core/tacodata.js';
 
 
 function noop(){}

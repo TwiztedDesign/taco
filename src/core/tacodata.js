@@ -2,6 +2,7 @@ import {USER_UPDATE} from "../utils/events";
 import {ADD} from "../utils/events";
 import {findKey} from '../utils/helpers.js';
 let send = require('../utils/messenger.js').send;
+// let _private = new WeakMap();
 
 class TacoData {
     constructor(){
@@ -15,9 +16,14 @@ class TacoData {
             }
         };
         this.updateCB = null;
+
     }
 
-    addTemplate(name, data){
+    onUpdate(cb){
+        this.updateCB = cb;
+    }
+
+    add(name, data){
         this._main[name] = data;
         this._proxy[name] = new Proxy(data, this._onChange);
         send(ADD,{
@@ -27,7 +33,7 @@ class TacoData {
         return this._proxy[name];
     }
 
-    setValue(template, control, value){
+    _setValue(template, control, value){
         template = findKey(this._main, template);
         if(template){
             control = findKey(this._main[template], control);
@@ -37,7 +43,8 @@ class TacoData {
             this._proxy[template][control] = value;
         }
     }
-    getValue(template, control){
+
+    _getValue(template, control){
         template = findKey(this._main, template);
         if(template){
             return this._main[template][findKey(this._main[template], control)];
@@ -45,15 +52,15 @@ class TacoData {
     }
 
     show(template){
-        this.setValue(template, "visibility", true);
+        this._setValue(template, "visibility", true);
     }
     hide(template){
-        this.setValue(template, "visibility", false);
+        this._setValue(template, "visibility", false);
     }
     toggle(template){
-        let visibility = this.getValue(template, 'visibility');
+        let visibility = this._getValue(template, 'visibility');
         if(visibility !== undefined){
-            this.setValue(template, 'visibility', !visibility);
+            this._setValue(template, 'visibility', !visibility);
         }
     }
 }
