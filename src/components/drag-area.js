@@ -7,6 +7,7 @@ class DragArea extends HTMLElement {
 
     connectedCallback() {
         this.style.cursor = 'pointer';
+        this.style.userSelect = 'none';
         this.addEventListener('mousedown', this.mouseDown);
         this.addEventListener('touchstart', this.touchStart);
         this.addEventListener('mouseup', this.mouseUp);

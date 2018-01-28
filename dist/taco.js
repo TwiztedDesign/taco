@@ -454,6 +454,7 @@ var DragArea = function (_HTMLElement) {
         key: 'connectedCallback',
         value: function connectedCallback() {
             this.style.cursor = 'pointer';
+            this.style.userSelect = 'none';
             this.addEventListener('mousedown', this.mouseDown);
             this.addEventListener('touchstart', this.touchStart);
             this.addEventListener('mouseup', this.mouseUp);
