@@ -2,8 +2,8 @@ import {send} from './utils/messenger.js';
 import {READY} from './utils/events.js';
 import {TOUCH} from './utils/events.js';
 import {MOUSE_MOVE} from './utils/events.js';
+import {tacoData} from './core/tacodata.js';
 require('./utils/listener').start();
-const tacoData = require('./core/tacodata.js');
 const api = require('./core/api.js');
 
 

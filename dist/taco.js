@@ -117,81 +117,145 @@ module.exports = {
 "use strict";
 
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _events = __webpack_require__(0);
 
 var _helpers = __webpack_require__(4);
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 var send = __webpack_require__(1).send;
 
-var main = {},
-    proxy = {};
-var _updateCB = void 0;
+var TacoData = function () {
+    function TacoData() {
+        _classCallCheck(this, TacoData);
 
-var onChange = {
-    set: function set(target, prop, value) {
-        target[prop] = value;
-        send(_events.USER_UPDATE, main);
-        return true;
+        this._main = {};
+        this._proxy = {};
+        this._onChange = {
+            set: function set(target, prop, value) {
+                target[prop] = value;
+                send(_events.USER_UPDATE, this._main);
+                return true;
+            }
+        };
+        this.updateCB = null;
     }
-};
 
-function addTemplate(name, data) {
-    main[name] = data;
-    proxy[name] = new Proxy(data, onChange);
-    send(_events.ADD, {
-        channel: name,
-        data: data
-    });
-    return proxy[name];
-}
-
-function setValue(template, control, value) {
-    template = (0, _helpers.findKey)(main, template);
-    if (template) {
-        control = (0, _helpers.findKey)(main[template], control);
-    }
-    if (template && control) {
-        main[template][control] = value;
-        proxy[template][control] = value;
-    }
-}
-function getValue(template, control) {
-    template = (0, _helpers.findKey)(main, template);
-    if (template) {
-        return main[template][(0, _helpers.findKey)(main[template], control)];
-    }
-}
-
-function show(template) {
-    setValue(template, "visibility", true);
-}
-function hide(template) {
-    setValue(template, "visibility", false);
-}
-function toggle(template) {
-    var visibility = getValue(template, 'visibility');
-    if (visibility !== undefined) {
-        setValue(template, 'visibility', !visibility);
-    }
-}
-
-module.exports = {
-    main: main,
-    proxy: proxy,
-    onUpdate: function onUpdate(cb) {
-        _updateCB = cb;
-    },
-    updateCB: function updateCB() {
-        if (_updateCB) {
-            _updateCB();
+    _createClass(TacoData, [{
+        key: "addTemplate",
+        value: function addTemplate(name, data) {
+            this._main[name] = data;
+            this._proxy[name] = new Proxy(data, this._onChange);
+            send(_events.ADD, {
+                channel: name,
+                data: data
+            });
+            return this._proxy[name];
         }
-    },
-    add: addTemplate,
-    show: show,
-    hide: hide,
-    toggle: toggle
+    }, {
+        key: "setValue",
+        value: function setValue(template, control, value) {
+            template = (0, _helpers.findKey)(this._main, template);
+            if (template) {
+                control = (0, _helpers.findKey)(this._main[template], control);
+            }
+            if (template && control) {
+                this._main[template][control] = value;
+                this._proxy[template][control] = value;
+            }
+        }
+    }, {
+        key: "getValue",
+        value: function getValue(template, control) {
+            template = (0, _helpers.findKey)(this._main, template);
+            if (template) {
+                return this._main[template][(0, _helpers.findKey)(this._main[template], control)];
+            }
+        }
+    }, {
+        key: "show",
+        value: function show(template) {
+            this.setValue(template, "visibility", true);
+        }
+    }, {
+        key: "hide",
+        value: function hide(template) {
+            this.setValue(template, "visibility", false);
+        }
+    }, {
+        key: "toggle",
+        value: function toggle(template) {
+            var visibility = this.getValue(template, 'visibility');
+            if (visibility !== undefined) {
+                this.setValue(template, 'visibility', !visibility);
+            }
+        }
+    }]);
 
-};
+    return TacoData;
+}();
+
+module.exports = { tacoData: new TacoData() };
+
+// let main = {}, proxy = {};
+// let updateCB;
+
+
+// function addTemplate(name, data){
+//     main[name] = data;
+//     proxy[name] = new Proxy(data, onChange);
+//     send(ADD,{
+//         channel : name,
+//         data    : data
+//     });
+//     return proxy[name];
+// }
+//
+// function setValue(template, control, value){
+//     template = findKey(main, template);
+//     if(template){
+//         control = findKey(main[template], control);
+//     }
+//     if(template && control){
+//         main[template][control] = value;
+//         proxy[template][control] = value;
+//     }
+// }
+// function getValue(template, control){
+//     template = findKey(main, template);
+//     if(template){
+//         return main[template][findKey(main[template], control)];
+//     }
+// }
+//
+// function show(template){
+//     setValue(template, "visibility", true);
+// }
+// function hide(template){
+//     setValue(template, "visibility", false);
+// }
+// function toggle(template){
+//     var visibility = getValue(template, 'visibility');
+//     if(visibility !== undefined){
+//         setValue(template, 'visibility', !visibility);
+//     }
+// }
+
+
+// module.exports = {
+//     main        : main,
+//     proxy       : proxy,
+//     onUpdate    : function(cb){ updateCB = cb; },
+//     updateCB    : function(){if(updateCB){ updateCB(); }},
+//     add         : addTemplate,
+//     show        : show,
+//     hide        : hide,
+//     toggle      : toggle,
+//     tacoData    : this
+//
+// };
 
 /***/ }),
 /* 3 */
