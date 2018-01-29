@@ -1,12 +1,12 @@
 import {findKey} from '../../utils/helpers.js';
-const tacoData = require('../tacodata.js');
+import {tacoData} from '../tacodata.js';
 
 function update(data){
-    for(let template in tacoData.main) {
+    for(let template in tacoData._main) {
         let key = findKey(data, template);
         for(let item in data[key]){
-            let mainKey = findKey(tacoData.main, key);
-            tacoData.main[mainKey][item] = data[key][item];
+            let mainKey = findKey(tacoData._main, key);
+            tacoData._main[mainKey][item] = data[key][item];
         }
     }
     tacoData.updateCB();

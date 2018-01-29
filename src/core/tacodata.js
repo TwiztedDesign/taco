@@ -15,21 +15,16 @@ class TacoData {
                 return true;
             }
         };
-        this.updateCB = null;
+    }
+
+    updateCB(){
+        if(this._updateCB) {
+            this._updateCB();
+        }
     }
 
     onUpdate(cb){
-        this.updateCB = cb;
-    }
-
-    add(name, data){
-        this._main[name] = data;
-        this._proxy[name] = new Proxy(data, this._onChange);
-        send(ADD,{
-            channel : name,
-            data    : data
-        });
-        return this._proxy[name];
+        this._updateCB = cb;
     }
 
     _setValue(template, control, value){
@@ -50,6 +45,16 @@ class TacoData {
         }
     }
 
+    add(name, data){
+        this._main[name] = data;
+        this._proxy[name] = new Proxy(data, this._onChange);
+        send(ADD,{
+            channel : name,
+            data    : data
+        });
+        return this._proxy[name];
+    }
+
     show(template){
         this._setValue(template, "visibility", true);
     }
@@ -64,63 +69,4 @@ class TacoData {
     }
 }
 
-module.exports = {tacoData: new TacoData()};
-
-// let main = {}, proxy = {};
-// let updateCB;
-
-
-// function addTemplate(name, data){
-//     main[name] = data;
-//     proxy[name] = new Proxy(data, onChange);
-//     send(ADD,{
-//         channel : name,
-//         data    : data
-//     });
-//     return proxy[name];
-// }
-//
-// function setValue(template, control, value){
-//     template = findKey(main, template);
-//     if(template){
-//         control = findKey(main[template], control);
-//     }
-//     if(template && control){
-//         main[template][control] = value;
-//         proxy[template][control] = value;
-//     }
-// }
-// function getValue(template, control){
-//     template = findKey(main, template);
-//     if(template){
-//         return main[template][findKey(main[template], control)];
-//     }
-// }
-//
-// function show(template){
-//     setValue(template, "visibility", true);
-// }
-// function hide(template){
-//     setValue(template, "visibility", false);
-// }
-// function toggle(template){
-//     var visibility = getValue(template, 'visibility');
-//     if(visibility !== undefined){
-//         setValue(template, 'visibility', !visibility);
-//     }
-// }
-
-
-
-// module.exports = {
-//     main        : main,
-//     proxy       : proxy,
-//     onUpdate    : function(cb){ updateCB = cb; },
-//     updateCB    : function(){if(updateCB){ updateCB(); }},
-//     add         : addTemplate,
-//     show        : show,
-//     hide        : hide,
-//     toggle      : toggle,
-//     tacoData    : this
-//
-// };
+export let tacoData = new TacoData();
