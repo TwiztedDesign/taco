@@ -29,8 +29,8 @@ window.onload = function(){
 };
 
 module.exports = {
-    addTemplate : tacoData.addTemplate,
-    onUpdate    : tacoData.onUpdate,
+    addTemplate : function(name, data){return tacoData.addTemplate(name, data);},
+    onUpdate    : function(cb){return tacoData.onUpdate(cb);},
     go          : api.go,
     next        : api.next,
     previous    : api.previous,
