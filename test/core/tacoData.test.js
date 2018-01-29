@@ -3,9 +3,22 @@ const expect = require('chai').expect;
 const data = {visibility: false};
 
 describe('Taco Data', () => {
-    before(() => {
+    beforeEach(() => {
+        tacoData.clear();
         tacoData.add('test', data);
     });
+
+
+    describe('Clear', () => {
+        it('Should clear all the data', () => {
+            expect(tacoData._main).to.have.own.property('test');
+            expect(tacoData._proxy).to.have.own.property('test');
+            tacoData.clear();
+            expect(tacoData._main).to.not.have.own.property('test');
+            expect(tacoData._proxy).to.not.have.own.property('test');
+        });
+    });
+
 
     describe('Add template', () => {
         it('Should add a gfx template to a page', () => {

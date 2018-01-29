@@ -61,6 +61,7 @@
     "nyc": "11.4.1",
     "rimraf": "2.6.2",
     "script-loader": "0.7.2",
+    "sinon": "4.2.2",
     "webpack": "3.10.0",
     "webpack-shell-plugin": "0.5.0"
   },

@@ -67,6 +67,10 @@ class TacoData {
             this._setValue(template, 'visibility', !visibility);
         }
     }
+    clear(){
+        this._main = {};
+        this._proxy = {};
+    }
 }
 
 export let tacoData = new TacoData();
