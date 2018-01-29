@@ -4,8 +4,8 @@ import {TOUCH} from './utils/events.js';
 import {MOUSE_MOVE} from './utils/events.js';
 import "../scripts/custom-elements-es5-adapter.exec";
 import "./components/components.js";
+import {tacoData} from './core/tacodata.js';
 require('./utils/listener').start();
-let tacoData = require('./core/tacodata.js');
 let api = require('./core/api.js');
 import {observable, observe} from './observer/accessorObserver';
 

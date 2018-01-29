@@ -1,5 +1,5 @@
-let expect = require('chai').expect;
-let messenger = require('../src/utils/messenger.js');
+const expect    = require('chai').expect;
+const messenger = require('../../src/utils/messenger.js');
 
 describe('Messenger', function () {
     describe('send', function(){
@@ -11,8 +11,6 @@ describe('Messenger', function () {
                 done();
             });
             messenger.send('type', 'payload');
-
         })
     });
-
 });

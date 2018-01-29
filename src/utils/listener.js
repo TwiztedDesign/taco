@@ -1,4 +1,4 @@
-let handlers = require('../core/handlers.js');
+const handlers = require('../core/handlers.js');
 
 
 function messageHandler(message){
