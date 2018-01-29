@@ -45,7 +45,7 @@ class TacoData {
         }
     }
 
-    add(name, data){
+    addTemplate(name, data){
         this._main[name] = data;
         this._proxy[name] = new Proxy(data, this._onChange);
         send(ADD,{

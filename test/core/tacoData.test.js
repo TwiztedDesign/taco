@@ -5,7 +5,7 @@ const data = {visibility: false};
 describe('Taco Data', () => {
     beforeEach(() => {
         tacoData.clear();
-        tacoData.add('test', data);
+        tacoData.addTemplate('test', data);
     });
 
 
