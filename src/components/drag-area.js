@@ -126,6 +126,10 @@ class DragArea extends HTMLElement {
     get precision() {
         return this.getAttribute("precision");
     }
+    expose(){
+        return [{text : 'innerHTML'} , {yValue : 'result.y'}];
+    }
+
 }
 
 customElements.define('drag-area', DragArea);
