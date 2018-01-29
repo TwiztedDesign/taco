@@ -29,7 +29,7 @@ window.onload = function(){
 };
 
 module.exports = {
-    addTemplate : tacoData.add,
+    addTemplate : tacoData.addTemplate,
     onUpdate    : tacoData.onUpdate,
     go          : api.go,
     next        : api.next,
