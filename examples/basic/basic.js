@@ -29,29 +29,19 @@ app.controller("Ctrl", ['$scope',function($scope){
     window.onload = function(){
 
         $scope.dragArea = document.getElementById("drag-area");
-        //
-        // $scope.$watch(function(){
-        //     return $scope.dragArea.result.x;
-        // }, function(val){
-        //     $scope.drag.x = val;
-        // }, true);
-        //
-
-
-
 
         document.getElementById("drag-area").onChange('x', function(val){
             $scope.drag.x = val;
         });
 
-        document.getElementById("drag-area").onChange(function(prop, val){
-            $scope.drag[prop] = val;
-        });
+        // document.getElementById("drag-area").onChange(function(prop, val){
+        //     $scope.drag[prop] = val;
+        // });
 
         var dragAreaObserve = taco.observable(document.getElementById("drag-area"));
 
 
-        taco.observe('drag.x', function(){
+        taco.observe(function(){
             $scope.drag.x = dragAreaObserve.result.x;
             $scope.drag.y = dragAreaObserve.result.y;
             $scope.$apply();
