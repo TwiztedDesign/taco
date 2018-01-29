@@ -10,7 +10,7 @@ describe('Taco', () => {
 
     describe("Taco data", function(){
         it("should work", function(){
-            tacoData.add("name", {});
+            tacoData.addTemplate("name", {});
         })
     })
 

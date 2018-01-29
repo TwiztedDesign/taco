@@ -6,7 +6,7 @@ const updateHandler  = require('../../../src/core/handlers/updateHandler.js');
 describe("handlers", () => {
     before(() => {
         tacoData.clear();
-        tacoData.add('test', {visibility: true});
+        tacoData.addTemplate('test', {visibility: true});
     });
 
     describe("Update", () => {
