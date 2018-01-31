@@ -16,7 +16,7 @@ describe('handlers', () => {
     });
 
     describe('Update incorrect data', () => {
-        it('Should not update the template data and/or add the incorrect data or template', () => {
+        it('Should not update the template data and/or add the incorrect data and template', () => {
             let initialData = tacoData._main;
             // updating with non-existing control data
             updateHandler.update({'test': {count: 2}});
@@ -28,8 +28,12 @@ describe('handlers', () => {
             expect(tacoData._main).to.deep.equal(initialData);
 
             // updating a non-existing template
-            updateHandler.update({'redBox': {count: 2}});
+            updateHandler.update({'redbox': {count: 2}});
             expect(tacoData._main['redBox']).to.equal(undefined);
+            expect(tacoData._main).to.deep.equal(initialData);
+
+            // updating an existing template with incorrect template name, case sensitive
+            updateHandler.update({'Test': {visibility: true}});
             expect(tacoData._main).to.deep.equal(initialData);
 
             sinon.assert.notCalled(updateCB);
