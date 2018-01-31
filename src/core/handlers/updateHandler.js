@@ -1,4 +1,4 @@
-import {findKey} from '../../utils/helpers.js';
+import {findKey, setByPath} from '../../utils/helpers.js';
 import {tacoData} from '../tacodata.js';
 
 function update(data){
@@ -10,11 +10,21 @@ function update(data){
             if(controlKey) {
                 tacoData._main[key][item] = data[key][item];
                 isUpdateCB = true;
+
+                updateDom(controlKey, item, data[key][item]);
             }
         }
     }
     if(isUpdateCB) {
         tacoData.updateCB();
+    }
+}
+
+
+function updateDom(template, control, value){
+    var dom = document.querySelector('[taco-template="' + template + '"] [taco-name="' + control.split(' ')[0] + '"]');
+    if(dom){
+        setByPath(dom, control.split(' ')[1], value);
     }
 }
 

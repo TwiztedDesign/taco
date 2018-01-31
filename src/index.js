@@ -7,9 +7,11 @@ import "./components/components.js";
 import {tacoData} from './core/tacodata.js';
 require('./utils/listener').start();
 let api = require('./core/api.js');
-import {observable, observe} from './observer/accessorObserver';
+require('./core/init').init();
+import tacoElement from './core/tacoElement';
 
-window.onload = function(){
+
+window.addEventListener('load', function(){
     send(READY);
 
     function onTouch(e){
@@ -26,18 +28,21 @@ window.onload = function(){
     }
     document.body.addEventListener('touchstart', onTouch);
     document.body.addEventListener('mousemove', onMouseMove);
+});
+
+
+let taco = function(selector){
+    return new tacoElement(selector);
 };
 
-module.exports = {
-    addTemplate : function(name, data){return tacoData.addTemplate(name, data);},
-    onUpdate    : function(cb){return tacoData.onUpdate(cb);},
-    go          : api.go,
-    next        : api.next,
-    previous    : api.previous,
-    home        : api.home,
-    show        : api.show,
-    hide        : api.hide,
-    toggle      : api.toggle,
-    observe     : observe,
-    observable  : observable,
-};
+taco.addTemplate = function(name, data){return tacoData.addTemplate(name, data);};
+taco.onUpdate    = function(cb){return tacoData.onUpdate(cb);};
+taco.go          = api.go;
+taco.next        = api.next;
+taco.previous    = api.previous;
+taco.home        = api.home;
+taco.show        = api.show;
+taco.hide        = api.hide;
+taco.toggle      = api.toggle;
+
+module.exports = taco;

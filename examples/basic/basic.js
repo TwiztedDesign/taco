@@ -1,10 +1,50 @@
-window.onload = function(){
+var app = angular.module("myApp", []);
 
 
-    var dragArea = taco.observable(document.getElementById("drag-area"));
+app.controller("Ctrl", ['$scope',function($scope){
 
-    taco.observe(function(){
-        document.getElementById("coordinates").innerHTML = dragArea.result.x + ' ' + dragArea.result.y;
+
+    $scope.drag = {
+        visibility  : true,
+        x           : 0,
+        y           : 0
+    };
+
+
+    var results = {
+        "title text" : "Title",
+        "title color" : "red",
+        "drag-area xValue" : 0,
+        "drag-area yValue" : 0
+    };
+
+    taco.onUpdate(function(){
+        try{
+            $scope.$apply();
+        } catch(e){}
     });
 
-};
+    window.onload = function(){
+
+        var dragArea = taco('.drag-area');
+
+        dragArea.onChange('dragging', function(val){
+            // console.log('Dragging: ', val);
+        });
+        dragArea.onChange('result.x', function(val){
+            $scope.drag.x = val;
+            $scope.$apply();
+        });
+        dragArea.onChange('result.y', function(val){
+            $scope.drag.y = val;
+            $scope.$apply();
+        });
+
+        dragArea.onChange(function(prop, val, path){
+            // console.log("some value changed: ", prop, val, path);
+        });
+    };
+
+}]);
+
+

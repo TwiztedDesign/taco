@@ -9,13 +9,10 @@ module.exports = function(config){
         frameworks: ['mocha', 'chai'],
 
         files: [
-           'test/*.test.js',
-           'test/**/*.test.js'
+            'test/**/*.test.js',
         ],
 
         preprocessors: {
-            // add webpack as preprocessor
-            'test/*.test.js': ['webpack'],
             'test/**/*.test.js': ['webpack']
         },
         webpack : webpackConfig,
