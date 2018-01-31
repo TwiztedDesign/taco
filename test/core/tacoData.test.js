@@ -1,11 +1,19 @@
 import {tacoData} from '../../src/core/tacodata.js';
-const expect = require('chai').expect;
-const data = {visibility: false};
+import * as messenger from '../../src/utils/messenger.js';
+
+const sinon         = require('sinon');
+const expect        = require('chai').expect;
+
+let data = {visibility: false};
+let send = sinon.spy(messenger, 'send');
 
 describe('Taco Data', () => {
     beforeEach(() => {
         tacoData.clear();
         tacoData.addTemplate('test', data);
+    });
+    afterEach(() => {
+        sinon.assert.called(send);
     });
 
     describe('Clear', () => {
@@ -46,19 +54,22 @@ describe('Taco Data', () => {
             expect(tacoData._proxy['test']['visibility']).to.equal(true);
             expect(tacoData._main['test']['count']).to.equal(2);
             expect(tacoData._proxy['test']['count']).to.equal(2);
+        });
 
-            // add to existing template with new data and existing data
-            expect(tacoData._main['test']).to.have.own.property('count');
-            expect(tacoData._proxy['test']).to.have.own.property('visibility');
-            expect(tacoData._proxy['test']).to.not.have.own.property('title');
-            tacoData.addTemplate('test', {count: 3, visibility: false, title: 'new title'});
-            expect(tacoData._main['test']['visibility']).to.equal(false);
-            expect(tacoData._proxy['test']['visibility']).to.equal(false);
-            expect(tacoData._main['test']['count']).to.equal(3);
-            expect(tacoData._proxy['test']['count']).to.equal(3);
-            expect(tacoData._proxy['test']).to.have.own.property('title');
-            expect(tacoData._main['test']['title']).to.equal('new title');
-            expect(tacoData._proxy['test']['title']).to.equal('new title');
+        it('Should add and update data in an existing template', () => {
+            tacoData.addTemplate('myTest', {count: 2, visibility: true});
+
+            expect(tacoData._main['myTest']).to.have.own.property('count');
+            expect(tacoData._proxy['myTest']).to.have.own.property('visibility');
+            expect(tacoData._proxy['myTest']).to.not.have.own.property('title');
+            tacoData.addTemplate('myTest', {count: 3, visibility: false, title: 'new title'});
+            expect(tacoData._main['myTest']['visibility']).to.equal(false);
+            expect(tacoData._proxy['myTest']['visibility']).to.equal(false);
+            expect(tacoData._main['myTest']['count']).to.equal(3);
+            expect(tacoData._proxy['myTest']['count']).to.equal(3);
+            expect(tacoData._proxy['myTest']).to.have.own.property('title');
+            expect(tacoData._main['myTest']['title']).to.equal('new title');
+            expect(tacoData._proxy['myTest']['title']).to.equal('new title');
         });
 
         it('Should not affect or add to the data of an already existing template when passed empty data', () => {
@@ -68,7 +79,6 @@ describe('Taco Data', () => {
             tacoData.addTemplate('test', {});
             expect(tacoData._main['test']).to.deep.equal(initialData);
             expect(tacoData._proxy['test']).to.deep.equal(initialData);
-
         });
 
         it('Should add template with empty data when passed empty data', () => {
