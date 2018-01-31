@@ -1,8 +1,8 @@
 
 
 function findKey(data, keyToFind) {
-    var keys = Object.keys(data);
-    for(var i = 0 ; i < keys.length ; i++){
+    let keys = Object.keys(data);
+    for(let i = 0 ; i < keys.length ; i++){
         if(keys[i].toLowerCase() === keyToFind.toLowerCase()){
             return keys[i];
         }
