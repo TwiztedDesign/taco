@@ -91,7 +91,7 @@ describe('Taco Data', () => {
             expect(tacoData._proxy['test']['visibility']).to.equal(true);
         });
 
-        it('Should affect the visibility property value in the given template if visibility doesn\'t exists' , () => {
+        it('Should affect the visibility property value in the given template if visibility does not exists' , () => {
             tacoData.addTemplate('myTemplate', {});
             expect(tacoData._main).to.have.own.property('myTemplate');
             expect(tacoData._proxy).to.have.own.property('myTemplate');
