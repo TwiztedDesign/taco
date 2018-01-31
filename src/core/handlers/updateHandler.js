@@ -6,12 +6,12 @@ function update(data){
     for(let template in tacoData._main) {
         let key = findKey(data, template);
         for(let item in data[key]){
-            let controlKey = findKey(tacoData._main[key], item);
+            let controlKey = findKey(tacoData._main[template], item);
             if(controlKey) {
-                tacoData._main[key][item] = data[key][item];
+                tacoData._main[template][controlKey] = data[key][item];
                 isDataChanged = true;
 
-                updateDom(controlKey, item, data[key][item]);
+                updateDom(template, controlKey, data[key][item]);
             }
         }
     }
