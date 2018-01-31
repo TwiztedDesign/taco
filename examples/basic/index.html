@@ -6,15 +6,19 @@
 
     <link rel="stylesheet" href="style.css">
 
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
     <script src="../../dist/taco.js"></script>
     <script src="basic.js"></script>
 </head>
-<body>
+<body ng-app="myApp" ng-controller="Ctrl">
     <!--<my-element happy></my-element>-->
-    <drag-area id="drag-area" class="drag-area" mode="linear" precision="int" min-value-x="0" max-value-x="50" min-value-y="0" max-value-y="300">
-        <h1>Drag me</h1>
-        <h1 id="coordinates"></h1>
-    </drag-area>
-
+    <div taco-template="results">
+        <h1 taco-editable taco-name="title" class="taco-title">Title</h1>
+        <drag-area  taco-name="drag-area"
+                ng-show="drag.visibility" id="drag-area" class="drag-area" mode="linear" precision="int" min-value-x="0" max-value-x="50" min-value-y="0" max-value-y="300">
+            <h1>Drag me</h1>
+            <h1 id="coordinates">{{drag.x + ", " + drag.y}}</h1>
+        </drag-area>
+    </div>
 </body>
 </html>
