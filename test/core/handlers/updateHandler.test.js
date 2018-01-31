@@ -9,14 +9,14 @@ let updateCB = sinon.spy(tacoData, 'updateCB');
 
 /****************************************************************************/
 
-describe("handlers", () => {
+describe('handlers', () => {
     before(() => {
         tacoData.clear();
         tacoData.addTemplate('test', {visibility: true});
     });
 
-    describe("Update incorrect data", () => {
-        it("Should not update the template data and/or add the incorrect data or template", () => {
+    describe('Update incorrect data', () => {
+        it('Should not update the template data and/or add the incorrect data or template', () => {
             let initialData = tacoData._main;
             // updating with non-existing control data
             updateHandler.update({'test': {count: 2}});
@@ -36,8 +36,8 @@ describe("handlers", () => {
         });
     });
 
-    describe("Update", () => {
-        it("Should update the data in a given template as passed in the data obj", () => {
+    describe('Update', () => {
+        it('Should update the data in a given template as passed in the data obj', () => {
             updateHandler.update({'test': {visibility: false}});
             expect(tacoData._main['test']['visibility']).to.equal(false);
             sinon.assert.calledOnce(updateCB);
