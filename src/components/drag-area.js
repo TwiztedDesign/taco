@@ -93,18 +93,6 @@ class DragArea extends HTMLElement {
     attributeChangedCallback() {
     }
 
-    observe(cb) {
-        this._result = new Proxy(this._result, {
-            set : function(target, prop, value){
-                target[prop] = value;
-                if(cb){
-                    cb(target);
-                }
-                return true;
-            }
-        });
-    }
-
     get result() {
         return this._result;
     }
@@ -127,7 +115,7 @@ class DragArea extends HTMLElement {
         return this.getAttribute("precision");
     }
     expose(){
-        return [{text : 'innerHTML'} , {yValue : 'result.y'}];
+        return [{xValue : 'result.x'} , {yValue : 'result.y'}];
     }
 
 }

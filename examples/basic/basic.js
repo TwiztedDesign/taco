@@ -18,8 +18,6 @@ app.controller("Ctrl", ['$scope',function($scope){
         "drag-area yValue" : 0
     };
 
-    $scope.drag = taco.addTemplate('drag', $scope.drag);
-
     taco.onUpdate(function(){
         try{
             $scope.$apply();
@@ -28,34 +26,23 @@ app.controller("Ctrl", ['$scope',function($scope){
 
     window.onload = function(){
 
-        $scope.dragArea = document.getElementById("drag-area");
+        var dragArea = taco('.drag-area');
 
-        document.getElementById("drag-area").onChange('x', function(val){
+        dragArea.onChange('dragging', function(val){
+            // console.log('Dragging: ', val);
+        });
+        dragArea.onChange('result.x', function(val){
             $scope.drag.x = val;
-        });
-
-        // document.getElementById("drag-area").onChange(function(prop, val){
-        //     $scope.drag[prop] = val;
-        // });
-
-        var dragAreaObserve = taco.observable(document.getElementById("drag-area"));
-
-
-        taco.observe(function(){
-            $scope.drag.x = dragAreaObserve.result.x;
-            $scope.drag.y = dragAreaObserve.result.y;
             $scope.$apply();
-            // document.getElementById("coordinates").innerHTML = $scope.dragAreaObserve.result.x + ' ' + $scope.dragAreaObserve.result.y;
+        });
+        dragArea.onChange('result.y', function(val){
+            $scope.drag.y = val;
+            $scope.$apply();
         });
 
-        var counter = 0;
-        taco.observe(function(){
-            $scope.drag.y;
-            counter++;
-            // $scope.$apply();
-            // document.getElementById("coordinates").innerHTML = $scope.dragAreaObserve.result.x + ' ' + $scope.dragAreaObserve.result.y;
+        dragArea.onChange(function(prop, val, path){
+            // console.log("some value changed: ", prop, val, path);
         });
-
     };
 
 }]);

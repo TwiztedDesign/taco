@@ -1,52 +1,64 @@
-let activeHandler;
+import {trim} from '../utils/helpers';
+import {getByPath, setByPath} from '../utils/helpers';
 
-function observe(handler) {
-    activeHandler = handler;
-    handler();
-    activeHandler = undefined;
+function getExposed(provider, prop){
+    if(provider.expose){
+        return provider.expose().filter(function(exposed){
+            return exposed.hasOwnProperty(prop);
+        })[0][prop];
+    }
 }
 
-function observableProp (provider, prop) {
+function stringifyPath(path){
+    let str = '';
+    for (let i = 0; i < path.length; i++) {
+        str += (trim(path[i],"_") + '.');
+    }
+    return str;
+}
+
+function observePrimitive(provider, prop, path, dispatcher){
     let value = provider[prop];
-    provider._handlers = [];
+    let pathString = stringifyPath(path);
+    let exposedPath = getExposed(provider, prop);
     Object.defineProperty(provider, prop, {
         get () {
-            if (activeHandler) {
-                provider._handlers[prop] = activeHandler;
+            if(exposedPath){
+              return getByPath(provider,exposedPath);
             }
             return value;
         },
         set (newValue) {
-            value = newValue;
-            const handler = provider._handlers[prop];
-            if (handler) {
-                activeHandler = handler;
-                handler();
-                activeHandler = undefined;
+            if(newValue !== provider[prop]){
+                if(dispatcher){
+                    let event = 'taco-change-' + pathString + trim(prop, "_");
+                    dispatcher(event, { detail: {value : newValue}});
+                    dispatcher('taco-change', { detail: {value : newValue, property : prop, path : path}});
+                }
+                if(exposedPath){
+                    setByPath(provider, exposedPath, newValue);
+                } else {
+                    value = newValue;
+                }
             }
         }
     });
 }
 
-function observable (provider) {
-    var props = Object.getOwnPropertyNames(provider);
+function observeObject(provider, path, dispatcher){
+    path = path || [];
+    let props = Object.getOwnPropertyNames(provider);
     for (let i = 0; i < props.length; i++) {
-        observableProp(provider, props[i]);
+
         if (typeof provider[props[i]] === 'object') {
-            observable(provider[props[i]]);
+            path.push(props[i]);
+            observeObject(provider[props[i]], path.slice(), dispatcher);
+        } else {
+            observePrimitive(provider, props[i], path.slice(), dispatcher);
         }
     }
-    return provider;
 }
 
-
-
-HTMLElement.prototype.onChange = function(){
-
-};
-
-
 module.exports = {
-    observe : observe,
-    observable : observable
+    observe : observeObject,
 };

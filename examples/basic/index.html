@@ -12,14 +12,13 @@
 </head>
 <body ng-app="myApp" ng-controller="Ctrl">
     <!--<my-element happy></my-element>-->
-    <h1 taco-editable taco-template="results" name="title">Title</h1><!-- TODO add to h1 prototype -->
-    <p></p>
-
-    <drag-area  taco-template="results" name="drag-area"
-            ng-show="drag.visibility" id="drag-area" class="drag-area" mode="linear" precision="int" min-value-x="0" max-value-x="50" min-value-y="0" max-value-y="300">
-        <h1>Drag me</h1>
-        <h1 id="coordinates">{{drag.x + ", " + drag.y}}</h1>
-    </drag-area>
-
+    <div taco-template="results">
+        <h1 taco-editable taco-name="title" class="taco-title">Title</h1>
+        <drag-area  taco-name="drag-area"
+                ng-show="drag.visibility" id="drag-area" class="drag-area" mode="linear" precision="int" min-value-x="0" max-value-x="50" min-value-y="0" max-value-y="300">
+            <h1>Drag me</h1>
+            <h1 id="coordinates">{{drag.x + ", " + drag.y}}</h1>
+        </drag-area>
+    </div>
 </body>
 </html>
