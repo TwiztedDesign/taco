@@ -17,8 +17,8 @@ describe('Helpers', function () {
             expect(helpers.findKey(obj, 'testKey')).to.equal(undefined);
         });
 
-        it('Should return the either key in a given object if two keys have the same value variation', function () {
-            Object.assign(obj, {TesT:{b:{}}});
+        it('Should return either key in a given object if two keys have the same value variation', function () {
+            let obj = {test : {a : {}}, TesT : {b : {}}};
             expect(obj).to.have.own.property('TesT');
             expect(helpers.findKey(obj, 'TesT')).to.equal('test');
         });

@@ -9,7 +9,7 @@ let updateCB = sinon.spy(tacoData, 'updateCB');
 
 /****************************************************************************/
 
-describe('handlers', () => {
+describe('Update Handler', () => {
     before(() => {
         tacoData.clear();
         tacoData.addTemplate('test', {visibility: true});

@@ -47,7 +47,7 @@ class TacoData {
 
     addTemplate(name, data){
         data = data || {};
-        if(this._main[name] && this._proxy[name]){
+        if(this._main[name]){
             Object.assign(this._main[name], data);
             Object.assign(this._proxy[name], data);
         }else{
@@ -63,14 +63,10 @@ class TacoData {
     }
 
     show(template){
-        if(this._main[template].visibility !== undefined && this._proxy[template].visibility !== undefined) {
-            this._setValue(template, "visibility", true);
-        }
+        this._setValue(template, "visibility", true);
     }
     hide(template){
-        if(this._main[template].visibility !== undefined && this._proxy[template].visibility !== undefined) {
-            this._setValue(template, "visibility", false);
-        }
+        this._setValue(template, "visibility", false);
     }
     toggle(template){
         let visibility = this._getValue(template, 'visibility');
