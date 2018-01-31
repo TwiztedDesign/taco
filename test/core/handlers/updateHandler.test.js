@@ -10,7 +10,7 @@ let updateCB = sinon.spy(tacoData, 'updateCB');
 /****************************************************************************/
 
 describe('Update Handler', () => {
-    before(() => {
+    beforeEach(() => {
         tacoData.clear();
         tacoData.addTemplate('test', {visibility: true});
     });
@@ -32,10 +32,6 @@ describe('Update Handler', () => {
             expect(tacoData._main['redBox']).to.equal(undefined);
             expect(tacoData._main).to.deep.equal(initialData);
 
-            // updating an existing template with incorrect template name, case sensitive
-            updateHandler.update({'Test': {visibility: true}});
-            expect(tacoData._main).to.deep.equal(initialData);
-
             sinon.assert.notCalled(updateCB);
         });
     });
@@ -44,7 +40,13 @@ describe('Update Handler', () => {
         it('Should update the data in a given template as passed in the data obj', () => {
             updateHandler.update({'test': {visibility: false}});
             expect(tacoData._main['test']['visibility']).to.equal(false);
-            sinon.assert.calledOnce(updateCB);
+            sinon.assert.called(updateCB);
+
+            // updating an existing template with incorrect template name, case insensitive
+            updateHandler.update({'TesT': {visibility: true}});
+            expect(tacoData._main['test']['visibility']).to.equal(true);
+
+            sinon.assert.called(updateCB);
         });
     });
 
