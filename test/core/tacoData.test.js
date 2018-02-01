@@ -12,9 +12,6 @@ describe('Taco Data', () => {
         tacoData.clear();
         tacoData.addTemplate('test', data);
     });
-    afterEach(() => {
-        sinon.assert.called(send);
-    });
 
     describe('Clear', () => {
         it('Should clear all the data', () => {
@@ -33,6 +30,8 @@ describe('Taco Data', () => {
             expect(tacoData._proxy).to.have.own.property('test');
             expect(tacoData._main['test']).to.deep.equal(data);
             expect(tacoData._proxy['test']).to.deep.equal(data);
+
+            sinon.assert.called(send);
         });
 
         it('Should update or add the data to an already existing template', () => {
@@ -54,6 +53,8 @@ describe('Taco Data', () => {
             expect(tacoData._proxy['test']['visibility']).to.equal(true);
             expect(tacoData._main['test']['count']).to.equal(2);
             expect(tacoData._proxy['test']['count']).to.equal(2);
+
+            sinon.assert.called(send);
         });
 
         it('Should add and update data in an existing template', () => {
@@ -70,6 +71,8 @@ describe('Taco Data', () => {
             expect(tacoData._proxy['myTest']).to.have.own.property('title');
             expect(tacoData._main['myTest']['title']).to.equal('new title');
             expect(tacoData._proxy['myTest']['title']).to.equal('new title');
+
+            sinon.assert.called(send);
         });
 
         it('Should not affect or add to the data of an already existing template when passed empty data', () => {
@@ -89,6 +92,8 @@ describe('Taco Data', () => {
             expect(tacoData._proxy).to.have.own.property('myTemplate');
             expect(tacoData._main['myTemplate']).to.be.empty;
             expect(tacoData._proxy['myTemplate']).to.be.empty;
+
+            sinon.assert.called(send);
         });
     });
 
