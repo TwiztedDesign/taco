@@ -1,123 +1,147 @@
+import './telestrator-element.scss';
 export default class Telestrator extends HTMLElement {
     constructor() {
         super();
+
+        this.clickX = [];
+        this.clickY = [];
+        this.clickDrag = [];
+        this.lastStroke = 0;
     }
 
     connectedCallback() {
-        this.style.cursor = 'pointer';
-        this.style.userSelect = 'none';
-        this.addEventListener('mousedown', this.mouseDown);
-        this.addEventListener('touchstart', this.touchStart);
-        this.addEventListener('mouseup', this.mouseUp);
-        this.addEventListener('touchend', this.touchEnd);
-        this.addEventListener('mousemove', this.mouseMove);
-        this.addEventListener('touchmove', this.touchMove);
+        this.innerHTML = '<canvas id="telestrator-canvas" width="1920" height="1080"></canvas>';
+        this.canvas =  this.querySelector('#telestrator-canvas');
+        this.context = this.canvas.getContext("2d");
+
+        this.canvas.addEventListener('mousedown', this.mouseDown);
+        this.canvas.addEventListener('touchstart', this.touchStart);
+        this.canvas.addEventListener('mouseup', this.mouseUp);
+        this.canvas.addEventListener('touchend', this.touchEnd);
+        this.canvas.addEventListener('mousemove', this.mouseMove);
+        this.canvas.addEventListener('touchmove', this.touchMove);
+        this.canvas.addEventListener('mouseleave', this.mouseLeave);
+
     }
 
     disconnectedCallback() {
-        this.removeEventListener('mousedown', this.mouseDown);
-        this.removeEventListener('touchstart', this.touchStart);
-        this.removeEventListener('mouseup', this.mouseUp);
-        this.removeEventListener('touchend', this.touchEnd);
-        this.removeEventListener('mousemove', this.mouseMove);
-        this.removeEventListener('touchmove', this.touchMove);
+        this.canvas.removeEventListener('mousedown', this.mouseDown);
+        this.canvas.removeEventListener('touchstart', this.touchStart);
+        this.canvas.removeEventListener('mouseup', this.mouseUp);
+        this.canvas.removeEventListener('touchend', this.touchEnd);
+        this.canvas.removeEventListener('mousemove', this.mouseMove);
+        this.canvas.removeEventListener('touchmove', this.touchMove);
+        this.canvas.removeEventListener('mouseleave', this.mouseLeave);
     }
 
-    get isDragging() {
-        return this._dragging;
+    clear(){
+        this.clickX = [];
+        this.clickY = [];
+        this.clickDrag = [];
+        this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+        this.lastStroke = 0;
     }
 
+    addClick(x, y, dragging){
+        this.clickX.push(x);
+        this.clickY.push(y);
+        this.clickDrag.push(dragging);
+    }
+    redraw(){
+        this.context.strokeStyle = this.color;
+        this.context.lineJoin = "round";
+        this.context.lineCap = "round";
+        this.context.lineWidth = this.size;
 
-    calc(e) {
-        if(this._dragging) {
-            let bounds = this.getBoundingClientRect();
-            let x = 0;
-            let y = 0;
-            if (this.mode === "screen") {
-                x = e.screenX;
-                y = e.screenY;
+        for(let i = this.lastStroke; i < this.clickX.length; i++) {
+            this.context.beginPath();
+            if(this.clickDrag[i] && i){
+                this.context.moveTo(this.clickX[i-1], this.clickY[i-1]);
+            }else{
+                this.context.moveTo(this.clickX[i]-1, this.clickY[i]);
             }
-            else if (this.mode === "linear") {
-
-                x = this.minValueX + (((e.clientX - bounds.left) / bounds.width) * (this.maxValueX - this.minValueX));
-                y = this.minValueY + (((e.clientY - bounds.top) / bounds.height) * (this.maxValueY - this.minValueY));
-
-
-            } else {
-                x = e.clientX - bounds.left;
-                y = e.clientY - bounds.top;
-            }
-
-            if (this.precision === "int") {
-                x = Math.floor(x);
-                y = Math.floor(y);
-            }
-
-            this._result.x = x;
-            this._result.y = y;
-
-
-            // console.log(x + " : " + y);
+            this.context.lineTo(this.clickX[i], this.clickY[i]);
+            this.context.closePath();
+            this.context.stroke();
         }
+        this.lastStroke = this.clickX.length;
     }
-
 
     mouseDown(e) {
-        this._dragging = true;
-        this.calc(e);
+        let bounds = this.getBoundingClientRect();
+        let mouseX = ((e.clientX-bounds.left)/bounds.width) * this.width;
+        let mouseY = ((e.clientY-bounds.top)/bounds.height) * this.height;
+
+        this.parentElement.paint = true;
+        this.parentElement.addClick(mouseX, mouseY);
+        this.parentElement.redraw();
     }
     touchStart(e) {
-        this._dragging = true;
-        this.calc(e.originalEvent.touches[0]);
+        let bounds = this.getBoundingClientRect();
+        let mouseX = ((e.originalEvent.touches[0].clientX-bounds.left)/bounds.width) * this.width;
+        let mouseY = ((e.originalEvent.touches[0].clientY-bounds.top)/bounds.height) * this.height;
+
+        this.parentElement.paint = true;
+        this.parentElement.addClick(mouseX, mouseY);
+        this.parentElement.redraw();
     }
 
     mouseUp() {
-        this._dragging = false;
+        this.parentElement.paint = false;
+        this.parentElement.context.closePath();
     }
     touchEnd() {
-        this._dragging = false;
+        this.parentElement.paint = false;
+        this.parentElement.context.closePath();
+    }
+    mouseLeave() {
+        this.parentElement.paint = false;
+        this.parentElement.context.closePath();
     }
     mouseMove(e) {
-        this.calc(e);
+        if(this.parentElement.paint){
+            let bounds = this.getBoundingClientRect();
+            let mouseX = ((e.clientX-bounds.left)/bounds.width) * this.width;
+            let mouseY = ((e.clientY-bounds.top)/bounds.height) * this.height;
+
+            this.parentElement.addClick(mouseX, mouseY, true);
+            this.parentElement.redraw();
+        }
     }
     touchMove(e){
-        this.calc(e.originalEvent.touches[0]);
+        if(this.parentElement.paint){
+            let bounds = this.getBoundingClientRect();
+            let mouseX = ((e.originalEvent.touches[0].clientX-bounds.left)/bounds.width) * this.width;
+            let mouseY = ((e.originalEvent.touches[0].clientY-bounds.top)/bounds.height) * this.height;
+
+            this.parentElement.addClick(mouseX, mouseY, true);
+            this.parentElement.redraw();
+        }
     }
 
     static get observedAttributes() {
-        return ['result','mode', 'minValueX', 'minValueY', 'maxValueX', 'maxValueY', 'precision'];
+        return [];
     }
 
     attributeChangedCallback() {
     }
 
-    get result() {
-        return this._result;
+    get color() {
+        return this.getAttribute("color") || 'black';
     }
-    get mode() {
-        return this.getAttribute("mode");
+    set color(value) {
+        this.setAttribute('color', value);
     }
-    get minValueX() {
-        return parseInt(this.getAttribute("min-value-x"));
+    get size() {
+        return parseInt(this.getAttribute("size")) || 5;
     }
-    get minValueY() {
-        return parseInt(this.getAttribute("min-value-y"));
-    }
-    get maxValueX() {
-        return parseInt(this.getAttribute("max-value-x"));
-    }
-    get maxValueY() {
-        return parseInt(this.getAttribute("max-value-y"));
-    }
-    get precision() {
-        return this.getAttribute("precision");
+    set size(value) {
+        this.setAttribute('size', value);
     }
     expose(){
         return {
-            xValue : {
-                path : 'result.x',
-            },
-            yValue : 'result.y'
+            Color : "color",
+            Size    : "size",
         };
     }
 
