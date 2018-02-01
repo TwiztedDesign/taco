@@ -21,8 +21,8 @@ describe('Taco Data', () => {
             expect(tacoData._main).to.have.own.property('test');
             expect(tacoData._proxy).to.have.own.property('test');
             tacoData.clear();
-            expect(tacoData._main).to.not.have.own.property('test');
-            expect(tacoData._proxy).to.not.have.own.property('test');
+            expect(tacoData._main).to.be.empty;
+            expect(tacoData._proxy).to.be.empty;
         });
     });
 
