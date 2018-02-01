@@ -1,17 +1,17 @@
 import {send} from './utils/messenger.js';
-import {READY} from './utils/events.js';
-import {TOUCH} from './utils/events.js';
-import {MOUSE_MOVE} from './utils/events.js';
-import "../scripts/custom-elements-es5-adapter.exec";
-import "./components/components.js";
+import {READY, TOUCH, MOUSE_MOVE} from './utils/events.js';
 import {tacoData} from './core/tacodata.js';
-require('./utils/listener').start();
-let api = require('./core/api.js');
-require('./core/init').init();
+import * as api from './core/api';
+import {start as startListener} from './utils/listener';
+import {init as initTacoDom} from './core/init';
 import tacoElement from './core/tacoElement';
+import './core/defaultExpose';
+import "./components/components.js";
 
+startListener();
+initTacoDom();
 
-window.addEventListener('load', function(){
+window.addEventListener('load', () => {
     send(READY);
 
     function onTouch(e){
@@ -31,12 +31,12 @@ window.addEventListener('load', function(){
 });
 
 
-let taco = function(selector){
+let taco = (selector) => {
     return new tacoElement(selector);
 };
 
-taco.addTemplate = function(name, data){return tacoData.addTemplate(name, data);};
-taco.onUpdate    = function(cb){return tacoData.onUpdate(cb);};
+taco.addTemplate = (name, data) => {return tacoData.addTemplate(name, data);};
+taco.onUpdate    = (cb) => {return tacoData.onUpdate(cb);};
 taco.go          = api.go;
 taco.next        = api.next;
 taco.previous    = api.previous;

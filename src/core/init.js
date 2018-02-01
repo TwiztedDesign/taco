@@ -1,21 +1,7 @@
 import {getByPath, setByPath} from '../utils/helpers';
 
-HTMLHeadingElement.prototype.expose = function(){
-    return [{text : 'innerText'}];
-};
-HTMLSpanElement.prototype.expose = function(){
-    return [{text : 'innerText'}];
-};
-HTMLParagraphElement.prototype.expose = function(){
-    return [{text : 'innerText'}];
-};
-HTMLImageElement.prototype.expose = function(){
-    return [{source : 'src'}];
-};
-
-
 module.exports = {
-    init : function(){
+    init : () => {
         window.addEventListener('load', function(){
 
             let templates = document.querySelectorAll('[taco-template]');
@@ -28,21 +14,24 @@ module.exports = {
                     let control = controls[j];
                     let controlName = control.getAttribute('taco-name');
                     if(control.expose){
-                        control.expose().forEach(function(prop){
-                            let propName = Object.keys(prop)[0];
-                            let path = prop[propName];
-                            data[controlName + ' ' + propName] = getByPath(control, path);
 
-                            Object.defineProperty(control, propName, {
-                                get (){
-                                    return getByPath(this, path);
-                                },
-                                set (newVal){
-                                    setByPath(this, path, newVal);
-                                },
-                                configurable : true,
-                            });
-                        });
+                        let exposed = control.expose();
+                        for (let prop in exposed) {
+                            if (exposed.hasOwnProperty(prop)) {
+                                let path = typeof exposed[prop] === 'object'? exposed[prop].path : exposed[prop];
+                                data[controlName + ' ' + prop] = getByPath(control, path);
+
+                                Object.defineProperty(control, prop, {
+                                    get (){
+                                        return getByPath(this, path);
+                                    },
+                                    set (newVal){
+                                        setByPath(this, path, newVal);
+                                    },
+                                    configurable : true,
+                                });
+                            }
+                        }
                     }
                 }
                 window.taco.addTemplate(templateName, data);

@@ -1,7 +1,7 @@
 import {USER_UPDATE} from "../utils/events";
 import {ADD} from "../utils/events";
 import {findKey} from '../utils/helpers.js';
-import {send} from '../utils/messenger.js';
+import {send} from '../utils/messenger';
 
 class TacoData {
     constructor(){
