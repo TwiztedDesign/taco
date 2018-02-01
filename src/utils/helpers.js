@@ -18,23 +18,34 @@ function trim(str, charList) {
 }
 
 function getByPath(obj, path){
+    path = path? trim(path, '.') : '';
     path = path.split('.');
     let result = obj;
     for (let i = 0; i < path.length; i++) {
-        result =  result[path[i]];
+        result = result[path[i]];
+        if(result === undefined){
+            return result;
+        }
     }
+
     return result;
 }
 function setByPath(obj, path, value){
+    if(arguments.length !== 3){
+        throw new Error('Missing Arguments!');
+    }
+    path = path? trim(path, '.') : '';
     path = path.split('.');
     let result = obj;
     for (let i = 0; i < path.length; i++) {
         if(i === path.length -1){
             result[path[i]] = value;
         } else {
-            result =  result[path[i]];
+            result = result[path[i]];
+            if(result === undefined){
+                return;
+            }
         }
-
     }
 }
 

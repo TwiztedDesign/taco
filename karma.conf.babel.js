@@ -9,7 +9,7 @@ module.exports = function(config){
         frameworks: ['mocha', 'chai'],
 
         files: [
-            'test/**/*.test.js',
+            'test/**/*.test.js'
         ],
 
         preprocessors: {
