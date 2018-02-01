@@ -19,7 +19,7 @@ module.exports = {
     next        : noop(),
     previous    : noop(),
     home        : noop(),
-    show        : function(template){return tacoData.show(template);},
-    hide        : function(template){return tacoData.hide(template);},
-    toggle      : function(template){return tacoData.toggle(template);}
+    show        : (template) => {return tacoData.show(template);},
+    hide        : (template) => {return tacoData.hide(template);},
+    toggle      : (template) => {return tacoData.toggle(template);}
 };

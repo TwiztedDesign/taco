@@ -1,5 +1,4 @@
-const handlers = require('../core/handlers.js');
-
+import * as handlers from '../core/handlers';
 
 function messageHandler(message){
     let messageData = JSON.parse(message.data);
@@ -11,7 +10,7 @@ function messageHandler(message){
 }
 
 module.exports = {
-    start : function(){
+    start : () => {
         if(window && window.addEventListener){
             window.addEventListener('message', messageHandler);
         }

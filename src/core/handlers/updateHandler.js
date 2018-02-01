@@ -2,7 +2,7 @@ import {findKey, setByPath} from '../../utils/helpers.js';
 import {tacoData} from '../tacodata.js';
 
 function update(data){
-    var isDataChanged = false;
+    let isDataChanged = false;
     for(let template in tacoData._main) {
         let key = findKey(data, template);
         for(let item in data[key]){

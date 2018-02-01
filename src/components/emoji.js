@@ -1,4 +1,4 @@
-class MyElement extends HTMLElement {
+export default class MyElement extends HTMLElement {
     constructor() {
         super();
     }
@@ -52,5 +52,3 @@ class MyElement extends HTMLElement {
         }
     }
 }
-
-customElements.define('my-element', MyElement);

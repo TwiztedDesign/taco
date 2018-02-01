@@ -3,12 +3,7 @@ import {getByPath, setByPath} from '../utils/helpers';
 
 function getExposed(provider, prop){
     if(provider.expose){
-        var paths = provider.expose().filter(function(exposed){
-            return exposed.hasOwnProperty(prop);
-        });
-        if(paths.length){
-            return paths[0][prop];
-        }
+        return typeof provider.expose()[prop] === 'object'? provider.expose()[prop].path : provider.expose()[prop];
     }
 }
 

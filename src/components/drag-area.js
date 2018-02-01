@@ -1,4 +1,4 @@
-class DragArea extends HTMLElement {
+export default class DragArea extends HTMLElement {
     constructor() {
         super();
         this._dragging = false;
@@ -115,9 +115,12 @@ class DragArea extends HTMLElement {
         return this.getAttribute("precision");
     }
     expose(){
-        return [{xValue : 'result.x'} , {yValue : 'result.y'}];
+        return {
+            xValue : {
+                path : 'result.x',
+            },
+            yValue : 'result.y'
+        };
     }
 
 }
-
-customElements.define('drag-area', DragArea);

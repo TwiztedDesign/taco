@@ -43,6 +43,7 @@ app.controller("Ctrl", ['$scope',function($scope){
         dragArea.onChange(function(prop, val, path){
             // console.log("some value changed: ", prop, val, path);
         });
+
     };
 
 }]);
