@@ -18,8 +18,8 @@ function trim(str, charList) {
 }
 
 function getByPath(obj, path){
-    path = path? trim(path, '.') : '';
-    path = path.split('.');
+    path = path? trim(path, '.').split('.') : [""];
+
     let result = obj;
     for (let i = 0; i < path.length; i++) {
         result = result[path[i]];
@@ -34,8 +34,7 @@ function setByPath(obj, path, value){
     if(arguments.length !== 3){
         throw new Error('Missing Arguments!');
     }
-    path = path? trim(path, '.') : '';
-    path = path.split('.');
+    path = path? trim(path, '.').split('.') : [""];
     let result = obj;
     for (let i = 0; i < path.length; i++) {
         if(i === path.length -1){
