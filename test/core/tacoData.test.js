@@ -3,6 +3,7 @@ import * as messenger from '../../src/utils/messenger.js';
 
 const sinon         = require('sinon');
 const expect        = require('chai').expect;
+const assert        = require('chai').assert;
 
 let data = {visibility: false};
 let send = sinon.spy(messenger, 'send');
@@ -31,7 +32,7 @@ describe('Taco Data', () => {
             expect(tacoData._main['test']).to.deep.equal(data);
             expect(tacoData._proxy['test']).to.deep.equal(data);
 
-            sinon.assert.called(send);
+            assert(send.called);
         });
 
         it('Should update or add the data to an already existing template', () => {
@@ -54,7 +55,7 @@ describe('Taco Data', () => {
             expect(tacoData._main['test']['count']).to.equal(2);
             expect(tacoData._proxy['test']['count']).to.equal(2);
 
-            sinon.assert.called(send);
+            assert(send.called);
         });
 
         it('Should add and update data in an existing template', () => {
@@ -72,7 +73,8 @@ describe('Taco Data', () => {
             expect(tacoData._main['myTest']['title']).to.equal('new title');
             expect(tacoData._proxy['myTest']['title']).to.equal('new title');
 
-            sinon.assert.called(send);
+            assert(send.called);
+
         });
 
         it('Should not affect or add to the data of an already existing template when passed empty data', () => {
@@ -93,7 +95,7 @@ describe('Taco Data', () => {
             expect(tacoData._main['myTemplate']).to.be.empty;
             expect(tacoData._proxy['myTemplate']).to.be.empty;
 
-            sinon.assert.called(send);
+            assert(send.called);
         });
     });
 

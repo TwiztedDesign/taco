@@ -1,7 +1,7 @@
 const expect    = require('chai').expect;
 const helpers   = require('../../src/utils/helpers.js');
 
-let obj, setByPath;
+let obj;
 
 describe('Helpers', () => {
     before(() => {
@@ -108,10 +108,9 @@ describe('Helpers', () => {
         });
 
         it('Should leave the object as is if incorrect path was given', () => {
-            helpers.setByPath(obj, 'a..c.', 2);
-            expect(obj).to.deep.equal(obj);
-            helpers.setByPath(obj, 'c.a.b', 2);
-            expect(obj).to.deep.equal(obj);
+            let initObj = JSON.parse(JSON.stringify(obj));
+            expect(helpers.setByPath(obj, 'a..c.', 3)).to.equal(undefined);
+            expect(initObj).to.eql(obj);
         });
 
         it('Should throw an Error "Missing Arguments" if all 3 arguments of the function were not passed', () => {

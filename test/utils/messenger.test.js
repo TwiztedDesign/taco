@@ -1,5 +1,5 @@
 const expect    = require('chai').expect;
-const messenger = require('../../src/utils/messenger.js');
+import {send} from '../../src/utils/messenger';
 
 describe('Messenger', () => {
     describe('send', () => {
@@ -14,7 +14,7 @@ describe('Messenger', () => {
             }
 
             window.parent.addEventListener('message', messageHandler);
-            messenger.send('type', 'payload');
+            send('type', 'payload');
 
         })
     });

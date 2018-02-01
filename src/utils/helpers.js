@@ -40,8 +40,9 @@ function setByPath(obj, path, value){
         if(i === path.length -1){
             result[path[i]] = value;
         } else {
-            result = result[path[i]];
-            if(result === undefined){
+            if(result[path[i]] !== undefined){
+                result = result[path[i]];
+            }else {
                 return;
             }
         }
