@@ -141,7 +141,9 @@ export default class Telestrator extends HTMLElement {
     expose(){
         return {
             Color : "color",
-            Size    : "size",
+            Size    : {
+                path : "size"
+            },
         };
     }
 
