@@ -29,7 +29,7 @@ app.controller("Ctrl", ['$scope',function($scope){
         var dragArea = taco('.drag-area');
 
         dragArea.onChange('dragging', function(val){
-            // console.log('Dragging: ', val);
+            console.log('Dragging: ', val);
         });
         dragArea.onChange('result.x', function(val){
             $scope.drag.x = val;
@@ -38,6 +38,10 @@ app.controller("Ctrl", ['$scope',function($scope){
         dragArea.onChange('result.y', function(val){
             $scope.drag.y = val;
             $scope.$apply();
+        });
+
+        dragArea.onChange('result', function(val){
+            console.log(val); //TODO
         });
 
         dragArea.onChange(function(prop, val, path){

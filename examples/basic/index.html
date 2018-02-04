@@ -12,6 +12,14 @@
 </head>
 <body ng-app="myApp" ng-controller="Ctrl">
     <!--<my-element happy></my-element>-->
+
+
+
+    <div taco-template1="a">
+        <h1 taco-template1="b" taco-name="c"></h1>
+    </div>
+
+
     <div taco-template="results">
         <h1 taco-editable taco-name="title" class="taco-title">Title</h1>
         <drag-area  taco-name="drag-area"
@@ -19,6 +27,42 @@
             <h1>Drag me</h1>
             <h1 id="coordinates">{{drag.x + ", " + drag.y}}</h1>
         </drag-area>
+
+        <!--<telestrator-element color="red" size="10"></telestrator-element>-->
+
+
+
+
+        <!--
+
+            <div taco-template="First template">
+                <h1 taco-name="Title" class="taco-main-title">This is a title</h1>
+                <h2 taco-name="Subtitle">This is a subtitle</h2>
+                <img taco-name="Image"/>
+                <p taco-name="paragraph"></p>
+                <telestrator-element taco-name="tele" size="7" color="blue"></telestrator-element>
+            </div>
+
+
+
+            <h1 taco-template="third template" taco-name="Title1" class="taco-title">This is a title</h1>
+
+            <div taco-template="second template">
+                <h1 taco-name="Title2" class="taco-title">This is a title</h1>
+                <h1 taco-template="forth template" taco-name="Title3" class="taco-title">This is a title</h1>
+                <h1 taco-template="first template1" taco-name="Title4" class="taco-title">This is a title</h1>
+                <div taco-template="fifth template">
+                    <h1 taco-name="title5"></h1>
+                </div>
+
+            </div>
+
+            <h1 taco-name="Title6" class="taco-title">This is a title</h1> //Default template name 'untitled template'
+
+
+
+        -->
+
     </div>
 </body>
 </html>

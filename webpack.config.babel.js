@@ -26,6 +26,28 @@ module.exports =  {
                 include
             },
             {
+                test: /\.scss$/,
+                use: [
+                    {
+                        loader: "style-loader" // creates style nodes from JS strings
+                    }, {
+                        loader: "css-loader" // translates CSS into CommonJS
+                    }, {
+                        loader: "sass-loader" // compiles Sass to CSS
+                   }],
+                include
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    {
+                        loader: "style-loader" // creates style nodes from JS strings
+                    }, {
+                        loader: "css-loader" // translates CSS into CommonJS
+                    }],
+                include
+            },
+            {
                 test : /\.json$/,
                 use : 'json-loader',
                 include
