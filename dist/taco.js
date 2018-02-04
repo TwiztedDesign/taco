@@ -97,145 +97,6 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(global) {
-
-var window = window || global.window;
-
-function sendMessage(type, payload) {
-    var w = window || global.window;
-    if (w && w.parent) {
-        w.parent.postMessage(JSON.stringify({ type: type, payload: payload }), '*');
-    }
-}
-
-module.exports = {
-    send: sendMessage
-};
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.tacoData = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _events = __webpack_require__(0);
-
-var _helpers = __webpack_require__(3);
-
-var _messenger = __webpack_require__(1);
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var TacoData = function () {
-    function TacoData() {
-        _classCallCheck(this, TacoData);
-
-        this._main = {};
-        this._proxy = {};
-        this._onChange = {
-            set: function set(target, prop, value) {
-                target[prop] = value;
-                (0, _messenger.send)(_events.USER_UPDATE, this._main);
-                return true;
-            }
-        };
-    }
-
-    _createClass(TacoData, [{
-        key: "updateCB",
-        value: function updateCB() {
-            if (this._updateCB) {
-                this._updateCB();
-            }
-        }
-    }, {
-        key: "onUpdate",
-        value: function onUpdate(cb) {
-            this._updateCB = cb;
-        }
-    }, {
-        key: "_setValue",
-        value: function _setValue(template, control, value) {
-            template = (0, _helpers.findKey)(this._main, template);
-            if (template) {
-                control = (0, _helpers.findKey)(this._main[template], control);
-            }
-            if (template && control) {
-                this._main[template][control] = value;
-                this._proxy[template][control] = value;
-            }
-        }
-    }, {
-        key: "_getValue",
-        value: function _getValue(template, control) {
-            template = (0, _helpers.findKey)(this._main, template);
-            if (template) {
-                return this._main[template][(0, _helpers.findKey)(this._main[template], control)];
-            }
-        }
-    }, {
-        key: "addTemplate",
-        value: function addTemplate(name, data) {
-            data = data || {};
-            if (this._main[name]) {
-                Object.assign(this._main[name], data);
-                Object.assign(this._proxy[name], data);
-            } else {
-                this._main[name] = data;
-                this._proxy[name] = new Proxy(data, this._onChange);
-                (0, _messenger.send)(_events.ADD, {
-                    channel: name,
-                    data: data
-                });
-            }
-
-            return this._proxy[name];
-        }
-    }, {
-        key: "show",
-        value: function show(template) {
-            this._setValue(template, "visibility", true);
-        }
-    }, {
-        key: "hide",
-        value: function hide(template) {
-            this._setValue(template, "visibility", false);
-        }
-    }, {
-        key: "toggle",
-        value: function toggle(template) {
-            var visibility = this._getValue(template, 'visibility');
-            if (visibility !== undefined) {
-                this._setValue(template, 'visibility', !visibility);
-            }
-        }
-    }, {
-        key: "clear",
-        value: function clear() {
-            this._main = {};
-            this._proxy = {};
-        }
-    }]);
-
-    return TacoData;
-}();
-
-var tacoData = exports.tacoData = new TacoData();
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
 
 
 function findKey(data, keyToFind) {
@@ -281,17 +142,158 @@ module.exports = {
 };
 
 /***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+
+var window = window || global.window;
+
+function sendMessage(type, payload) {
+    var w = window || global.window;
+    if (w && w.parent) {
+        w.parent.postMessage(JSON.stringify({ type: type, payload: payload }), '*');
+    }
+}
+
+module.exports = {
+    send: sendMessage
+};
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.tacoData = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _events = __webpack_require__(0);
+
+var _helpers = __webpack_require__(1);
+
+var _messenger = __webpack_require__(2);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var TacoData = function () {
+    function TacoData() {
+        _classCallCheck(this, TacoData);
+
+        this._main = {};
+        this._proxy = {};
+        var self = this;
+        this._onChange = {
+            set: function set(target, prop, value) {
+                target[prop] = value;
+                (0, _messenger.send)(_events.USER_UPDATE, self._main);
+                return true;
+            }
+        };
+    }
+
+    _createClass(TacoData, [{
+        key: "updateCB",
+        value: function updateCB() {
+            if (this._updateCB) {
+                this._updateCB();
+            }
+        }
+    }, {
+        key: "onUpdate",
+        value: function onUpdate(cb) {
+            this._updateCB = cb;
+        }
+    }, {
+        key: "_setValue",
+        value: function _setValue(template, control, value) {
+            template = (0, _helpers.findKey)(this._main, template);
+            if (template) {
+                control = (0, _helpers.findKey)(this._main[template], control);
+            }
+            if (template && control) {
+                this._main[template][control] = value;
+                this._proxy[template][control] = value;
+            }
+        }
+    }, {
+        key: "_getValue",
+        value: function _getValue(template, control) {
+            template = (0, _helpers.findKey)(this._main, template);
+            if (template) {
+                return this._main[template][(0, _helpers.findKey)(this._main[template], control)];
+            }
+        }
+    }, {
+        key: "addTemplate",
+        value: function addTemplate(name, data) {
+            data = data || {};
+            if (this._main[name]) {
+                Object.assign(this._main[name], data);
+                // Object.assign(this._proxy[name], data);
+            } else {
+                this._main[name] = data;
+                this._proxy[name] = new Proxy(data, this._onChange);
+            }
+
+            (0, _messenger.send)(_events.ADD, {
+                channel: name,
+                data: data
+            });
+
+            return this._proxy[name];
+        }
+    }, {
+        key: "show",
+        value: function show(template) {
+            this._setValue(template, "visibility", true);
+        }
+    }, {
+        key: "hide",
+        value: function hide(template) {
+            this._setValue(template, "visibility", false);
+        }
+    }, {
+        key: "toggle",
+        value: function toggle(template) {
+            var visibility = this._getValue(template, 'visibility');
+            if (visibility !== undefined) {
+                this._setValue(template, 'visibility', !visibility);
+            }
+        }
+    }, {
+        key: "clear",
+        value: function clear() {
+            this._main = {};
+            this._proxy = {};
+        }
+    }]);
+
+    return TacoData;
+}();
+
+var tacoData = exports.tacoData = new TacoData();
+
+/***/ }),
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _messenger = __webpack_require__(1);
+var _messenger = __webpack_require__(2);
 
 var _events = __webpack_require__(0);
 
-var _tacodata = __webpack_require__(2);
+var _tacodata = __webpack_require__(3);
 
 var _api = __webpack_require__(6);
 
@@ -388,11 +390,11 @@ module.exports = g;
 "use strict";
 
 
-var _messenger = __webpack_require__(1);
+var _messenger = __webpack_require__(2);
 
 var _events = __webpack_require__(0);
 
-var _tacodata = __webpack_require__(2);
+var _tacodata = __webpack_require__(3);
 
 function noop() {}
 
@@ -473,9 +475,9 @@ module.exports = handlers;
 "use strict";
 
 
-var _helpers = __webpack_require__(3);
+var _helpers = __webpack_require__(1);
 
-var _tacodata = __webpack_require__(2);
+var _tacodata = __webpack_require__(3);
 
 function update(data) {
     var isDataChanged = false;
@@ -483,12 +485,11 @@ function update(data) {
         var key = (0, _helpers.findKey)(data, template);
         for (var item in data[key]) {
             var controlKey = (0, _helpers.findKey)(_tacodata.tacoData._main[template], item);
-            if (controlKey) {
-                _tacodata.tacoData._main[template][controlKey] = data[key][item];
-                isDataChanged = true;
 
-                updateDom(template, controlKey, data[key][item]);
-            }
+            _tacodata.tacoData._main[template][controlKey || item] = data[key][item];
+            isDataChanged = true;
+
+            updateDom(template, controlKey || item, data[key][item]);
         }
     }
     if (isDataChanged) {
@@ -497,7 +498,10 @@ function update(data) {
 }
 
 function updateDom(template, control, value) {
-    var dom = document.querySelector('[taco-template="' + template + '"] [taco-name="' + control.split(' ')[0] + '"]');
+    var templateSelector = '[taco-template="' + template + '" i]';
+    var controlSelector = '[taco-name="' + control.split(' ')[0] + '" i]';
+    var selector = templateSelector + ' ' + controlSelector + ',' + templateSelector + controlSelector;
+    var dom = document.querySelector(selector);
     if (dom) {
         (0, _helpers.setByPath)(dom, control.split(' ')[1], value);
     }
@@ -516,9 +520,9 @@ module.exports = {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _helpers = __webpack_require__(3);
+var _helpers = __webpack_require__(1);
 
-function init() {
+function _init() {
     var controls = document.querySelectorAll('[taco-name]');
     controls.forEach(function (control) {
         if (control.expose) {
@@ -554,48 +558,47 @@ function init() {
     });
 }
 
-function init_dep() {
-    var templates = document.querySelectorAll('[taco-template]');
-    for (var i = 0; i < templates.length; i++) {
-        var template = templates[i];
-        var templateName = template.getAttribute('taco-template');
-        var controls = template.querySelectorAll('[taco-name]');
-        var data = {};
-        for (var j = 0; j < controls.length; j++) {
-            var control = controls[j];
-            var controlName = control.getAttribute('taco-name');
-            if (control.expose) {
+// function init_dep(){
+//     let templates = document.querySelectorAll('[taco-template]');
+//     for (let i = 0; i < templates.length; i++) {
+//         let template = templates[i];
+//         let templateName = template.getAttribute('taco-template');
+//         let controls = template.querySelectorAll('[taco-name]');
+//         let data = {};
+//         for (let j = 0; j < controls.length; j++) {
+//             let control = controls[j];
+//             let controlName = control.getAttribute('taco-name');
+//             if(control.expose){
+//
+//                 let exposed = control.expose();
+//                 for (let prop in exposed) {
+//                     if (exposed.hasOwnProperty(prop)) {
+//                         let path = typeof exposed[prop] === 'object'? exposed[prop].path : exposed[prop];
+//                         data[controlName + ' ' + prop] = getByPath(control, path);
+//
+//                         Object.defineProperty(control, prop, {
+//                             get (){
+//                                 return getByPath(this, path);
+//                             },
+//                             set (newVal){
+//                                 setByPath(this, path, newVal);
+//                             },
+//                             configurable : true,
+//                         });
+//                     }
+//                 }
+//             }
+//         }
+//         window.taco.addTemplate(templateName, data);
+//
+//     }
+// }
 
-                var exposed = control.expose();
-                for (var prop in exposed) {
-                    if (exposed.hasOwnProperty(prop)) {
-                        (function () {
-                            var path = _typeof(exposed[prop]) === 'object' ? exposed[prop].path : exposed[prop];
-                            data[controlName + ' ' + prop] = (0, _helpers.getByPath)(control, path);
-
-                            Object.defineProperty(control, prop, {
-                                get: function get() {
-                                    return (0, _helpers.getByPath)(this, path);
-                                },
-                                set: function set(newVal) {
-                                    (0, _helpers.setByPath)(this, path, newVal);
-                                },
-
-                                configurable: true
-                            });
-                        })();
-                    }
-                }
-            }
-        }
-        window.taco.addTemplate(templateName, data);
-    }
-}
 
 module.exports = {
     init: function init() {
         window.addEventListener('load', function () {
-            init_dep();
+            _init();
         });
     }
 };
@@ -692,7 +695,7 @@ exports.default = TacoElement;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _helpers = __webpack_require__(3);
+var _helpers = __webpack_require__(1);
 
 function getExposed(provider, prop) {
     if (provider.expose) {
