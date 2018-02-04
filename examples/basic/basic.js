@@ -1,4 +1,4 @@
-var app = angular.module("myApp", []);
+let app = angular.module("myApp", []);
 
 
 app.controller("Ctrl", ['$scope',function($scope){
@@ -11,7 +11,7 @@ app.controller("Ctrl", ['$scope',function($scope){
     };
 
 
-    var results = {
+    let results = {
         "title text" : "Title",
         "title color" : "red",
         "drag-area xValue" : 0,
@@ -26,7 +26,7 @@ app.controller("Ctrl", ['$scope',function($scope){
 
     window.onload = function(){
 
-        var dragArea = taco('.drag-area');
+        let dragArea = taco('.drag-area');
 
         dragArea.onChange('dragging', function(val){
             console.log('Dragging: ', val);
