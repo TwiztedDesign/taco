@@ -38,6 +38,7 @@ describe('Update Handler', () => {
 
     describe('Update', () => {
         it('Should update the data in a given template as passed in the data obj', () => {
+            expect(tacoData._main['test']['visibility']).to.equal(true);
             updateHandler.update({'test': {visibility: false}});
             expect(tacoData._main['test']['visibility']).to.equal(false);
             sinon.assert.called(updateCB);
@@ -48,6 +49,12 @@ describe('Update Handler', () => {
 
             sinon.assert.called(updateCB);
         });
+
+        it('should add non existing controls to existing templates', () => {
+            expect(tacoData._main['test']['testControl']).to.be.undefined;
+            updateHandler.update({'test': {testControl: "hi"}});
+            expect(tacoData._main['test']['testControl']).to.equal('hi');
+        })
     });
 
 });

@@ -7,10 +7,11 @@ class TacoData {
     constructor(){
         this._main = {};
         this._proxy = {};
+        let self = this;
         this._onChange = {
             set: function (target, prop, value) {
                 target[prop] = value;
-                send(USER_UPDATE, this._main);
+                send(USER_UPDATE, self._main);
                 return true;
             }
         };
@@ -48,15 +49,16 @@ class TacoData {
         data = data || {};
         if(this._main[name]){
             Object.assign(this._main[name], data);
-            Object.assign(this._proxy[name], data);
+            // Object.assign(this._proxy[name], data);
         }else{
             this._main[name] = data;
             this._proxy[name] = new Proxy(data, this._onChange);
-            send(ADD,{
-                channel : name,
-                data    : data
-            });
         }
+
+        send(ADD,{
+            channel : name,
+            data    : data
+        });
 
         return this._proxy[name];
     }

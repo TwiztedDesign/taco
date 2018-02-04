@@ -7,12 +7,12 @@ function update(data){
         let key = findKey(data, template);
         for(let item in data[key]){
             let controlKey = findKey(tacoData._main[template], item);
-            if(controlKey) {
-                tacoData._main[template][controlKey] = data[key][item];
-                isDataChanged = true;
 
-                updateDom(template, controlKey, data[key][item]);
-            }
+            tacoData._main[template][controlKey || item] = data[key][item];
+            isDataChanged = true;
+
+            updateDom(template, controlKey || item, data[key][item]);
+
         }
     }
     if(isDataChanged) {
@@ -22,7 +22,10 @@ function update(data){
 
 
 function updateDom(template, control, value){
-    let dom = document.querySelector('[taco-template="' + template + '"] [taco-name="' + control.split(' ')[0] + '"]');
+    let templateSelector = '[taco-template="' + template + '" i]';
+    let controlSelector = '[taco-name="' + control.split(' ')[0] + '" i]';
+    let selector = templateSelector + ' ' + controlSelector + ',' + templateSelector + controlSelector;
+    let dom = document.querySelector(selector);
     if(dom){
         setByPath(dom, control.split(' ')[1], value);
     }
