@@ -479,6 +479,8 @@ var _helpers = __webpack_require__(1);
 
 var _tacodata = __webpack_require__(3);
 
+var _consts = __webpack_require__(24);
+
 function update(data) {
     var isDataChanged = false;
     for (var template in _tacodata.tacoData._main) {
@@ -499,11 +501,11 @@ function update(data) {
 
 function updateDom(template, control, value) {
     var templateSelector = '[taco-template="' + template + '" i]';
-    var controlSelector = '[taco-name="' + control.split(' ')[0] + '" i]';
+    var controlSelector = '[taco-name="' + control.split(_consts.EXPOSE_DELIMITER)[0] + '" i]';
     var selector = templateSelector + ' ' + controlSelector + ',' + templateSelector + controlSelector;
     var dom = document.querySelector(selector);
     if (dom) {
-        (0, _helpers.setByPath)(dom, control.split(' ')[1], value);
+        (0, _helpers.setByPath)(dom, control.split(_consts.EXPOSE_DELIMITER)[1], value);
     }
 }
 
@@ -522,6 +524,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _helpers = __webpack_require__(1);
 
+var _consts = __webpack_require__(24);
+
 function _init() {
     var controls = document.querySelectorAll('[taco-name]');
     controls.forEach(function (control) {
@@ -537,7 +541,7 @@ function _init() {
                 if (exposed.hasOwnProperty(prop)) {
                     (function () {
                         var path = _typeof(exposed[prop]) === 'object' ? exposed[prop].path : exposed[prop];
-                        data[controlName + ' ' + prop] = (0, _helpers.getByPath)(control, path);
+                        data[controlName + _consts.EXPOSE_DELIMITER + prop] = (0, _helpers.getByPath)(control, path);
 
                         Object.defineProperty(control, prop, {
                             get: function get() {
@@ -1929,6 +1933,17 @@ module.exports = function (css) {
 	return fixedCss;
 };
 
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = {
+    "EXPOSE_DELIMITER": " #"
+};
 
 /***/ })
 /******/ ]);

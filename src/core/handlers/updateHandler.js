@@ -1,5 +1,6 @@
 import {findKey, setByPath} from '../../utils/helpers.js';
 import {tacoData} from '../tacodata.js';
+import {EXPOSE_DELIMITER} from '../consts';
 
 function update(data){
     let isDataChanged = false;
@@ -23,11 +24,11 @@ function update(data){
 
 function updateDom(template, control, value){
     let templateSelector = '[taco-template="' + template + '" i]';
-    let controlSelector = '[taco-name="' + control.split(' ')[0] + '" i]';
+    let controlSelector = '[taco-name="' + control.split(EXPOSE_DELIMITER)[0] + '" i]';
     let selector = templateSelector + ' ' + controlSelector + ',' + templateSelector + controlSelector;
     let dom = document.querySelector(selector);
     if(dom){
-        setByPath(dom, control.split(' ')[1], value);
+        setByPath(dom, control.split(EXPOSE_DELIMITER)[1], value);
     }
 }
 

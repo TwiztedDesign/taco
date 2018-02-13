@@ -1,4 +1,5 @@
 import {getByPath, setByPath} from '../utils/helpers';
+import {EXPOSE_DELIMITER} from './consts';
 
 function init(){
     let controls = document.querySelectorAll('[taco-name]');
@@ -14,7 +15,7 @@ function init(){
             for (let prop in exposed) {
                 if (exposed.hasOwnProperty(prop)) {
                     let path = typeof exposed[prop] === 'object'? exposed[prop].path : exposed[prop];
-                    data[controlName + ' ' + prop] = getByPath(control, path);
+                    data[controlName + EXPOSE_DELIMITER + prop] = getByPath(control, path);
 
                     Object.defineProperty(control, prop, {
                         get (){
