@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -134,11 +134,27 @@ function setByPath(obj, path, value) {
     }
 }
 
+function camelize(str) {
+    return str.replace(/\s(.)/g, function ($1) {
+        return $1.toUpperCase();
+    }).replace(/\s/g, '').replace(/^(.)/, function ($1) {
+        return $1.toLowerCase();
+    });
+    // return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(letter, index) {
+    //     return index == 0 ? letter.toLowerCase() : letter.toUpperCase();
+    // }).replace(/\s+/g, '');
+}
+function decamelize(str) {
+    return str.replace(/([A-Z])/g, ' $1');
+}
+
 module.exports = {
     findKey: findKey,
     trim: trim,
     getByPath: getByPath,
-    setByPath: setByPath
+    setByPath: setByPath,
+    camelize: camelize,
+    decamelize: decamelize
 };
 
 /***/ }),
@@ -160,7 +176,7 @@ function sendMessage(type, payload) {
 module.exports = {
     send: sendMessage
 };
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
 /* 3 */
@@ -289,27 +305,38 @@ var tacoData = exports.tacoData = new TacoData();
 "use strict";
 
 
+module.exports = {
+    "EXPOSE_DELIMITER": "  "
+};
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var _messenger = __webpack_require__(2);
 
 var _events = __webpack_require__(0);
 
 var _tacodata = __webpack_require__(3);
 
-var _api = __webpack_require__(6);
+var _api = __webpack_require__(7);
 
 var api = _interopRequireWildcard(_api);
 
-var _listener = __webpack_require__(7);
+var _listener = __webpack_require__(8);
 
-var _init = __webpack_require__(10);
+var _init = __webpack_require__(11);
 
-var _tacoElement = __webpack_require__(11);
+var _tacoElement = __webpack_require__(12);
 
 var _tacoElement2 = _interopRequireDefault(_tacoElement);
 
-__webpack_require__(13);
-
 __webpack_require__(14);
+
+__webpack_require__(15);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -357,7 +384,7 @@ taco.toggle = api.toggle;
 module.exports = taco;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports) {
 
 var g;
@@ -384,7 +411,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -422,18 +449,19 @@ module.exports = {
 };
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _handlers = __webpack_require__(8);
+var _handlers = __webpack_require__(9);
 
 var handlers = _interopRequireWildcard(_handlers);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
+/* istanbul ignore next */
 function messageHandler(message) {
     var messageData = JSON.parse(message.data);
     var type = messageData.type;
@@ -452,13 +480,13 @@ module.exports = {
 };
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _updateHandler = __webpack_require__(9);
+var _updateHandler = __webpack_require__(10);
 
 var events = __webpack_require__(0);
 
@@ -469,7 +497,7 @@ handlers[events.UPDATE] = _updateHandler.update;
 module.exports = handlers;
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -479,7 +507,7 @@ var _helpers = __webpack_require__(1);
 
 var _tacodata = __webpack_require__(3);
 
-var _consts = __webpack_require__(24);
+var _consts = __webpack_require__(4);
 
 function update(data) {
     var isDataChanged = false;
@@ -514,7 +542,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -524,7 +552,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _helpers = __webpack_require__(1);
 
-var _consts = __webpack_require__(24);
+var _consts = __webpack_require__(4);
 
 function _init() {
     var controls = document.querySelectorAll('[taco-name]');
@@ -608,7 +636,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -620,7 +648,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _htmlAccessorObserver = __webpack_require__(12);
+var _htmlAccessorObserver = __webpack_require__(13);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -691,7 +719,7 @@ var TacoElement = function () {
 exports.default = TacoElement;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -762,7 +790,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -782,23 +810,23 @@ HTMLImageElement.prototype.expose = function () {
 };
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(15);
+__webpack_require__(16);
 
-var _emoji = __webpack_require__(16);
+var _emoji = __webpack_require__(17);
 
 var _emoji2 = _interopRequireDefault(_emoji);
 
-var _dragArea = __webpack_require__(17);
+var _dragArea = __webpack_require__(18);
 
 var _dragArea2 = _interopRequireDefault(_dragArea);
 
-var _telestratorElement = __webpack_require__(18);
+var _telestratorElement = __webpack_require__(19);
 
 var _telestratorElement2 = _interopRequireDefault(_telestratorElement);
 
@@ -809,7 +837,7 @@ customElements.define('my-element', _emoji2.default);
 customElements.define('telestrator-element', _telestratorElement2.default);
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports) {
 
 /* eslint-disable */
@@ -833,7 +861,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 /* eslint-enable */
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -927,7 +955,7 @@ var MyElement = function (_HTMLElement) {
 exports.default = MyElement;
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1108,7 +1136,7 @@ var DragArea = function (_HTMLElement) {
 exports.default = DragArea;
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1120,7 +1148,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-__webpack_require__(19);
+__webpack_require__(20);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1312,11 +1340,11 @@ var Telestrator = function (_HTMLElement) {
 exports.default = Telestrator;
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(20);
+var content = __webpack_require__(21);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -1330,7 +1358,7 @@ var options = {"hmr":true}
 options.transform = transform
 options.insertInto = undefined;
 
-var update = __webpack_require__(22)(content, options);
+var update = __webpack_require__(23)(content, options);
 
 if(content.locals) module.exports = content.locals;
 
@@ -1362,10 +1390,10 @@ if(false) {
 }
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(21)(false);
+exports = module.exports = __webpack_require__(22)(false);
 // imports
 
 
@@ -1376,7 +1404,7 @@ exports.push([module.i, "telestrator-element #telestrator-canvas {\n  position: 
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports) {
 
 /*
@@ -1458,7 +1486,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -1524,7 +1552,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(23);
+var	fixUrls = __webpack_require__(24);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -1840,7 +1868,7 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports) {
 
 
@@ -1933,17 +1961,6 @@ module.exports = function (css) {
 	return fixedCss;
 };
 
-
-/***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = {
-    "EXPOSE_DELIMITER": " #"
-};
 
 /***/ })
 /******/ ]);

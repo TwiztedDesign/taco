@@ -1,3 +1,3 @@
 module.exports = {
-    "EXPOSE_DELIMITER" : " #"
+    "EXPOSE_DELIMITER" : "  "
 };

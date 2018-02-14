@@ -38,11 +38,24 @@ function setByPath(obj, path, value){
     }
 }
 
-
+function camelize(str) {
+    return str
+        .replace(/\s(.)/g, function($1) { return $1.toUpperCase(); })
+        .replace(/\s/g, '')
+        .replace(/^(.)/, function($1) { return $1.toLowerCase(); });
+    // return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(letter, index) {
+    //     return index == 0 ? letter.toLowerCase() : letter.toUpperCase();
+    // }).replace(/\s+/g, '');
+}
+function decamelize(str) {
+    return str.replace(/([A-Z])/g, ' $1');
+}
 
 module.exports = {
-    findKey : findKey,
-    trim    : trim,
-    getByPath : getByPath,
-    setByPath : setByPath
+    findKey     : findKey,
+    trim        : trim,
+    getByPath   : getByPath,
+    setByPath   : setByPath,
+    camelize    : camelize,
+    decamelize  : decamelize
 };

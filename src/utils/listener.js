@@ -1,5 +1,6 @@
 import * as handlers from '../core/handlers';
 
+
 function messageHandler(message){
     let messageData = JSON.parse(message.data);
     let type = messageData.type;
