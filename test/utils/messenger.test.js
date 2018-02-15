@@ -1,5 +1,4 @@
-const expect    = require('chai').expect;
-import {send} from '../../src/utils/messenger';
+const messenger = require('../../src/utils/messenger.js');
 
 describe('Messenger', () => {
     describe('send', () => {

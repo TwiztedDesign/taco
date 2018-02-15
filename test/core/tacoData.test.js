@@ -1,4 +1,6 @@
 import {tacoData} from '../../src/core/tacodata.js';
+// const expect = require('chai').expect;
+const data = {visibility: false};
 import * as messenger from '../../src/utils/messenger.js';
 
 const sinon         = require('sinon');

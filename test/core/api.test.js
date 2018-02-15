@@ -1,15 +1,14 @@
-const sinon     = require('sinon');
 const api       = require('../../src/core/api.js');
-import * as messenger from '../../src/utils/messenger.js';
-
-let send = sinon.spy(messenger, "send");
+const messenger = require('../../src/utils/messenger.js');
 
 describe("api", () =>{
    describe("Go", () => {
       it("Should post a massage", () => {
-          let sendFn = sinon.spy(send);
+          const send = jest.spyOn(messenger, 'send');
           api.go('test', 0);
-          sinon.assert.calledWith(send, "taco-go", {target: 'test', time: 0});
+          expect(send).toHaveBeenCalledTimes(1);
+          expect(send).toHaveBeenCalledWith('taco-go', {target: 'test', time: 0});
+
       });
    });
 });

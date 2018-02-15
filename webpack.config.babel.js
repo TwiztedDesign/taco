@@ -1,4 +1,4 @@
-import {join} from 'path'
+import {join} from 'path';
 const WebpackShellPlugin = require('webpack-shell-plugin');
 
 const include = join(__dirname, 'src');

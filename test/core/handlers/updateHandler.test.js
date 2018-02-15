@@ -1,12 +1,10 @@
 import {tacoData} from '../../../src/core/tacodata.js';
-const sinon          = require('sinon');
-const expect         = require('chai').expect;
-const assert         = require('chai').assert;
 const updateHandler  = require('../../../src/core/handlers/updateHandler.js');
 
 /******************************* global spies ********************************/
 
-let updateCB = sinon.spy(tacoData, 'updateCB');
+let updateCB = jest.spyOn(tacoData, 'updateCB');
+
 
 /****************************************************************************/
 
