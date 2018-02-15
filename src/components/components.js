@@ -4,6 +4,20 @@ import DragArea from "./drag-area";
 import Telestrator from "./telestrator/telestrator-element";
 
 
-customElements.define('drag-area', DragArea);
-customElements.define('my-element', Emoji);
-customElements.define('telestrator-element', Telestrator);
+function define(name, element) {
+    customElements.define(name, element);
+}
+
+
+define('drag-area', DragArea);
+define('my-element', Emoji);
+define('telestrator-element', Telestrator);
+
+
+function isDefined(name) {
+    return document.createElement(name).constructor !== HTMLElement;
+}
+
+
+
+
