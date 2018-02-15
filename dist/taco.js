@@ -115,21 +115,33 @@ function trim(str, charList) {
 }
 
 function getByPath(obj, path) {
-    path = path.split('.');
+    path = path ? trim(path, '.').split('.') : [""];
+
     var result = obj;
     for (var i = 0; i < path.length; i++) {
         result = result[path[i]];
+        if (result === undefined) {
+            return result;
+        }
     }
+
     return result;
 }
 function setByPath(obj, path, value) {
-    path = path.split('.');
+    if (arguments.length !== 3) {
+        throw new Error('Missing Arguments!');
+    }
+    path = path ? trim(path, '.').split('.') : [""];
     var result = obj;
     for (var i = 0; i < path.length; i++) {
         if (i === path.length - 1) {
             result[path[i]] = value;
         } else {
-            result = result[path[i]];
+            if (result[path[i]] !== undefined) {
+                result = result[path[i]];
+            } else {
+                return;
+            }
         }
     }
 }
@@ -306,7 +318,7 @@ var tacoData = exports.tacoData = new TacoData();
 
 
 module.exports = {
-    "EXPOSE_DELIMITER": "  "
+    "EXPOSE_DELIMITER": " "
 };
 
 /***/ }),
@@ -461,7 +473,6 @@ var handlers = _interopRequireWildcard(_handlers);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-/* istanbul ignore next */
 function messageHandler(message) {
     var messageData = JSON.parse(message.data);
     var type = messageData.type;
@@ -540,6 +551,14 @@ function updateDom(template, control, value) {
 module.exports = {
     update: update
 };
+
+/** to update angular *****
+
+    let $body = angular.element(document.body);
+    let $rootScope =  $body.injector().get('$rootScope');
+    $rootScope.$appy();
+
+ ************************/
 
 /***/ }),
 /* 11 */
@@ -832,9 +851,17 @@ var _telestratorElement2 = _interopRequireDefault(_telestratorElement);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-customElements.define('drag-area', _dragArea2.default);
-customElements.define('my-element', _emoji2.default);
-customElements.define('telestrator-element', _telestratorElement2.default);
+function define(name, element) {
+    customElements.define(name, element);
+}
+
+define('drag-area', _dragArea2.default);
+define('my-element', _emoji2.default);
+define('telestrator-element', _telestratorElement2.default);
+
+// function isDefined(name) {
+//     return document.createElement(name).constructor !== HTMLElement;
+// }
 
 /***/ }),
 /* 16 */

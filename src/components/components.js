@@ -14,9 +14,9 @@ define('my-element', Emoji);
 define('telestrator-element', Telestrator);
 
 
-function isDefined(name) {
-    return document.createElement(name).constructor !== HTMLElement;
-}
+// function isDefined(name) {
+//     return document.createElement(name).constructor !== HTMLElement;
+// }
 
 
 
