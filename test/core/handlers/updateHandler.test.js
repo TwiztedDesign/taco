@@ -19,41 +19,44 @@ describe('Update Handler', () => {
             let initialData = JSON.parse(JSON.stringify(tacoData._main));
 
             updateHandler.update({'test33': {count: 2}});
-            expect(tacoData._main['test33']).to.equal(undefined);
-            expect(tacoData._main['test']['count']).to.equal(undefined);
+            expect(tacoData._main['test33']).toBe(undefined);
+            expect(tacoData._main['test']['count']).toBe(undefined);
 
-            expect(tacoData._main).to.deep.equal(initialData);
+            expect(tacoData._main).toEqual(initialData);
 
-            assert(updateCB.notCalled, 'updateCB function was called where it should not');
+
+            expect(updateCB).not.toHaveBeenCalled();
+
+
         });
 
         it('Should not update an existing template data if the data passed is empty', () => {
             let initialData = JSON.parse(JSON.stringify(tacoData._main));
             updateHandler.update({'test': {}});
-            expect(tacoData._main).to.deep.equal(initialData);
+            expect(tacoData._main).toEqual(initialData);
 
-            assert(updateCB.notCalled, 'updateCB function was called where it should not');
+            expect(updateCB).not.toHaveBeenCalled();
         });
     });
 
     describe('Update', () => {
         it('Should update the data in a given template as passed in the data obj', () => {
-            expect(tacoData._main['test']['visibility']).to.equal(true);
+            expect(tacoData._main['test']['visibility']).toBe(true);
             updateHandler.update({'test': {visibility: false}});
-            expect(tacoData._main['test']['visibility']).to.equal(false);
-            // assert(updateCB.calledOnce, 'function was called more than once');
+            expect(tacoData._main['test']['visibility']).toBe(false);
+            expect(updateCB).toHaveBeenCalledTimes(1);
 
             // updating an existing template with incorrect template name, case insensitive
             updateHandler.update({'TesT': {visibility: true}});
-            expect(tacoData._main['test']['visibility']).to.equal(true);
+            expect(tacoData._main['test']['visibility']).toBe(true);
 
-            // assert(updateCB.calledOnce, 'function was called more than once');
+
         });
 
         // it('should add non existing controls to existing templates', () => {
-        //     expect(tacoData._main['test']['testControl']).to.equal(undefined);
+        //     expect(tacoData._main['test']['testControl']).toBe(undefined);
         //     updateHandler.update({'test': {testControl: "hi"}});
-        //     expect(tacoData._main['test']['testControl']).to.equal('hi');
+        //     expect(tacoData._main['test']['testControl']).toBe('hi');
         // });
     });
 

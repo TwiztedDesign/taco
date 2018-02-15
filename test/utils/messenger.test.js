@@ -1,4 +1,4 @@
-const messenger = require('../../src/utils/messenger.js');
+import {send} from '../../src/utils/messenger'
 
 describe('Messenger', () => {
     describe('send', () => {
@@ -6,8 +6,8 @@ describe('Messenger', () => {
 
             function messageHandler(e){
                 let data = JSON.parse(e.data);
-                expect(data.type).to.equal('type');
-                expect(data.payload).to.equal('payload');
+                expect(data.type).toBe('type');
+                expect(data.payload).toBe('payload');
                 window.parent.removeEventListener('message', messageHandler);
                 done();
             }
