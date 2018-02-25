@@ -5,6 +5,7 @@ module.exports = {
     "PREV"          : "taco-previous",
     "ADD"           : "taco-addtemplate",
     "UPDATE"        : "taco-update",
+    "PAGES"         : "taco-pages",
     "USER_UPDATE"   : "taco-user-update",
     "TOUCH"         : "taco-touch-element",
     "MOUSE_MOVE"    : "taco-mouse-move"

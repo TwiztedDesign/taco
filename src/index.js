@@ -44,5 +44,6 @@ taco.home        = api.home;
 taco.show        = api.show;
 taco.hide        = api.hide;
 taco.toggle      = api.toggle;
+taco.getPages    = () => {return tacoData.getPages();};
 
 module.exports = taco;

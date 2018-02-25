@@ -80,25 +80,6 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 
 
-module.exports = {
-    "READY": "taco-ready",
-    "GO": "taco-go",
-    "NEXT": "taco-next",
-    "PREV": "taco-previous",
-    "ADD": "taco-addtemplate",
-    "UPDATE": "taco-update",
-    "USER_UPDATE": "taco-user-update",
-    "TOUCH": "taco-touch-element",
-    "MOUSE_MOVE": "taco-mouse-move"
-};
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
 function findKey(data, keyToFind) {
     var keys = Object.keys(data);
     for (var i = 0; i < keys.length; i++) {
@@ -170,28 +151,27 @@ module.exports = {
 };
 
 /***/ }),
-/* 2 */
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(global) {
 
-var window = window || global.window;
-
-function sendMessage(type, payload) {
-    var w = window || global.window;
-    if (w && w.parent) {
-        w.parent.postMessage(JSON.stringify({ type: type, payload: payload }), '*');
-    }
-}
 
 module.exports = {
-    send: sendMessage
+    "READY": "taco-ready",
+    "GO": "taco-go",
+    "NEXT": "taco-next",
+    "PREV": "taco-previous",
+    "ADD": "taco-addtemplate",
+    "UPDATE": "taco-update",
+    "PAGES": "taco-pages",
+    "USER_UPDATE": "taco-user-update",
+    "TOUCH": "taco-touch-element",
+    "MOUSE_MOVE": "taco-mouse-move"
 };
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -204,11 +184,11 @@ exports.tacoData = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _events = __webpack_require__(0);
+var _events = __webpack_require__(1);
 
-var _helpers = __webpack_require__(1);
+var _helpers = __webpack_require__(0);
 
-var _messenger = __webpack_require__(2);
+var _messenger = __webpack_require__(3);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -218,6 +198,7 @@ var TacoData = function () {
 
         this._main = {};
         this._proxy = {};
+        this._pages = new Set([]);
         var self = this;
         this._onChange = {
             set: function set(target, prop, value) {
@@ -303,12 +284,48 @@ var TacoData = function () {
             this._main = {};
             this._proxy = {};
         }
+    }, {
+        key: "addPages",
+        value: function addPages(pages) {
+            if (pages && pages.length) {
+                var self = this;
+                pages.forEach(function (pages) {
+                    self._pages.add(pages);
+                });
+            }
+        }
+    }, {
+        key: "getPages",
+        value: function getPages() {
+            return Array.from(this._pages);
+        }
     }]);
 
     return TacoData;
 }();
 
 var tacoData = exports.tacoData = new TacoData();
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+
+var window = window || global.window;
+
+function sendMessage(type, payload) {
+    var w = window || global.window;
+    if (w && w.parent) {
+        w.parent.postMessage(JSON.stringify({ type: type, payload: payload }), '*');
+    }
+}
+
+module.exports = {
+    send: sendMessage
+};
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
 /* 4 */
@@ -328,11 +345,11 @@ module.exports = {
 "use strict";
 
 
-var _messenger = __webpack_require__(2);
+var _messenger = __webpack_require__(3);
 
-var _events = __webpack_require__(0);
+var _events = __webpack_require__(1);
 
-var _tacodata = __webpack_require__(3);
+var _tacodata = __webpack_require__(2);
 
 var _api = __webpack_require__(7);
 
@@ -340,15 +357,15 @@ var api = _interopRequireWildcard(_api);
 
 var _listener = __webpack_require__(8);
 
-var _init = __webpack_require__(11);
+var _init = __webpack_require__(12);
 
-var _tacoElement = __webpack_require__(12);
+var _tacoElement = __webpack_require__(13);
 
 var _tacoElement2 = _interopRequireDefault(_tacoElement);
 
-__webpack_require__(14);
-
 __webpack_require__(15);
+
+__webpack_require__(16);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -392,6 +409,9 @@ taco.home = api.home;
 taco.show = api.show;
 taco.hide = api.hide;
 taco.toggle = api.toggle;
+taco.getPages = function () {
+    return _tacodata.tacoData.getPages();
+};
 
 module.exports = taco;
 
@@ -429,11 +449,11 @@ module.exports = g;
 "use strict";
 
 
-var _messenger = __webpack_require__(2);
+var _messenger = __webpack_require__(3);
 
-var _events = __webpack_require__(0);
+var _events = __webpack_require__(1);
 
-var _tacodata = __webpack_require__(3);
+var _tacodata = __webpack_require__(2);
 
 function noop() {}
 
@@ -499,11 +519,14 @@ module.exports = {
 
 var _updateHandler = __webpack_require__(10);
 
-var events = __webpack_require__(0);
+var _pagesHandler = __webpack_require__(11);
+
+var events = __webpack_require__(1);
 
 
 var handlers = {};
 handlers[events.UPDATE] = _updateHandler.update;
+handlers[events.PAGES] = _pagesHandler.pages;
 
 module.exports = handlers;
 
@@ -514,9 +537,9 @@ module.exports = handlers;
 "use strict";
 
 
-var _helpers = __webpack_require__(1);
+var _helpers = __webpack_require__(0);
 
-var _tacodata = __webpack_require__(3);
+var _tacodata = __webpack_require__(2);
 
 var _consts = __webpack_require__(4);
 
@@ -567,9 +590,26 @@ module.exports = {
 "use strict";
 
 
+var _tacodata = __webpack_require__(2);
+
+function pages(data) {
+    _tacodata.tacoData.addPages(data);
+}
+
+module.exports = {
+    pages: pages
+};
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _helpers = __webpack_require__(1);
+var _helpers = __webpack_require__(0);
 
 var _consts = __webpack_require__(4);
 
@@ -655,7 +695,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -667,7 +707,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _htmlAccessorObserver = __webpack_require__(13);
+var _htmlAccessorObserver = __webpack_require__(14);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -738,7 +778,7 @@ var TacoElement = function () {
 exports.default = TacoElement;
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -746,7 +786,7 @@ exports.default = TacoElement;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _helpers = __webpack_require__(1);
+var _helpers = __webpack_require__(0);
 
 function getExposed(provider, prop) {
     if (provider.expose) {
@@ -809,7 +849,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -829,25 +869,29 @@ HTMLImageElement.prototype.expose = function () {
 };
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(16);
+__webpack_require__(17);
 
-var _emoji = __webpack_require__(17);
+var _emoji = __webpack_require__(18);
 
 var _emoji2 = _interopRequireDefault(_emoji);
 
-var _dragArea = __webpack_require__(18);
+var _dragArea = __webpack_require__(19);
 
 var _dragArea2 = _interopRequireDefault(_dragArea);
 
-var _telestratorElement = __webpack_require__(19);
+var _telestratorElement = __webpack_require__(20);
 
 var _telestratorElement2 = _interopRequireDefault(_telestratorElement);
+
+var _videoStream = __webpack_require__(26);
+
+var _videoStream2 = _interopRequireDefault(_videoStream);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -858,13 +902,14 @@ function define(name, element) {
 define('drag-area', _dragArea2.default);
 define('my-element', _emoji2.default);
 define('telestrator-element', _telestratorElement2.default);
+define('video-stream', _videoStream2.default);
 
 // function isDefined(name) {
 //     return document.createElement(name).constructor !== HTMLElement;
 // }
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports) {
 
 /* eslint-disable */
@@ -888,7 +933,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 /* eslint-enable */
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -982,7 +1027,7 @@ var MyElement = function (_HTMLElement) {
 exports.default = MyElement;
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1163,7 +1208,7 @@ var DragArea = function (_HTMLElement) {
 exports.default = DragArea;
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1175,7 +1220,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-__webpack_require__(20);
+__webpack_require__(21);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1367,11 +1412,11 @@ var Telestrator = function (_HTMLElement) {
 exports.default = Telestrator;
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(21);
+var content = __webpack_require__(22);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -1385,7 +1430,7 @@ var options = {"hmr":true}
 options.transform = transform
 options.insertInto = undefined;
 
-var update = __webpack_require__(23)(content, options);
+var update = __webpack_require__(24)(content, options);
 
 if(content.locals) module.exports = content.locals;
 
@@ -1417,10 +1462,10 @@ if(false) {
 }
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(22)(false);
+exports = module.exports = __webpack_require__(23)(false);
 // imports
 
 
@@ -1431,7 +1476,7 @@ exports.push([module.i, "telestrator-element #telestrator-canvas {\n  position: 
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports) {
 
 /*
@@ -1513,7 +1558,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -1579,7 +1624,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(24);
+var	fixUrls = __webpack_require__(25);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -1895,7 +1940,7 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports) {
 
 
@@ -1988,6 +2033,75 @@ module.exports = function (css) {
 	return fixedCss;
 };
 
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var VideoStream = function (_HTMLElement) {
+    _inherits(VideoStream, _HTMLElement);
+
+    function VideoStream() {
+        _classCallCheck(this, VideoStream);
+
+        return _possibleConstructorReturn(this, (VideoStream.__proto__ || Object.getPrototypeOf(VideoStream)).call(this));
+    }
+
+    _createClass(VideoStream, [{
+        key: 'connectedCallback',
+        value: function connectedCallback() {
+            this.innerHTML = '<video></video>';
+        }
+    }, {
+        key: 'disconnectedCallback',
+        value: function disconnectedCallback() {}
+    }, {
+        key: 'attributeChangedCallback',
+        value: function attributeChangedCallback() {}
+    }, {
+        key: 'expose',
+        value: function expose() {
+            return {
+                group: 'groupId',
+                stream: 'streamId'
+            };
+        }
+    }, {
+        key: 'group',
+        get: function get() {
+            return this.getAttribute("group");
+        }
+    }, {
+        key: 'stream',
+        get: function get() {
+            return this._streamId;
+        }
+    }], [{
+        key: 'observedAttributes',
+        get: function get() {
+            return ['result', 'mode', 'minValueX', 'minValueY', 'maxValueX', 'maxValueY', 'precision'];
+        }
+    }]);
+
+    return VideoStream;
+}(HTMLElement);
+
+exports.default = VideoStream;
 
 /***/ })
 /******/ ]);
