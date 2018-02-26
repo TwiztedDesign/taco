@@ -80,83 +80,6 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 
 
-function findKey(data, keyToFind) {
-    var keys = Object.keys(data);
-    for (var i = 0; i < keys.length; i++) {
-        if (keys[i].toLowerCase() === keyToFind.toLowerCase()) {
-            return keys[i];
-        }
-    }
-}
-function trim(str, charList) {
-    if (charList === undefined) {
-        charList = "\\s";
-    }
-    return str.replace(new RegExp("^[" + charList + "]+"), "").replace(new RegExp("[" + charList + "]+$"), "");
-}
-
-function getByPath(obj, path) {
-    path = path ? trim(path, '.').split('.') : [""];
-
-    var result = obj;
-    for (var i = 0; i < path.length; i++) {
-        result = result[path[i]];
-        if (result === undefined) {
-            return result;
-        }
-    }
-
-    return result;
-}
-function setByPath(obj, path, value) {
-    if (arguments.length !== 3) {
-        throw new Error('Missing Arguments!');
-    }
-    path = path ? trim(path, '.').split('.') : [""];
-    var result = obj;
-    for (var i = 0; i < path.length; i++) {
-        if (i === path.length - 1) {
-            result[path[i]] = value;
-        } else {
-            if (result[path[i]] !== undefined) {
-                result = result[path[i]];
-            } else {
-                return;
-            }
-        }
-    }
-}
-
-function camelize(str) {
-    return str.replace(/\s(.)/g, function ($1) {
-        return $1.toUpperCase();
-    }).replace(/\s/g, '').replace(/^(.)/, function ($1) {
-        return $1.toLowerCase();
-    });
-    // return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(letter, index) {
-    //     return index == 0 ? letter.toLowerCase() : letter.toUpperCase();
-    // }).replace(/\s+/g, '');
-}
-function decamelize(str) {
-    return str.replace(/([A-Z])/g, ' $1');
-}
-
-module.exports = {
-    findKey: findKey,
-    trim: trim,
-    getByPath: getByPath,
-    setByPath: setByPath,
-    camelize: camelize,
-    decamelize: decamelize
-};
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
 module.exports = {
     "READY": "taco-ready",
     "GO": "taco-go",
@@ -171,7 +94,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 2 */
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -184,9 +107,9 @@ exports.tacoData = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _events = __webpack_require__(1);
+var _events = __webpack_require__(0);
 
-var _helpers = __webpack_require__(0);
+var _helpers = __webpack_require__(2);
 
 var _messenger = __webpack_require__(3);
 
@@ -198,7 +121,7 @@ var TacoData = function () {
 
         this._main = {};
         this._proxy = {};
-        this._pages = new Set([]);
+        this._pages = [];
         var self = this;
         this._onChange = {
             set: function set(target, prop, value) {
@@ -214,6 +137,11 @@ var TacoData = function () {
         value: function updateCB() {
             if (this._updateCB) {
                 this._updateCB();
+            }
+            if (window.angular) {
+                var $body = angular.element(document.body);
+                var $rootScope = $body.injector().get('$rootScope');
+                $rootScope.$apply();
             }
         }
     }, {
@@ -288,16 +216,22 @@ var TacoData = function () {
         key: "addPages",
         value: function addPages(pages) {
             if (pages && pages.length) {
-                var self = this;
-                pages.forEach(function (pages) {
-                    self._pages.add(pages);
-                });
+                while (this._pages.length) {
+                    this._pages.pop();
+                }
+                this._pages = this._pages.concat(pages);
+                // var self = this;
+                // pages.forEach(function (pages) {
+                //     self._pages.add(pages);
+                // });
+                this.updateCB();
             }
         }
     }, {
         key: "getPages",
         value: function getPages() {
-            return Array.from(this._pages);
+            return this._pages;
+            // return Array.from(this._pages);
         }
     }]);
 
@@ -305,6 +239,83 @@ var TacoData = function () {
 }();
 
 var tacoData = exports.tacoData = new TacoData();
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function findKey(data, keyToFind) {
+    var keys = Object.keys(data);
+    for (var i = 0; i < keys.length; i++) {
+        if (keys[i].toLowerCase() === keyToFind.toLowerCase()) {
+            return keys[i];
+        }
+    }
+}
+function trim(str, charList) {
+    if (charList === undefined) {
+        charList = "\\s";
+    }
+    return str.replace(new RegExp("^[" + charList + "]+"), "").replace(new RegExp("[" + charList + "]+$"), "");
+}
+
+function getByPath(obj, path) {
+    path = path ? trim(path, '.').split('.') : [""];
+
+    var result = obj;
+    for (var i = 0; i < path.length; i++) {
+        result = result[path[i]];
+        if (result === undefined) {
+            return result;
+        }
+    }
+
+    return result;
+}
+function setByPath(obj, path, value) {
+    if (arguments.length !== 3) {
+        throw new Error('Missing Arguments!');
+    }
+    path = path ? trim(path, '.').split('.') : [""];
+    var result = obj;
+    for (var i = 0; i < path.length; i++) {
+        if (i === path.length - 1) {
+            result[path[i]] = value;
+        } else {
+            if (result[path[i]] !== undefined) {
+                result = result[path[i]];
+            } else {
+                return;
+            }
+        }
+    }
+}
+
+function camelize(str) {
+    return str.replace(/\s(.)/g, function ($1) {
+        return $1.toUpperCase();
+    }).replace(/\s/g, '').replace(/^(.)/, function ($1) {
+        return $1.toLowerCase();
+    });
+    // return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(letter, index) {
+    //     return index == 0 ? letter.toLowerCase() : letter.toUpperCase();
+    // }).replace(/\s+/g, '');
+}
+function decamelize(str) {
+    return str.replace(/([A-Z])/g, ' $1');
+}
+
+module.exports = {
+    findKey: findKey,
+    trim: trim,
+    getByPath: getByPath,
+    setByPath: setByPath,
+    camelize: camelize,
+    decamelize: decamelize
+};
 
 /***/ }),
 /* 3 */
@@ -347,9 +358,9 @@ module.exports = {
 
 var _messenger = __webpack_require__(3);
 
-var _events = __webpack_require__(1);
+var _events = __webpack_require__(0);
 
-var _tacodata = __webpack_require__(2);
+var _tacodata = __webpack_require__(1);
 
 var _api = __webpack_require__(7);
 
@@ -451,9 +462,9 @@ module.exports = g;
 
 var _messenger = __webpack_require__(3);
 
-var _events = __webpack_require__(1);
+var _events = __webpack_require__(0);
 
-var _tacodata = __webpack_require__(2);
+var _tacodata = __webpack_require__(1);
 
 function noop() {}
 
@@ -521,7 +532,7 @@ var _updateHandler = __webpack_require__(10);
 
 var _pagesHandler = __webpack_require__(11);
 
-var events = __webpack_require__(1);
+var events = __webpack_require__(0);
 
 
 var handlers = {};
@@ -537,9 +548,9 @@ module.exports = handlers;
 "use strict";
 
 
-var _helpers = __webpack_require__(0);
+var _helpers = __webpack_require__(2);
 
-var _tacodata = __webpack_require__(2);
+var _tacodata = __webpack_require__(1);
 
 var _consts = __webpack_require__(4);
 
@@ -590,7 +601,7 @@ module.exports = {
 "use strict";
 
 
-var _tacodata = __webpack_require__(2);
+var _tacodata = __webpack_require__(1);
 
 function pages(data) {
     _tacodata.tacoData.addPages(data);
@@ -609,7 +620,7 @@ module.exports = {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _helpers = __webpack_require__(0);
+var _helpers = __webpack_require__(2);
 
 var _consts = __webpack_require__(4);
 
@@ -786,7 +797,7 @@ exports.default = TacoElement;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _helpers = __webpack_require__(0);
+var _helpers = __webpack_require__(2);
 
 function getExposed(provider, prop) {
     if (provider.expose) {

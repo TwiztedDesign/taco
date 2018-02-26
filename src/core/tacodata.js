@@ -7,7 +7,7 @@ class TacoData {
     constructor(){
         this._main = {};
         this._proxy = {};
-        this._pages = new Set([]);
+        this._pages = [];
         let self = this;
         this._onChange = {
             set: function (target, prop, value) {
@@ -21,6 +21,11 @@ class TacoData {
     updateCB(){
         if(this._updateCB) {
             this._updateCB();
+        }
+        if(window.angular){
+            let $body = angular.element(document.body);
+            let $rootScope =  $body.injector().get('$rootScope');
+            $rootScope.$apply();
         }
     }
 
@@ -82,15 +87,19 @@ class TacoData {
     }
     addPages(pages){
         if(pages && pages.length){
-            var self = this;
-            pages.forEach(function (pages) {
-                self._pages.add(pages);
-            });
+            while (this._pages.length) { this._pages.pop(); }
+            this._pages = this._pages.concat(pages);
+            // var self = this;
+            // pages.forEach(function (pages) {
+            //     self._pages.add(pages);
+            // });
+            this.updateCB();
 
       }
     }
     getPages(){
-        return Array.from(this._pages);
+        return this._pages;
+        // return Array.from(this._pages);
     }
 }
 
