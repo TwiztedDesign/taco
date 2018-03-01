@@ -23,7 +23,7 @@ class TacoData {
             this._updateCB();
         }
         if(window.angular){
-            let $body = angular.element(document.body);
+            let $body = window.angular.element(document.body);
             let $rootScope =  $body.injector().get('$rootScope');
             $rootScope.$apply();
         }
