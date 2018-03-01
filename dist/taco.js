@@ -630,7 +630,7 @@ function _init() {
         if (control.expose) {
             var template = control.closest('[taco-template]');
             var templateName = template ? template.getAttribute('taco-template') : 'Untitled Template';
-            templateName = templateName.toLowerCase();
+            // templateName = templateName.toLowerCase();
             var controlName = control.getAttribute('taco-name');
             var exposed = control.expose();
 

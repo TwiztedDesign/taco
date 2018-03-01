@@ -7,7 +7,7 @@ function init(){
         if(control.expose){
             let template = control.closest('[taco-template]');
             let templateName = template? template.getAttribute('taco-template') : 'Untitled Template';
-            templateName = templateName.toLowerCase();
+            // templateName = templateName.toLowerCase();
             let controlName = control.getAttribute('taco-name');
             let exposed = control.expose();
 
