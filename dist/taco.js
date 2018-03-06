@@ -139,7 +139,7 @@ var TacoData = function () {
                 this._updateCB();
             }
             if (window.angular) {
-                var $body = angular.element(document.body);
+                var $body = window.angular.element(document.body);
                 var $rootScope = $body.injector().get('$rootScope');
                 $rootScope.$apply();
             }
