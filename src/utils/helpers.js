@@ -31,9 +31,6 @@ function getByPath(obj, path){
     return result;
 }
 function setByPath(obj, path, value){
-    console.log("set by path triggered");
-    debugger;
-
     if(arguments.length !== 3){
         throw new Error('Missing Arguments!');
     }
