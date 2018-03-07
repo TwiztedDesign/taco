@@ -62,19 +62,11 @@ function decamelize(str) {
     return str.replace(/([A-Z])/g, ' $1');
 }
 
-export{
-    findKey as findKey,
-    trim as trim,
-    getByPath as getByPath,
-    setByPath as setByPath,
-    camelize as camelize,
-    decamelize as decamelize
+module.exports = {
+    findKey     : findKey,
+    trim        : trim,
+    getByPath   : getByPath,
+    setByPath   : setByPath,
+    camelize    : camelize,
+    decamelize  : decamelize
 };
-// module.exports = {
-//     findKey     : findKey,
-//     trim        : trim,
-//     getByPath   : getByPath,
-//     setByPath   : setByPath,
-//     camelize    : camelize,
-//     decamelize  : decamelize
-// };
