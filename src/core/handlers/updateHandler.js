@@ -1,5 +1,5 @@
-import {findKey, setByPath} from '../../utils/helpers.js';
-import {tacoData} from '../tacodata.js';
+import {findKey, setByPath} from '../../utils/helpers';
+import {tacoData} from '../tacodata';
 import {EXPOSE_DELIMITER} from '../consts';
 
 function update(data){
@@ -28,7 +28,8 @@ function updateDom(template, control, value){
     let selector = templateSelector + ' ' + controlSelector + ',' + templateSelector + controlSelector;
     let dom = document.querySelector(selector);
     if(dom){
-        setByPath(dom, control.split(EXPOSE_DELIMITER)[1], value);
+        setByPath(dom, control.split(EXPOSE_DELIMITER)[0], value); //control.split(EXPOSE_DELIMITER)[1] was returning undefined
+        // console.log('after set by path', dom.title);
     }
 }
 

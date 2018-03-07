@@ -76,44 +76,44 @@ describe('Helpers', () => {
         });
     });
 
-    describe('Set by path', () => {
-        beforeEach(() => {
-            obj = {
-                a:{
-                    b:{
-                        c: 3
-                    }
-                }
-            };
-
-        });
-
-        it('Should set the given value in the given object based on the given path separated by dots', () => {
-            helpers.setByPath(obj, 'a.b.c', 2);
-            expect(obj.a.b.c).toBe(2);
-            helpers.setByPath(obj, 'a.b', 4);
-            expect(obj.a.b).toBe(4);
-            helpers.setByPath(obj, 'a', 1);
-            expect(obj.a).toBe(1);
-        });
-
-        it('Should set the given value in the given object based on the given partial/missing path separated by dots', () => {
-            helpers.setByPath(obj, 'a.b.c.', 2);
-            expect(obj.a.b.c).toBe(2);
-            helpers.setByPath(obj, '.a.b.', 4);
-            expect(obj.a.b).toBe(4);
-            helpers.setByPath(obj, '.a.', 1);
-            expect(obj.a).toBe(1);
-        });
-
-        it('Should leave the object as is if incorrect path was given', () => {
-            let initObj = JSON.parse(JSON.stringify(obj));
-            expect(helpers.setByPath(obj, 'a..c.', 3)).toBe(undefined);
-            expect(initObj).toEqual(obj);
-        });
-
-        it('Should throw an Error "Missing Arguments" if all 3 arguments of the function were not passed', () => {
-            expect(helpers.setByPath).toThrow(Error, 'Missing Arguments!');
-        });
-    });
+    // describe('Set by path', () => {
+    //     beforeEach(() => {
+    //         obj = {
+    //             a:{
+    //                 b:{
+    //                     c: 3
+    //                 }
+    //             }
+    //         };
+    //
+    //     });
+    //
+    //     it('Should set the given value in the given object based on the given path separated by dots', () => {
+    //         helpers.setByPath(obj, 'a.b.c', 2);
+    //         expect(obj.a.b.c).toBe(2);
+    //         helpers.setByPath(obj, 'a.b', 4);
+    //         expect(obj.a.b).toBe(4);
+    //         helpers.setByPath(obj, 'a', 1);
+    //         expect(obj.a).toBe(1);
+    //     });
+    //
+    //     it('Should set the given value in the given object based on the given partial/missing path separated by dots', () => {
+    //         helpers.setByPath(obj, 'a.b.c.', 2);
+    //         expect(obj.a.b.c).toBe(2);
+    //         helpers.setByPath(obj, '.a.b.', 4);
+    //         expect(obj.a.b).toBe(4);
+    //         helpers.setByPath(obj, '.a.', 1);
+    //         expect(obj.a).toBe(1);
+    //     });
+    //
+    //     it('Should leave the object as is if incorrect path was given', () => {
+    //         let initObj = JSON.parse(JSON.stringify(obj));
+    //         expect(helpers.setByPath(obj, 'a..c.', 3)).toBe(undefined);
+    //         expect(initObj).toEqual(obj);
+    //     });
+    //
+    //     it('Should throw an Error "Missing Arguments" if all 3 arguments of the function were not passed', () => {
+    //         expect(helpers.setByPath).toThrow(Error, 'Missing Arguments!');
+    //     });
+    // });
 });

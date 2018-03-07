@@ -95,7 +95,7 @@ class TacoData {
             // });
             this.updateCB();
 
-      }
+        }
     }
     getPages(){
         return this._pages;

@@ -31,6 +31,9 @@ function getByPath(obj, path){
     return result;
 }
 function setByPath(obj, path, value){
+    console.log("set by path triggered");
+    debugger;
+
     if(arguments.length !== 3){
         throw new Error('Missing Arguments!');
     }
@@ -62,11 +65,19 @@ function decamelize(str) {
     return str.replace(/([A-Z])/g, ' $1');
 }
 
-module.exports = {
-    findKey     : findKey,
-    trim        : trim,
-    getByPath   : getByPath,
-    setByPath   : setByPath,
-    camelize    : camelize,
-    decamelize  : decamelize
+export{
+    findKey as findKey,
+    trim as trim,
+    getByPath as getByPath,
+    setByPath as setByPath,
+    camelize as camelize,
+    decamelize as decamelize
 };
+// module.exports = {
+//     findKey     : findKey,
+//     trim        : trim,
+//     getByPath   : getByPath,
+//     setByPath   : setByPath,
+//     camelize    : camelize,
+//     decamelize  : decamelize
+// };

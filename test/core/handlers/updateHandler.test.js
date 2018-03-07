@@ -1,9 +1,11 @@
-import {tacoData} from '../../../src/core/tacodata.js';
-const updateHandler  = require('../../../src/core/handlers/updateHandler.js');
+import {tacoData} from '../../../src/core/tacodata';
+const updateHandler = require('../../../src/core/handlers/updateHandler.js');
+const helpers = require('../../../src/utils/helpers.js');
 
 /******************************* global spies ********************************/
 
-let updateCB = jest.spyOn(tacoData, 'updateCB');
+const updateCB = jest.spyOn(tacoData, 'updateCB');
+const setByPath = jest.spyOn(helpers, 'setByPath');
 
 
 /****************************************************************************/
@@ -49,15 +51,25 @@ describe('Update Handler', () => {
             // updating an existing template with incorrect template name, case insensitive
             updateHandler.update({'TesT': {visibility: true}});
             expect(tacoData._main['test']['visibility']).toBe(true);
+        });
+        // init();
+        // global.dispatchEvent(new Event('load'));
+        it('Should add the passed property with value to the DOM element object', () => {
+            var headerElement = document.createElement('h1');
+            headerElement.setAttribute("taco-template", 'dom-test');
+            headerElement.setAttribute("taco-name", 'title');
+            document.body.appendChild(headerElement);
 
+            tacoData.addTemplate('dom-test', {title: ''});
+            updateHandler.update({'dom-test': {title: 'test title'}});
+            var testElement = document.querySelector('[taco-template="dom-test" i] [taco-name="title" i], [taco-template="dom-test" i][taco-name="title" i]');
+            expect(setByPath).toHaveBeenCalledWith(testElement, 'title', 'test title');
 
+            // console.log(header.title);
+            // let domElement = document.querySelector('[taco-template="dom-test"]');
+            // expect(header).toHaveProperty('title', 'test title');
         });
 
-        // it('should add non existing controls to existing templates', () => {
-        //     expect(tacoData._main['test']['testControl']).toBe(undefined);
-        //     updateHandler.update({'test': {testControl: "hi"}});
-        //     expect(tacoData._main['test']['testControl']).toBe('hi');
-        // });
     });
 
 });
