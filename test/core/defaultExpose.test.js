@@ -37,5 +37,4 @@ describe('Default Expose', () => {
         });
 
     });
-
 });
