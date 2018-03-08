@@ -53,7 +53,7 @@ function camelize(str) {
     return str
         .replace(/(.*)/, function($1) { return $1.toLowerCase(); })
         .replace(/\s(.)/g, function($1) { return $1.toUpperCase(); })
-        .replace(/\s/g, '')
+        .replace(/\s/g, '');
         // .replace(/^(.)/, function($1) { return $1.toLowerCase(); })
     // return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(letter, index) {
     //     return index == 0 ? letter.toLowerCase() : letter.toUpperCase();

@@ -5,7 +5,7 @@ function init(){
     let controls = document.querySelectorAll('[taco-name]');
     controls.forEach((control) => {
         if(control.expose){
-            console.log('init', control.closest);
+            // console.log('init', control.closest);
             let template = control.closest('[taco-template]');
             let templateName = template? template.getAttribute('taco-template') : 'Untitled Template';
             // templateName = templateName.toLowerCase();

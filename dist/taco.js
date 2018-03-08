@@ -295,17 +295,30 @@ function setByPath(obj, path, value) {
 }
 
 function camelize(str) {
-    return str.replace(/\s(.)/g, function ($1) {
-        return $1.toUpperCase();
-    }).replace(/\s/g, '').replace(/^(.)/, function ($1) {
+    return str.replace(/(.*)/, function ($1) {
         return $1.toLowerCase();
-    });
+    }).replace(/\s(.)/g, function ($1) {
+        return $1.toUpperCase();
+    }).replace(/\s/g, '');
+    // .replace(/^(.)/, function($1) { return $1.toLowerCase(); })
     // return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(letter, index) {
     //     return index == 0 ? letter.toLowerCase() : letter.toUpperCase();
     // }).replace(/\s+/g, '');
 }
 function decamelize(str) {
-    return str.replace(/([A-Z])/g, ' $1');
+    return str.replace(/([A-Z])/g, function ($1) {
+        return ' ' + $1.toLowerCase();
+    });
+}
+
+function stringifyPath(path) {
+    var str = '';
+    for (var i = 0; i < path.length; i++) {
+        // str += (trim(path[i],"_") + '.');
+        var trimmedChar = trim(path[i], "_");
+        str += trimmedChar + (trimmedChar !== '' ? '.' : '');
+    }
+    return trim(str, '.');
 }
 
 module.exports = {
@@ -314,7 +327,8 @@ module.exports = {
     getByPath: getByPath,
     setByPath: setByPath,
     camelize: camelize,
-    decamelize: decamelize
+    decamelize: decamelize,
+    stringifyPath: stringifyPath
 };
 
 /***/ }),
@@ -578,7 +592,8 @@ function updateDom(template, control, value) {
     var selector = templateSelector + ' ' + controlSelector + ',' + templateSelector + controlSelector;
     var dom = document.querySelector(selector);
     if (dom) {
-        (0, _helpers.setByPath)(dom, control.split(_consts.EXPOSE_DELIMITER)[1], value);
+        (0, _helpers.setByPath)(dom, control.split(_consts.EXPOSE_DELIMITER)[0], value); //control.split(EXPOSE_DELIMITER)[1] was returning undefined
+        // console.log('after set by path', dom.title);
     }
 }
 
@@ -628,6 +643,7 @@ function _init() {
     var controls = document.querySelectorAll('[taco-name]');
     controls.forEach(function (control) {
         if (control.expose) {
+            // console.log('init', control.closest);
             var template = control.closest('[taco-template]');
             var templateName = template ? template.getAttribute('taco-template') : 'Untitled Template';
             // templateName = templateName.toLowerCase();
@@ -805,17 +821,9 @@ function getExposed(provider, prop) {
     }
 }
 
-function stringifyPath(path) {
-    var str = '';
-    for (var i = 0; i < path.length; i++) {
-        str += (0, _helpers.trim)(path[i], "_") + '.';
-    }
-    return str;
-}
-
 function observePrimitive(provider, prop, path, dispatcher) {
     var value = provider[prop];
-    var pathString = stringifyPath(path);
+    var pathString = (0, _helpers.stringifyPath)(path);
     var exposedPath = getExposed(provider, prop);
     Object.defineProperty(provider, prop, {
         get: function get() {
