@@ -52,8 +52,7 @@ describe('Update Handler', () => {
             updateHandler.update({'TesT': {visibility: true}});
             expect(tacoData._main['test']['visibility']).toBe(true);
         });
-        // init();
-        // global.dispatchEvent(new Event('load'));
+
         it('Should add the passed property with value to the DOM element object', () => {
             var headerElement = document.createElement('h1');
             headerElement.setAttribute("taco-template", 'dom-test');
