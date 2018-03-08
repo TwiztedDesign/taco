@@ -117,6 +117,44 @@ describe('Helpers', () => {
         });
     });
 
+    describe('Camelize', () => {
+
+        it('Should return the passed string with spaces trimmed & camelized', () => {
+
+            let str = helpers.camelize('testing');
+            expect(str).toEqual('testing');
+
+            str = helpers.camelize('testing camel');
+            expect(str).toEqual('testingCamel');
+
+            str = helpers.camelize('Testing Camel');
+            expect(str).toEqual('testingCamel');
+
+            str = helpers.camelize('TESting Camel');
+            expect(str).toEqual('testingCamel');
+
+            str = helpers.camelize('TESting CaMEl');
+            expect(str).toEqual('testingCamel');
+
+            str = helpers.camelize('TESting     CaMEl');
+            expect(str).toEqual('testingCamel');
+
+        });
+    });
+
+    describe('DeCamelize', () => {
+
+        it('Should return the passed camel cased string with all camelized characters lower cased and as separated words', () => {
+
+            let str = helpers.decamelize('testingCamel');
+            expect(str).toEqual('testing camel');
+
+            str = helpers.decamelize('testingCamelMore');
+            expect(str).toEqual('testing camel more');
+
+        });
+    });
+
     describe('Stringify path', () => {
 
         it('Should break and return a path string after trimming underscores and separating characters with a dot', () => {
@@ -140,6 +178,5 @@ describe('Helpers', () => {
             expect(str).toEqual('t.e.s.t.i.n.g');
 
         });
-
     });
 });
