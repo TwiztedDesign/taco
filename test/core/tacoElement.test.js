@@ -1,5 +1,5 @@
 import tacoElement from  '../../src/core/tacoElement';
-const htmlObserver  = require('../../src/observer/htmlAccessorObserver');
+const htmlObserver = require('../../src/observer/htmlAccessorObserver');
 
 const observe = jest.spyOn(htmlObserver, 'observe');
 

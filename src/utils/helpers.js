@@ -62,11 +62,22 @@ function decamelize(str) {
     return str.replace(/([A-Z])/g, ' $1');
 }
 
+function stringifyPath(path){
+    let str = '';
+    for (let i = 0; i < path.length; i++) {
+        // str += (trim(path[i],"_") + '.');
+        let trimmedChar = trim(path[i],"_");
+        str += (trimmedChar + (trimmedChar !== ''? '.':''));
+    }
+    return trim(str, '.');
+}
+
 module.exports = {
-    findKey     : findKey,
-    trim        : trim,
-    getByPath   : getByPath,
-    setByPath   : setByPath,
-    camelize    : camelize,
-    decamelize  : decamelize
+    findKey       : findKey,
+    trim          : trim,
+    getByPath     : getByPath,
+    setByPath     : setByPath,
+    camelize      : camelize,
+    decamelize    : decamelize,
+    stringifyPath : stringifyPath
 };

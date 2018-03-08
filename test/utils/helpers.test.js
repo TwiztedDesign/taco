@@ -116,4 +116,30 @@ describe('Helpers', () => {
             expect(helpers.setByPath).toThrow(Error, 'Missing Arguments!');
         });
     });
+
+    describe('Stringify path', () => {
+
+        it('Should break and return a path string after trimming underscores and separating characters with a dot', () => {
+
+            let str = helpers.stringifyPath('testing');
+            expect(str).toEqual('t.e.s.t.i.n.g');
+
+            str = helpers.stringifyPath('_testing');
+            expect(str).toEqual('t.e.s.t.i.n.g');
+
+            str = helpers.stringifyPath('_testing_');
+            expect(str).toEqual('t.e.s.t.i.n.g');
+
+            str = helpers.stringifyPath('_tes_ting_');
+            expect(str).toEqual('t.e.s.t.i.n.g');
+
+            str = helpers.stringifyPath('_t_e_s_t_i_n_g');
+            expect(str).toEqual('t.e.s.t.i.n.g');
+
+            str = helpers.stringifyPath('_t_____est____ing____');
+            expect(str).toEqual('t.e.s.t.i.n.g');
+
+        });
+
+    });
 });

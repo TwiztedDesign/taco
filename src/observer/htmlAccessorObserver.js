@@ -1,18 +1,10 @@
 import {trim} from '../utils/helpers';
-import {getByPath, setByPath} from '../utils/helpers';
+import {getByPath, setByPath, stringifyPath} from '../utils/helpers';
 
 function getExposed(provider, prop){
     if(provider.expose){
         return typeof provider.expose()[prop] === 'object'? provider.expose()[prop].path : provider.expose()[prop];
     }
-}
-
-function stringifyPath(path){
-    let str = '';
-    for (let i = 0; i < path.length; i++) {
-        str += (trim(path[i],"_") + '.');
-    }
-    return str;
 }
 
 function observePrimitive(provider, prop, path, dispatcher){
