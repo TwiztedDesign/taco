@@ -14,6 +14,8 @@ describe('Default Expose', () => {
             document.body.append(headerElement);
             let headerTacoElement = new tacoElement('[taco-template="dom-test"]');
 
+            expect(headerTacoElement.observe()).toBeDefined();
+            expect(headerTacoElement.onChange()).toBeDefined();
             expect(observe).toHaveBeenCalled();
 
         });
