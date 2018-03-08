@@ -28,7 +28,7 @@ function updateDom(template, control, value){
     let selector = templateSelector + ' ' + controlSelector + ',' + templateSelector + controlSelector;
     let dom = document.querySelector(selector);
     if(dom){
-        setByPath(dom, control.split(EXPOSE_DELIMITER)[0], value); //control.split(EXPOSE_DELIMITER)[1] was returning undefined
+        setByPath(dom, control.split(EXPOSE_DELIMITER)[1], value); //control.split(EXPOSE_DELIMITER)[1] was returning undefined
         // console.log('after set by path', dom.title);
     }
 }
