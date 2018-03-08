@@ -5,7 +5,7 @@ describe('Default Expose', () => {
     describe('Expose header element', () => {
 
         it('Should expose text and color for header element', () => {
-            var headerElement = document.createElement('h1');
+            let headerElement = document.createElement('h1');
             expect(headerElement.expose()).toEqual({text : 'innerText', color : {path : 'style.color', ui : 'color'}});
         });
 
@@ -14,7 +14,7 @@ describe('Default Expose', () => {
     describe('Expose span element', () => {
 
         it('Should expose text for span element', () => {
-            var spanElement = document.createElement('span');
+            let spanElement = document.createElement('span');
             expect(spanElement.expose()).toEqual({text : 'innerText'});
         });
 
@@ -23,7 +23,7 @@ describe('Default Expose', () => {
     describe('Expose paragraph element', () => {
 
         it('Should expose text for paragraph element', () => {
-            var paragraphElement = document.createElement('p');
+            let paragraphElement = document.createElement('p');
             expect(paragraphElement.expose()).toEqual({text : 'innerText'});
         });
 
@@ -32,7 +32,7 @@ describe('Default Expose', () => {
     describe('Expose image element', () => {
 
         it('Should expose src for image element', () => {
-            var imageElement = document.createElement('img');
+            let imageElement = document.createElement('img');
             expect(imageElement.expose()).toEqual({source : 'src'});
         });
 
