@@ -4,8 +4,10 @@ import * as handlers from '../core/handlers';
 function messageHandler(message){
     let messageData = JSON.parse(message.data);
     let type = messageData.type;
-    console.log('Message received: ', type); // eslint-disable-line
     let handler = handlers[type];
+    if(messageData.cid){
+        message.source.postMessage(JSON.stringify({type:'taco-ack', cid: messageData.cid}),'*');
+    }
     if(handler){
         handler(messageData.payload);
     }
