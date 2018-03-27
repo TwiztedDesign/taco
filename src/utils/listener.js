@@ -13,7 +13,7 @@ function messageHandler(message){
 module.exports = {
     start : () => {
         if(window && window.addEventListener){
-            window.addEventListener('message', messageHandler);
+            window.addEventListener('message', messageHandler, false);
         }
     }
 };
