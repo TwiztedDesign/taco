@@ -508,7 +508,7 @@ function messageHandler(message) {
     var messageData = JSON.parse(message.data);
     var type = messageData.type;
     var handler = handlers[type];
-    if (messageData.cid) {
+    if (messageData.cid && message.source && message.source.postMessage) {
         message.source.postMessage(JSON.stringify({ type: 'taco-ack', cid: messageData.cid }), '*');
     }
     if (handler) {
