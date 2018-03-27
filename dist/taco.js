@@ -507,6 +507,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 function messageHandler(message) {
     var messageData = JSON.parse(message.data);
     var type = messageData.type;
+    console.log('Message received: ', type); // eslint-disable-line
     var handler = handlers[type];
     if (handler) {
         handler(messageData.payload);
