@@ -35,15 +35,16 @@ let taco = (selector) => {
     return new tacoElement(selector);
 };
 
-taco.addTemplate = (name, data) => {return tacoData.addTemplate(name, data);};
-taco.onUpdate    = (cb) => {return tacoData.onUpdate(cb);};
-taco.go          = api.go;
-taco.next        = api.next;
-taco.previous    = api.previous;
-taco.home        = api.home;
-taco.show        = api.show;
-taco.hide        = api.hide;
-taco.toggle      = api.toggle;
-taco.getPages    = () => {return tacoData.getPages();};
+taco.addTemplate    = (name, data) => {return tacoData.addTemplate(name, data);};
+taco.onUpdate       = (cb) => {return tacoData.onUpdate(cb);};
+taco.go             = api.go;
+taco.next           = api.next;
+taco.previous       = api.previous;
+taco.home           = api.home;
+taco.show           = api.show;
+taco.hide           = api.hide;
+taco.toggle         = api.toggle;
+taco.getPages       = () => {return tacoData.getPages();};
+taco.getQueryParams = () => {return tacoData.getQueryParams();};
 
 module.exports = taco;

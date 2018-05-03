@@ -70,31 +70,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = {
-    "READY": "taco-ready",
-    "GO": "taco-go",
-    "NEXT": "taco-next",
-    "PREV": "taco-previous",
-    "ADD": "taco-addtemplate",
-    "UPDATE": "taco-update",
-    "PAGES": "taco-pages",
-    "USER_UPDATE": "taco-user-update",
-    "TOUCH": "taco-touch-element",
-    "MOUSE_MOVE": "taco-mouse-move"
-};
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -107,7 +87,7 @@ exports.tacoData = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _events = __webpack_require__(0);
+var _events = __webpack_require__(1);
 
 var _helpers = __webpack_require__(2);
 
@@ -233,12 +213,44 @@ var TacoData = function () {
             return this._pages;
             // return Array.from(this._pages);
         }
+    }, {
+        key: "addQueryParams",
+        value: function addQueryParams(params) {
+            this._queryParams = params;
+            this.updateCB();
+        }
+    }, {
+        key: "getQueryParams",
+        value: function getQueryParams() {
+            return this._queryParams;
+        }
     }]);
 
     return TacoData;
 }();
 
 var tacoData = exports.tacoData = new TacoData();
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = {
+    "READY": "taco-ready",
+    "GO": "taco-go",
+    "NEXT": "taco-next",
+    "PREV": "taco-previous",
+    "ADD": "taco-addtemplate",
+    "UPDATE": "taco-update",
+    "PAGES": "taco-pages",
+    "USER_UPDATE": "taco-user-update",
+    "TOUCH": "taco-touch-element",
+    "MOUSE_MOVE": "taco-mouse-move",
+    "QUERY_PARAMS": "taco-query-params"
+};
 
 /***/ }),
 /* 2 */
@@ -336,7 +348,7 @@ function sendMessage(type, payload) {
 module.exports = {
     send: sendMessage
 };
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
 /* 4 */
@@ -356,27 +368,508 @@ module.exports = {
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var work = __webpack_require__(30);
+function createWorker() {
+    var blobURL = URL.createObjectURL(new Blob(['(', work.toString(), ')()'], { type: 'application/javascript' }));
+    var worker = new Worker(blobURL);
+    URL.revokeObjectURL(blobURL);
+    return worker;
+}
+
+var Clock = function (_HTMLElement) {
+    _inherits(Clock, _HTMLElement);
+
+    function Clock() {
+        _classCallCheck(this, Clock);
+
+        var _this = _possibleConstructorReturn(this, (Clock.__proto__ || Object.getPrototypeOf(Clock)).call(this));
+
+        var self = _this;
+        _this._worker = createWorker();
+        _this._time = 0;
+
+        _this._worker.onmessage = function (e) {
+            self._time = e.data;
+            self.update();
+        };
+        _this.running = false;
+        return _this;
+    }
+
+    _createClass(Clock, [{
+        key: 'connectedCallback',
+        value: function connectedCallback() {
+            this.innerHTML = '<div class="clock"></div>';
+            this.update();
+            // this.start();
+        }
+    }, {
+        key: 'disconnectedCallback',
+        value: function disconnectedCallback() {
+            this.running = false;
+        }
+    }, {
+        key: 'pad',
+        value: function pad(num) {
+            return ('0' + num).slice(-2);
+        }
+    }, {
+        key: 'limitReached',
+        value: function limitReached() {
+            return this.limit >= 0 && this._time >= this.limit;
+        }
+    }, {
+        key: 'formatTime',
+        value: function formatTime() {
+            return this._time;
+        }
+    }, {
+        key: 'update',
+        value: function update() {
+            this.querySelector('.clock').innerHTML = this.formatTime();
+        }
+    }, {
+        key: 'reset',
+        value: function reset() {
+            this._time = 0;
+        }
+    }, {
+        key: 'pause',
+        value: function pause() {
+            this._worker.postMessage({ cmd: 'pause' });
+            this.running = false;
+        }
+    }, {
+        key: 'start',
+        value: function start() {
+            this._worker.postMessage({ cmd: 'start', interval: 100, offset: this.__timecode__ });
+        }
+    }, {
+        key: 'attributeChangedCallback',
+        value: function attributeChangedCallback() {}
+    }, {
+        key: 'expose',
+        value: function expose() {
+            return {
+                Run: 'run',
+                Limit: 'limit'
+            };
+        }
+    }, {
+        key: 'type',
+        get: function get() {
+            return this.getAttribute("type") || 'system';
+        },
+        set: function set(value) {
+            this.setAttribute('type', value);
+        }
+    }, {
+        key: 'format',
+        get: function get() {
+            return this.getAttribute("format") || 'hh:mm:ss';
+        },
+        set: function set(value) {
+            this.setAttribute('format', value);
+        }
+    }, {
+        key: 'countFrom',
+        get: function get() {
+            return this.getAttribute("count-from") || 60000;
+        },
+        set: function set(value) {
+            this.setAttribute('count-from', value);
+        }
+    }, {
+        key: 'interval',
+        get: function get() {
+            return parseInt(this.getAttribute("interval")) || 100;
+        },
+        set: function set(value) {
+            this.setAttribute('interval', value);
+        }
+    }, {
+        key: 'run',
+        get: function get() {
+            return this.running;
+        },
+        set: function set(value) {
+            this.running = value;
+            this.running ? this.start() : this.pause();
+        }
+    }, {
+        key: 'initial',
+        get: function get() {
+            return this.getAttribute("initial") || 0;
+        },
+        set: function set(value) {
+            this.setAttribute('initial', value);
+        }
+    }, {
+        key: 'limit',
+        get: function get() {
+            return this.getAttribute("limit") || -1;
+        },
+        set: function set(value) {
+            this.setAttribute('limit', value);
+        }
+    }], [{
+        key: 'observedAttributes',
+        get: function get() {
+            return [];
+        }
+    }]);
+
+    return Clock;
+}(HTMLElement);
+
+exports.default = Clock;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+//<clock format=“mm:ss” init=“0” start={{sata.clockState}} reset={{data.clockReset}} class=“myDesign”></clock>
+//
+// window.setCorrectingInterval = ( function( func, delay ) {
+//     var instance = { };
+//
+//     function tick( func, delay ) {
+//         if ( ! instance.started ) {
+//             instance.func = func;
+//             instance.delay = delay;
+//             instance.startTime = new Date().valueOf();
+//             instance.target = delay;
+//             instance.started = true;
+//
+//             setTimeout( tick, delay );
+//         } else {
+//             var elapsed = new Date().valueOf() - instance.startTime,
+//                 adjust = instance.target - elapsed;
+//
+//             instance.func();
+//             instance.target += instance.delay;
+//
+//             setTimeout( tick, instance.delay + adjust );
+//         }
+//     }
+//
+//     return tick( func, delay );
+//
+// } );
+
+
+function intervalFuncs() {
+    // Track running intervals
+    var numIntervals = 0,
+        intervals = {};
+
+    // Polyfill Date.now
+    var now = Date.now || function () {
+        return new Date().valueOf();
+    };
+
+    var setCorrectingInterval = function setCorrectingInterval(func, delay) {
+        var id = numIntervals++,
+            planned = now() + delay;
+
+        // Normalize func as function
+        switch (typeof func === 'undefined' ? 'undefined' : _typeof(func)) {
+            case 'function':
+                break;
+            case 'string':
+                var sFunc = func;
+                func = function func() {
+                    eval(sFunc);
+                };
+                break;
+            default:
+                func = function func() {};
+        }
+
+        function tick() {
+            func();
+
+            // Only re-register if clearCorrectingInterval was not called during function
+            if (intervals[id]) {
+                planned += delay;
+                intervals[id] = setTimeout(tick, planned - now());
+            }
+        }
+
+        intervals[id] = setTimeout(tick, delay);
+        return id;
+    };
+
+    var clearCorrectingInterval = function clearCorrectingInterval(id) {
+        clearTimeout(intervals[id]);
+        delete intervals[id];
+    };
+
+    window.setCorrectingInterval = setCorrectingInterval;
+    window.clearCorrectingInterval = clearCorrectingInterval;
+    return {
+        setCorrectingInterval: setCorrectingInterval,
+        clearCorrectingInterval: clearCorrectingInterval
+    };
+}
+
+intervalFuncs();
+
+// Build a worker from an anonymous function body
+var blobURL = URL.createObjectURL(new Blob(['(', function () {
+
+    onmessage = function onmessage(e) {
+        // console.log('Message received from main script');
+        var workerResult = 'Result: ' + e.data[0] * e.data[1];
+        // console.log('Posting message back to main script');
+        postMessage(workerResult);
+    };
+
+    //Long-running work here
+}.toString(), ')()'], { type: 'application/javascript' }));
+
+var worker = new Worker(blobURL);
+
+worker.onmessage = function () {
+    // result.textContent = e.data;
+    // console.log('Message received from worker');
+};
+setTimeout(function () {
+    worker.postMessage({ 'cmd': 'start', 'msg': 'Hi' });
+}, 7000);
+
+// Won't be needing this anymore
+URL.revokeObjectURL(blobURL);
+
+var Clock1 = function (_HTMLElement) {
+    _inherits(Clock1, _HTMLElement);
+
+    function Clock1() {
+        _classCallCheck(this, Clock1);
+
+        var _this = _possibleConstructorReturn(this, (Clock1.__proto__ || Object.getPrototypeOf(Clock1)).call(this));
+
+        _this._startTime = Date.now();
+        _this._time = 0;
+        _this._internalTime = 0;
+        _this.running = false;
+
+        return _this;
+    }
+
+    _createClass(Clock1, [{
+        key: 'connectedCallback',
+        value: function connectedCallback() {
+            this.innerHTML = '<div class="clock"></div>';
+            if (this.running) {
+                this.start();
+            }
+        }
+    }, {
+        key: 'disconnectedCallback',
+        value: function disconnectedCallback() {
+            this.running = false;
+        }
+    }, {
+        key: 'pad',
+        value: function pad(num) {
+            return ('0' + num).slice(-2);
+        }
+    }, {
+        key: 'tick',
+        value: function tick() {
+            var self = this;
+            if (this.running) {
+                this.update();
+                this._time += this.interval;
+            }
+            this._internalTime += this.interval;
+            var diff = new Date().getTime() - this._startTime - this._internalTime;
+
+            window.setTimeout(function () {
+                self.tick();
+            }, this.interval - diff);
+        }
+    }, {
+        key: 'tick2',
+        value: function tick2() {
+            if (this.running) {
+                this.update();
+                this._time += this.interval;
+            }
+            this._internalTime += this.interval;
+        }
+    }, {
+        key: 'formatTime',
+        value: function formatTime() {
+            return this._time;
+        }
+    }, {
+        key: 'update',
+        value: function update() {
+            this.querySelector('.clock').innerHTML = this.formatTime();
+        }
+    }, {
+        key: 'reset',
+        value: function reset() {
+            this._time = 0;
+        }
+    }, {
+        key: 'pause',
+        value: function pause() {
+            this.running = false;
+        }
+    }, {
+        key: 'start',
+        value: function start() {
+            var self = this;
+            this.running = true;
+            this._clearInterval = window.setCorrectingInterval(function () {
+                self.tick2();
+            }, this.interval);
+            // var start = Date.now();
+            // window.setCorrectingInterval(function(){console.log(Date.now() - start);}, this.interval);
+            // this.tick();
+        }
+    }, {
+        key: 'attributeChangedCallback',
+        value: function attributeChangedCallback() {}
+    }, {
+        key: 'expose',
+        value: function expose() {
+            return {
+                Run: 'run',
+                Limit: 'limit'
+            };
+        }
+    }, {
+        key: 'type',
+        get: function get() {
+            return this.getAttribute("type") || 'system';
+        },
+        set: function set(value) {
+            this.setAttribute('type', value);
+        }
+    }, {
+        key: 'format',
+        get: function get() {
+            return this.getAttribute("format") || 'hh:mm:ss';
+        },
+        set: function set(value) {
+            this.setAttribute('format', value);
+        }
+    }, {
+        key: 'countFrom',
+        get: function get() {
+            return this.getAttribute("count-from") || 60000;
+        },
+        set: function set(value) {
+            this.setAttribute('count-from', value);
+        }
+    }, {
+        key: 'interval',
+        get: function get() {
+            return parseInt(this.getAttribute("interval")) || 100;
+        },
+        set: function set(value) {
+            this.setAttribute('interval', value);
+        }
+    }, {
+        key: 'run',
+        get: function get() {
+            return this.running;
+        },
+        set: function set(value) {
+            this.running = value;
+            if (this.running) {
+                // this.start();
+            }
+        }
+    }, {
+        key: 'initial',
+        get: function get() {
+            return this.getAttribute("initial") || 0;
+        },
+        set: function set(value) {
+            this.setAttribute('initial', value);
+        }
+    }, {
+        key: 'limit',
+        get: function get() {
+            return this.getAttribute("initial");
+        },
+        set: function set(value) {
+            this.setAttribute('limit', value);
+        }
+    }], [{
+        key: 'observedAttributes',
+        get: function get() {
+            return [];
+        }
+    }]);
+
+    return Clock1;
+}(HTMLElement);
+
+exports.default = Clock1;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var _messenger = __webpack_require__(3);
 
-var _events = __webpack_require__(0);
+var _events = __webpack_require__(1);
 
-var _tacodata = __webpack_require__(1);
+var _tacodata = __webpack_require__(0);
 
-var _api = __webpack_require__(7);
+var _api = __webpack_require__(9);
 
 var api = _interopRequireWildcard(_api);
 
-var _listener = __webpack_require__(8);
+var _listener = __webpack_require__(10);
 
-var _init = __webpack_require__(12);
+var _init = __webpack_require__(15);
 
-var _tacoElement = __webpack_require__(13);
+var _tacoElement = __webpack_require__(16);
 
 var _tacoElement2 = _interopRequireDefault(_tacoElement);
 
-__webpack_require__(15);
+__webpack_require__(18);
 
-__webpack_require__(16);
+__webpack_require__(19);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -423,11 +916,14 @@ taco.toggle = api.toggle;
 taco.getPages = function () {
     return _tacodata.tacoData.getPages();
 };
+taco.getQueryParams = function () {
+    return _tacodata.tacoData.getQueryParams();
+};
 
 module.exports = taco;
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, exports) {
 
 var g;
@@ -454,7 +950,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -462,9 +958,9 @@ module.exports = g;
 
 var _messenger = __webpack_require__(3);
 
-var _events = __webpack_require__(0);
+var _events = __webpack_require__(1);
 
-var _tacodata = __webpack_require__(1);
+var _tacodata = __webpack_require__(0);
 
 function noop() {}
 
@@ -492,13 +988,13 @@ module.exports = {
 };
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _handlers = __webpack_require__(9);
+var _handlers = __webpack_require__(11);
 
 var handlers = _interopRequireWildcard(_handlers);
 
@@ -525,27 +1021,30 @@ module.exports = {
 };
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _updateHandler = __webpack_require__(10);
+var _updateHandler = __webpack_require__(12);
 
-var _pagesHandler = __webpack_require__(11);
+var _pagesHandler = __webpack_require__(13);
 
-var events = __webpack_require__(0);
+var _queryParamsHandler = __webpack_require__(14);
+
+var events = __webpack_require__(1);
 
 
 var handlers = {};
 handlers[events.UPDATE] = _updateHandler.update;
 handlers[events.PAGES] = _pagesHandler.pages;
+handlers[events.QUERY_PARAMS] = _queryParamsHandler.queryParams;
 
 module.exports = handlers;
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -553,7 +1052,7 @@ module.exports = handlers;
 
 var _helpers = __webpack_require__(2);
 
-var _tacodata = __webpack_require__(1);
+var _tacodata = __webpack_require__(0);
 
 var _consts = __webpack_require__(4);
 
@@ -567,7 +1066,7 @@ function update(data) {
             _tacodata.tacoData._main[template][controlKey || item] = data[key][item];
             isDataChanged = true;
 
-            updateDom(template, controlKey || item, data[key][item]);
+            updateDom(template, controlKey || item, data[key][item], data[key].__timecode__);
         }
     }
     if (isDataChanged) {
@@ -575,12 +1074,15 @@ function update(data) {
     }
 }
 
-function updateDom(template, control, value) {
+function updateDom(template, control, value, timecode) {
     var templateSelector = '[taco-template="' + template + '" i]';
     var controlSelector = '[taco-name="' + control.split(_consts.EXPOSE_DELIMITER)[0] + '" i]';
     var selector = templateSelector + ' ' + controlSelector + ',' + templateSelector + controlSelector;
     var dom = document.querySelector(selector);
     if (dom) {
+        if (timecode !== undefined) {
+            (0, _helpers.setByPath)(dom, "__timecode__", timecode);
+        }
         (0, _helpers.setByPath)(dom, control.split(_consts.EXPOSE_DELIMITER)[1], value);
     }
 }
@@ -598,13 +1100,13 @@ module.exports = {
  ************************/
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _tacodata = __webpack_require__(1);
+var _tacodata = __webpack_require__(0);
 
 function pages(data) {
     _tacodata.tacoData.addPages(data);
@@ -615,7 +1117,24 @@ module.exports = {
 };
 
 /***/ }),
-/* 12 */
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _tacodata = __webpack_require__(0);
+
+function queryParams(data) {
+    _tacodata.tacoData.addQueryParams(data);
+}
+
+module.exports = {
+    queryParams: queryParams
+};
+
+/***/ }),
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -709,7 +1228,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 13 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -721,7 +1240,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _htmlAccessorObserver = __webpack_require__(14);
+var _htmlAccessorObserver = __webpack_require__(17);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -792,7 +1311,7 @@ var TacoElement = function () {
 exports.default = TacoElement;
 
 /***/ }),
-/* 14 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -863,7 +1382,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 15 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -883,29 +1402,45 @@ HTMLImageElement.prototype.expose = function () {
 };
 
 /***/ }),
-/* 16 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(17);
+__webpack_require__(20);
 
-var _emoji = __webpack_require__(18);
+var _emoji = __webpack_require__(21);
 
 var _emoji2 = _interopRequireDefault(_emoji);
 
-var _dragArea = __webpack_require__(19);
+var _dragArea = __webpack_require__(22);
 
 var _dragArea2 = _interopRequireDefault(_dragArea);
 
-var _telestratorElement = __webpack_require__(20);
+var _telestratorElement = __webpack_require__(23);
 
 var _telestratorElement2 = _interopRequireDefault(_telestratorElement);
 
-var _videoStream = __webpack_require__(26);
+var _videoStream = __webpack_require__(29);
 
 var _videoStream2 = _interopRequireDefault(_videoStream);
+
+var _clockSimple = __webpack_require__(5);
+
+var _clockSimple2 = _interopRequireDefault(_clockSimple);
+
+var _systemClock = __webpack_require__(31);
+
+var _systemClock2 = _interopRequireDefault(_systemClock);
+
+var _countdown = __webpack_require__(32);
+
+var _countdown2 = _interopRequireDefault(_countdown);
+
+var _stopwatch = __webpack_require__(33);
+
+var _stopwatch2 = _interopRequireDefault(_stopwatch);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -917,13 +1452,17 @@ define('drag-area', _dragArea2.default);
 define('my-element', _emoji2.default);
 define('telestrator-element', _telestratorElement2.default);
 define('video-stream', _videoStream2.default);
+define('clock-element', _clockSimple2.default);
+define('system-clock', _systemClock2.default);
+define('countdown-clock', _countdown2.default);
+define('stopwatch-clock', _stopwatch2.default);
 
 // function isDefined(name) {
 //     return document.createElement(name).constructor !== HTMLElement;
 // }
 
 /***/ }),
-/* 17 */
+/* 20 */
 /***/ (function(module, exports) {
 
 /* eslint-disable */
@@ -947,7 +1486,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 /* eslint-enable */
 
 /***/ }),
-/* 18 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1041,7 +1580,7 @@ var MyElement = function (_HTMLElement) {
 exports.default = MyElement;
 
 /***/ }),
-/* 19 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1222,7 +1761,7 @@ var DragArea = function (_HTMLElement) {
 exports.default = DragArea;
 
 /***/ }),
-/* 20 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1234,7 +1773,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-__webpack_require__(21);
+__webpack_require__(24);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1426,11 +1965,11 @@ var Telestrator = function (_HTMLElement) {
 exports.default = Telestrator;
 
 /***/ }),
-/* 21 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(22);
+var content = __webpack_require__(25);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -1444,7 +1983,7 @@ var options = {"hmr":true}
 options.transform = transform
 options.insertInto = undefined;
 
-var update = __webpack_require__(24)(content, options);
+var update = __webpack_require__(27)(content, options);
 
 if(content.locals) module.exports = content.locals;
 
@@ -1476,10 +2015,10 @@ if(false) {
 }
 
 /***/ }),
-/* 22 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(23)(false);
+exports = module.exports = __webpack_require__(26)(false);
 // imports
 
 
@@ -1490,7 +2029,7 @@ exports.push([module.i, "telestrator-element #telestrator-canvas {\n  position: 
 
 
 /***/ }),
-/* 23 */
+/* 26 */
 /***/ (function(module, exports) {
 
 /*
@@ -1572,7 +2111,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 24 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -1638,7 +2177,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(25);
+var	fixUrls = __webpack_require__(28);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -1954,7 +2493,7 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 25 */
+/* 28 */
 /***/ (function(module, exports) {
 
 
@@ -2049,7 +2588,7 @@ module.exports = function (css) {
 
 
 /***/ }),
-/* 26 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2116,6 +2655,245 @@ var VideoStream = function (_HTMLElement) {
 }(HTMLElement);
 
 exports.default = VideoStream;
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function worker() {
+    var now = Date.now || function () {
+        return new Date().getTime();
+    };
+    var delay;
+    var startedAt;
+    var delayed;
+    var timeoutId = null;
+
+    self.onmessage = function (event) {
+
+        var data = event.data;
+
+        switch (data.cmd) {
+
+            case 'stop':
+
+                clearTimeout(timeoutId);
+                timeoutId = null;
+                break;
+            case 'pause':
+                clearTimeout(timeoutId);
+                timeoutId = null;
+                break;
+            case 'resume':
+                break;
+            case 'reset':
+                break;
+            case 'start':
+
+                delay = data.interval;
+                var offset = data.offset || 0;
+                var isLive = data.offset > 100000000;
+
+                startedAt = isLive ? new Date(offset) : now();
+                delayed = 0;
+                timeoutId = self.setTimeout(tick, delay);
+
+                // if (delay > 0) {
+                //     startedAt = now();
+                //     delayed = 0;
+                //     timeoutId = self.setTimeout(tick, delay);
+                // } else {
+                //     if (timeoutId) {
+                //         clearTimeout(timeoutId);
+                //         timeoutId = null;
+                //     }
+                // }
+                break;
+        }
+    };
+
+    function tick() {
+        delayed += delay;
+        var tickedAt = now();
+        var elapsed = tickedAt - startedAt;
+        var drifted = elapsed - delayed;
+        self.postMessage(elapsed);
+        timeoutId = self.setTimeout(tick, delay - drifted);
+    }
+}
+
+module.exports = worker;
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _clock = __webpack_require__(6);
+
+var _clock2 = _interopRequireDefault(_clock);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var SystemClock = function (_Clock) {
+    _inherits(SystemClock, _Clock);
+
+    function SystemClock() {
+        _classCallCheck(this, SystemClock);
+
+        return _possibleConstructorReturn(this, (SystemClock.__proto__ || Object.getPrototypeOf(SystemClock)).call(this));
+    }
+
+    _createClass(SystemClock, [{
+        key: 'connectedCallback',
+        value: function connectedCallback() {
+            this.type = 'system';
+            _get(SystemClock.prototype.__proto__ || Object.getPrototypeOf(SystemClock.prototype), 'connectedCallback', this).call(this);
+        }
+    }, {
+        key: 'formatTime',
+        value: function formatTime() {
+            var dateObj = new Date(this._startTime + this._time);
+            return this.pad(dateObj.getHours()) + ':' + this.pad(dateObj.getMinutes()) + ':' + this.pad(dateObj.getSeconds());
+        }
+    }]);
+
+    return SystemClock;
+}(_clock2.default);
+
+exports.default = SystemClock;
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _clock = __webpack_require__(6);
+
+var _clock2 = _interopRequireDefault(_clock);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Countdown = function (_Clock) {
+    _inherits(Countdown, _Clock);
+
+    function Countdown() {
+        _classCallCheck(this, Countdown);
+
+        return _possibleConstructorReturn(this, (Countdown.__proto__ || Object.getPrototypeOf(Countdown)).call(this));
+    }
+
+    _createClass(Countdown, [{
+        key: "connectedCallback",
+        value: function connectedCallback() {
+            this.type = 'countdown';
+            _get(Countdown.prototype.__proto__ || Object.getPrototypeOf(Countdown.prototype), "connectedCallback", this).call(this);
+        }
+    }, {
+        key: "formatTime",
+        value: function formatTime() {
+            return Math.max(this.countFrom - this._time, 0);
+        }
+    }]);
+
+    return Countdown;
+}(_clock2.default);
+
+exports.default = Countdown;
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _clockSimple = __webpack_require__(5);
+
+var _clockSimple2 = _interopRequireDefault(_clockSimple);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Stopwatch = function (_Clock) {
+    _inherits(Stopwatch, _Clock);
+
+    function Stopwatch() {
+        _classCallCheck(this, Stopwatch);
+
+        return _possibleConstructorReturn(this, (Stopwatch.__proto__ || Object.getPrototypeOf(Stopwatch)).call(this));
+    }
+
+    _createClass(Stopwatch, [{
+        key: "connectedCallback",
+        value: function connectedCallback() {
+            this.type = 'stopwatch';
+            _get(Stopwatch.prototype.__proto__ || Object.getPrototypeOf(Stopwatch.prototype), "connectedCallback", this).call(this);
+        }
+    }, {
+        key: "formatTime",
+        value: function formatTime() {
+            var seconds = parseInt(this._time / 1000 % 60),
+                minutes = parseInt(this._time / (1000 * 60) % 60);
+            // hours           = parseInt((this._time / (1000 * 60 * 60)) % 24),
+            // milliseconds    = parseInt((this._time % 1000) / 100);
+
+            return this.pad(minutes) + ":" + this.pad(seconds);
+        }
+    }]);
+
+    return Stopwatch;
+}(_clockSimple2.default);
+
+exports.default = Stopwatch;
 
 /***/ })
 /******/ ]);

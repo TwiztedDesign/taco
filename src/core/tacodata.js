@@ -101,6 +101,13 @@ class TacoData {
         return this._pages;
         // return Array.from(this._pages);
     }
+    addQueryParams(params){
+        this._queryParams = params;
+        this.updateCB();
+    }
+    getQueryParams(){
+        return this._queryParams;
+    }
 }
 
 export let tacoData = new TacoData();

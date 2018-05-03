@@ -12,7 +12,7 @@ function update(data){
             tacoData._main[template][controlKey || item] = data[key][item];
             isDataChanged = true;
 
-            updateDom(template, controlKey || item, data[key][item]);
+            updateDom(template, controlKey || item, data[key][item], data[key].__timecode__);
 
         }
     }
@@ -22,12 +22,15 @@ function update(data){
 }
 
 
-function updateDom(template, control, value){
+function updateDom(template, control, value, timecode){
     let templateSelector = '[taco-template="' + template + '" i]';
     let controlSelector = '[taco-name="' + control.split(EXPOSE_DELIMITER)[0] + '" i]';
     let selector = templateSelector + ' ' + controlSelector + ',' + templateSelector + controlSelector;
     let dom = document.querySelector(selector);
     if(dom){
+        if(timecode !== undefined){
+            setByPath(dom, "__timecode__", timecode);
+        }
         setByPath(dom, control.split(EXPOSE_DELIMITER)[1], value);
     }
 }

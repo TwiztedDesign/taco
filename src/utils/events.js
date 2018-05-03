@@ -8,5 +8,6 @@ module.exports = {
     "PAGES"         : "taco-pages",
     "USER_UPDATE"   : "taco-user-update",
     "TOUCH"         : "taco-touch-element",
-    "MOUSE_MOVE"    : "taco-mouse-move"
+    "MOUSE_MOVE"    : "taco-mouse-move",
+    "QUERY_PARAMS"  : "taco-query-params"
 };
