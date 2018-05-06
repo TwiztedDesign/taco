@@ -1,10 +1,17 @@
 
 function worker(){
-    var now = Date.now || function () { return (new Date()).getTime(); };
+    // var now = Date.now || function () { return (new Date()).getTime(); };
     var delay;
     var startedAt;
     var delayed;
     var timeoutId = null;
+    var offset;
+    var delta = 0;
+
+
+    var now = function(){
+        return Date.now() - delta;
+    };
 
 
     self.onmessage = function (event) {
@@ -29,23 +36,15 @@ function worker(){
             case 'start':
 
             delay = data.interval;
-            var offset = data.offset || 0;
+            offset = data.offset || 0;
             var isLive = data.offset > 100000000;
+            var initial = data.initial || 0;
 
-            startedAt = isLive? new Date(offset) : now();
+            delta = now() - offset;
+            startedAt = isLive? new Date(offset - initial) : now() - initial;
             delayed = 0;
             timeoutId = self.setTimeout(tick, delay);
 
-            // if (delay > 0) {
-            //     startedAt = now();
-            //     delayed = 0;
-            //     timeoutId = self.setTimeout(tick, delay);
-            // } else {
-            //     if (timeoutId) {
-            //         clearTimeout(timeoutId);
-            //         timeoutId = null;
-            //     }
-            // }
             break;
         }
     };

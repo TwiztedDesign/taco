@@ -13,11 +13,18 @@ export default class Clock extends HTMLElement {
 
         var self = this;
         this._worker = createWorker();
-        this._time = 0;
+        this._time = 0 + this.initial;
 
         this._worker.onmessage = function(e){
-            self._time = e.data;
-            self.update();
+
+            if(self.limit > 0 && e.data - 10 > self.limit){
+                self.pause();
+                var event = new Event('limit-reached');
+                self.dispatchEvent(event);
+            } else {
+                self._time = e.data;
+                self.update();
+            }
         };
         this.running = false;
     }
@@ -25,8 +32,6 @@ export default class Clock extends HTMLElement {
     connectedCallback() {
         this.innerHTML = '<div class="clock"></div>';
         this.update();
-        // this.start();
-
     }
 
     disconnectedCallback() {
@@ -41,7 +46,6 @@ export default class Clock extends HTMLElement {
         return this.limit >= 0 && this._time >= this.limit;
     }
 
-
     formatTime(){
         return this._time;
     }
@@ -49,16 +53,12 @@ export default class Clock extends HTMLElement {
     update(){
         this.querySelector('.clock').innerHTML = this.formatTime();
     }
-
-    reset(){
-        this._time = 0;
-    }
     pause(){
         this._worker.postMessage({cmd: 'pause'});
         this.running = false;
     }
     start(){
-        this._worker.postMessage({cmd: 'start', interval : 100, offset : this.__timecode__});
+        this._worker.postMessage({cmd: 'start', interval : 100, offset : (this.__timecode__ || 0), initial : this.initial});
     }
 
     static get observedAttributes() {
@@ -99,17 +99,33 @@ export default class Clock extends HTMLElement {
         return this.running;
     }
     set run(value){
-        this.running = value;
-        this.running? this.start() : this.pause();
+        if(this.running !== value){
+            this.running = value;
+            this.running? this.start() : this.pause();
+        }
     }
+
+    get reset(){
+        return false;
+    }
+    set reset(value){
+        if(value){
+            this._time = this.initial;
+        }
+    }
+
     get initial(){
-        return this.getAttribute("initial") || 0;
+        return parseInt(this.getAttribute("initial")) || 0;
     }
     set initial(value){
-        this.setAttribute('initial', value);
+        if(this.initial !== value){
+            this.setAttribute('initial', value);
+            this._time = value;
+            this.update();
+        }
     }
     get limit(){
-        return this.getAttribute("limit") || -1;
+        return parseInt(this.getAttribute("limit")) || -1;
     }
     set limit(value){
         this.setAttribute('limit', value);
@@ -118,6 +134,8 @@ export default class Clock extends HTMLElement {
     expose(){
         return {
             Run : 'run',
+            Reset : 'reset',
+            Initial : 'initial',
             Limit: 'limit'
         };
     }

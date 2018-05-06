@@ -398,11 +398,18 @@ var Clock = function (_HTMLElement) {
 
         var self = _this;
         _this._worker = createWorker();
-        _this._time = 0;
+        _this._time = 0 + _this.initial;
 
         _this._worker.onmessage = function (e) {
-            self._time = e.data;
-            self.update();
+
+            if (self.limit > 0 && e.data - 10 > self.limit) {
+                self.pause();
+                var event = new Event('limit-reached');
+                self.dispatchEvent(event);
+            } else {
+                self._time = e.data;
+                self.update();
+            }
         };
         _this.running = false;
         return _this;
@@ -413,7 +420,6 @@ var Clock = function (_HTMLElement) {
         value: function connectedCallback() {
             this.innerHTML = '<div class="clock"></div>';
             this.update();
-            // this.start();
         }
     }, {
         key: 'disconnectedCallback',
@@ -441,11 +447,6 @@ var Clock = function (_HTMLElement) {
             this.querySelector('.clock').innerHTML = this.formatTime();
         }
     }, {
-        key: 'reset',
-        value: function reset() {
-            this._time = 0;
-        }
-    }, {
         key: 'pause',
         value: function pause() {
             this._worker.postMessage({ cmd: 'pause' });
@@ -454,7 +455,7 @@ var Clock = function (_HTMLElement) {
     }, {
         key: 'start',
         value: function start() {
-            this._worker.postMessage({ cmd: 'start', interval: 100, offset: this.__timecode__ });
+            this._worker.postMessage({ cmd: 'start', interval: 100, offset: this.__timecode__ || 0, initial: this.initial });
         }
     }, {
         key: 'attributeChangedCallback',
@@ -464,6 +465,8 @@ var Clock = function (_HTMLElement) {
         value: function expose() {
             return {
                 Run: 'run',
+                Reset: 'reset',
+                Initial: 'initial',
                 Limit: 'limit'
             };
         }
@@ -505,21 +508,37 @@ var Clock = function (_HTMLElement) {
             return this.running;
         },
         set: function set(value) {
-            this.running = value;
-            this.running ? this.start() : this.pause();
+            if (this.running !== value) {
+                this.running = value;
+                this.running ? this.start() : this.pause();
+            }
+        }
+    }, {
+        key: 'reset',
+        get: function get() {
+            return false;
+        },
+        set: function set(value) {
+            if (value) {
+                this._time = this.initial;
+            }
         }
     }, {
         key: 'initial',
         get: function get() {
-            return this.getAttribute("initial") || 0;
+            return parseInt(this.getAttribute("initial")) || 0;
         },
         set: function set(value) {
-            this.setAttribute('initial', value);
+            if (this.initial !== value) {
+                this.setAttribute('initial', value);
+                this._time = value;
+                this.update();
+            }
         }
     }, {
         key: 'limit',
         get: function get() {
-            return this.getAttribute("limit") || -1;
+            return parseInt(this.getAttribute("limit")) || -1;
         },
         set: function set(value) {
             this.setAttribute('limit', value);
@@ -2664,13 +2683,17 @@ exports.default = VideoStream;
 
 
 function worker() {
-    var now = Date.now || function () {
-        return new Date().getTime();
-    };
+    // var now = Date.now || function () { return (new Date()).getTime(); };
     var delay;
     var startedAt;
     var delayed;
     var timeoutId = null;
+    var offset;
+    var delta = 0;
+
+    var now = function now() {
+        return Date.now() - delta;
+    };
 
     self.onmessage = function (event) {
 
@@ -2694,23 +2717,15 @@ function worker() {
             case 'start':
 
                 delay = data.interval;
-                var offset = data.offset || 0;
+                offset = data.offset || 0;
                 var isLive = data.offset > 100000000;
+                var initial = data.initial || 0;
 
-                startedAt = isLive ? new Date(offset) : now();
+                delta = now() - offset;
+                startedAt = isLive ? new Date(offset - initial) : now() - initial;
                 delayed = 0;
                 timeoutId = self.setTimeout(tick, delay);
 
-                // if (delay > 0) {
-                //     startedAt = now();
-                //     delayed = 0;
-                //     timeoutId = self.setTimeout(tick, delay);
-                // } else {
-                //     if (timeoutId) {
-                //         clearTimeout(timeoutId);
-                //         timeoutId = null;
-                //     }
-                // }
                 break;
         }
     };
