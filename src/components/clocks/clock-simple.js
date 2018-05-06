@@ -1,4 +1,5 @@
 var work = require('./clock-worker');
+
 function createWorker(){
     var blobURL = URL.createObjectURL( new Blob([ '(', work.toString(),')()' ], { type: 'application/javascript' } ) );
     var worker = new Worker( blobURL );
@@ -17,8 +18,14 @@ export default class Clock extends HTMLElement {
 
         this._worker.onmessage = function(e){
 
-            if(self.limit > 0 && e.data - 10 > self.limit){
+            if(!self.running){
+                return;
+            }
+
+            if(self.limit > 0 && e.data - self.interval > self.limit){
                 self.pause();
+                self._time = self.limit;
+                self.update();
                 var event = new Event('limit-reached');
                 self.dispatchEvent(event);
             } else {
@@ -57,9 +64,17 @@ export default class Clock extends HTMLElement {
         this._worker.postMessage({cmd: 'pause'});
         this.running = false;
     }
+    stop(){
+        this._worker.postMessage({cmd: 'stop'});
+        this._time = 0;
+        this.running = false;
+        this.update();
+    }
     start(){
         this.initial = this._time || this.initial;
-        this._worker.postMessage({cmd: 'start', interval : 100, offset : (this.__timecode__ || 0), initial : this.initial});
+        this._time = 0;
+        this.running = true;
+        this._worker.postMessage({cmd: 'start', interval : this.interval, offset : (this.__timecode__ || 0), initial : this.initial});
     }
 
     static get observedAttributes() {
@@ -111,7 +126,12 @@ export default class Clock extends HTMLElement {
     }
     set reset(value){
         if(value){
-            this._time = this.initial;
+            var wasRunning = this.running;
+            this.stop();
+            if(wasRunning){
+                this.start();
+            }
+            // this._time = this.initial;
         }
     }
 

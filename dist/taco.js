@@ -381,6 +381,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var work = __webpack_require__(30);
+
 function createWorker() {
     var blobURL = URL.createObjectURL(new Blob(['(', work.toString(), ')()'], { type: 'application/javascript' }));
     var worker = new Worker(blobURL);
@@ -402,8 +403,14 @@ var Clock = function (_HTMLElement) {
 
         _this._worker.onmessage = function (e) {
 
-            if (self.limit > 0 && e.data - 10 > self.limit) {
+            if (!self.running) {
+                return;
+            }
+
+            if (self.limit > 0 && e.data - self.interval > self.limit) {
                 self.pause();
+                self._time = self.limit;
+                self.update();
                 var event = new Event('limit-reached');
                 self.dispatchEvent(event);
             } else {
@@ -453,10 +460,20 @@ var Clock = function (_HTMLElement) {
             this.running = false;
         }
     }, {
+        key: 'stop',
+        value: function stop() {
+            this._worker.postMessage({ cmd: 'stop' });
+            this._time = 0;
+            this.running = false;
+            this.update();
+        }
+    }, {
         key: 'start',
         value: function start() {
             this.initial = this._time || this.initial;
-            this._worker.postMessage({ cmd: 'start', interval: 100, offset: this.__timecode__ || 0, initial: this.initial });
+            this._time = 0;
+            this.running = true;
+            this._worker.postMessage({ cmd: 'start', interval: this.interval, offset: this.__timecode__ || 0, initial: this.initial });
         }
     }, {
         key: 'attributeChangedCallback',
@@ -521,7 +538,12 @@ var Clock = function (_HTMLElement) {
         },
         set: function set(value) {
             if (value) {
-                this._time = this.initial;
+                var wasRunning = this.running;
+                this.stop();
+                if (wasRunning) {
+                    this.start();
+                }
+                // this._time = this.initial;
             }
         }
     }, {
