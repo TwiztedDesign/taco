@@ -1,18 +1,11 @@
 
 function worker(){
-    // var now = Date.now || function () { return (new Date()).getTime(); };
+    var now = Date.now || function () { return (new Date()).getTime(); };
     var delay;
     var startedAt;
     var delayed;
     var timeoutId = null;
     var offset;
-    var delta = 0;
-
-
-    var now = function(){
-        return Date.now() - delta;
-    };
-
 
     self.onmessage = function (event) {
 
@@ -40,7 +33,6 @@ function worker(){
             var isLive = data.offset > 100000000;
             var initial = data.initial || 0;
 
-            delta = now() - offset;
             startedAt = isLive? new Date(offset - initial) : now() - initial;
             delayed = 0;
             timeoutId = self.setTimeout(tick, delay);
