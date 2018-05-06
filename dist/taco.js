@@ -455,6 +455,7 @@ var Clock = function (_HTMLElement) {
     }, {
         key: 'start',
         value: function start() {
+            this.initial = this._time || this.initial;
             this._worker.postMessage({ cmd: 'start', interval: 100, offset: this.__timecode__ || 0, initial: this.initial });
         }
     }, {

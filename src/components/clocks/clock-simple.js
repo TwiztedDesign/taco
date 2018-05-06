@@ -58,6 +58,7 @@ export default class Clock extends HTMLElement {
         this.running = false;
     }
     start(){
+        this.initial = this._time || this.initial;
         this._worker.postMessage({cmd: 'start', interval : 100, offset : (this.__timecode__ || 0), initial : this.initial});
     }
 
