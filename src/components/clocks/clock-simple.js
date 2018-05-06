@@ -22,7 +22,7 @@ export default class Clock extends HTMLElement {
                 return;
             }
 
-            if(self.limit > 0 && e.data - self.interval > self.limit){
+            if(self.limit >= 0 && e.data - self.interval > self.limit){
                 self.pause();
                 self._time = self.limit;
                 self.update();
@@ -66,7 +66,7 @@ export default class Clock extends HTMLElement {
     }
     stop(){
         this._worker.postMessage({cmd: 'stop'});
-        this._time = 0;
+        this._time = this.initial;
         this.running = false;
         this.update();
     }
@@ -146,7 +146,9 @@ export default class Clock extends HTMLElement {
         }
     }
     get limit(){
-        return parseInt(this.getAttribute("limit")) || -1;
+        var limit = parseInt(this.getAttribute("limit"));
+        return Number.isInteger(limit)? limit : -1;
+
     }
     set limit(value){
         this.setAttribute('limit', value);

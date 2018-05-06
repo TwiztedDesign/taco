@@ -407,7 +407,7 @@ var Clock = function (_HTMLElement) {
                 return;
             }
 
-            if (self.limit > 0 && e.data - self.interval > self.limit) {
+            if (self.limit >= 0 && e.data - self.interval > self.limit) {
                 self.pause();
                 self._time = self.limit;
                 self.update();
@@ -463,7 +463,7 @@ var Clock = function (_HTMLElement) {
         key: 'stop',
         value: function stop() {
             this._worker.postMessage({ cmd: 'stop' });
-            this._time = 0;
+            this._time = this.initial;
             this.running = false;
             this.update();
         }
@@ -561,7 +561,8 @@ var Clock = function (_HTMLElement) {
     }, {
         key: 'limit',
         get: function get() {
-            return parseInt(this.getAttribute("limit")) || -1;
+            var limit = parseInt(this.getAttribute("limit"));
+            return Number.isInteger(limit) ? limit : -1;
         },
         set: function set(value) {
             this.setAttribute('limit', value);
