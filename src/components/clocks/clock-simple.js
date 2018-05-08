@@ -154,12 +154,30 @@ export default class Clock extends HTMLElement {
         this.setAttribute('limit', value);
     }
 
+    get show(){
+        var vis = this.getAttribute("show");
+        if(vis !== null){
+            return vis === 'true';
+        } else {
+            return true;
+        }
+    }
+    set show(value){
+        if(value){
+            this.style.visibility = 'visible';
+        } else {
+            this.style.visibility = 'hidden';
+        }
+        this.setAttribute('show', value);
+    }
+
     expose(){
         return {
             Run : 'run',
             Reset : 'reset',
             Initial : 'initial',
-            Limit: 'limit'
+            Limit: 'limit',
+            Show: 'show'
         };
     }
 

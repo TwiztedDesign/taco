@@ -486,7 +486,8 @@ var Clock = function (_HTMLElement) {
                 Run: 'run',
                 Reset: 'reset',
                 Initial: 'initial',
-                Limit: 'limit'
+                Limit: 'limit',
+                Show: 'show'
             };
         }
     }, {
@@ -566,6 +567,24 @@ var Clock = function (_HTMLElement) {
         },
         set: function set(value) {
             this.setAttribute('limit', value);
+        }
+    }, {
+        key: 'show',
+        get: function get() {
+            var vis = this.getAttribute("show");
+            if (vis !== null) {
+                return vis === 'true';
+            } else {
+                return true;
+            }
+        },
+        set: function set(value) {
+            if (value) {
+                this.style.visibility = 'visible';
+            } else {
+                this.style.visibility = 'hidden';
+            }
+            this.setAttribute('show', value);
         }
     }], [{
         key: 'observedAttributes',
