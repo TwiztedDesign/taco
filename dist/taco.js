@@ -400,7 +400,7 @@ var Clock = function (_HTMLElement) {
         var self = _this;
         _this._worker = createWorker();
         _this._time = 0 + _this.initial;
-
+        _this._memo = _this._time;
         _this._worker.onmessage = function (e) {
 
             if (!self.running) {
@@ -471,9 +471,10 @@ var Clock = function (_HTMLElement) {
         key: 'start',
         value: function start() {
             this.initial = this._time || this.initial;
+            this._memo = this._time || this.initial;
             this._time = 0;
             this.running = true;
-            this._worker.postMessage({ cmd: 'start', interval: this.interval, offset: this.__timecode__ || 0, initial: this.initial });
+            this._worker.postMessage({ cmd: 'start', interval: this.interval, offset: this.__timecode__ || 0, initial: this._memo });
         }
     }, {
         key: 'attributeChangedCallback',
@@ -543,7 +544,6 @@ var Clock = function (_HTMLElement) {
                 if (wasRunning) {
                     this.start();
                 }
-                // this._time = this.initial;
             }
         }
     }, {

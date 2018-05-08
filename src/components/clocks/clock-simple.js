@@ -15,7 +15,7 @@ export default class Clock extends HTMLElement {
         var self = this;
         this._worker = createWorker();
         this._time = 0 + this.initial;
-
+        this._memo = this._time;
         this._worker.onmessage = function(e){
 
             if(!self.running){
@@ -72,9 +72,10 @@ export default class Clock extends HTMLElement {
     }
     start(){
         this.initial = this._time || this.initial;
+        this._memo = this._time || this.initial;
         this._time = 0;
         this.running = true;
-        this._worker.postMessage({cmd: 'start', interval : this.interval, offset : (this.__timecode__ || 0), initial : this.initial});
+        this._worker.postMessage({cmd: 'start', interval : this.interval, offset : (this.__timecode__ || 0), initial : this._memo});
     }
 
     static get observedAttributes() {
@@ -131,7 +132,6 @@ export default class Clock extends HTMLElement {
             if(wasRunning){
                 this.start();
             }
-            // this._time = this.initial;
         }
     }
 
