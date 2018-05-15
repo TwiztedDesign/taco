@@ -59,5 +59,9 @@ taco.onEvent        = (template, cb) => {
         }
     });
 };
+taco.send           = (type, payload) => {
+    send(type, payload);
+};
+
 
 module.exports = taco;

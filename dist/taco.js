@@ -80,6 +80,28 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 
 
+module.exports = {
+    "READY": "taco-ready",
+    "GO": "taco-go",
+    "NEXT": "taco-next",
+    "PREV": "taco-previous",
+    "ADD": "taco-addtemplate",
+    "UPDATE": "taco-update",
+    "PAGES": "taco-pages",
+    "USER_UPDATE": "taco-user-update",
+    "TOUCH": "taco-touch-element",
+    "MOUSE_MOVE": "taco-mouse-move",
+    "QUERY_PARAMS": "taco-query-params",
+    "TACO_EVENT": "taco-event-received"
+};
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -87,7 +109,7 @@ exports.tacoData = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _events = __webpack_require__(1);
+var _events = __webpack_require__(0);
 
 var _helpers = __webpack_require__(2);
 
@@ -244,28 +266,6 @@ var TacoData = function () {
 }();
 
 var tacoData = exports.tacoData = new TacoData();
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = {
-    "READY": "taco-ready",
-    "GO": "taco-go",
-    "NEXT": "taco-next",
-    "PREV": "taco-previous",
-    "ADD": "taco-addtemplate",
-    "UPDATE": "taco-update",
-    "PAGES": "taco-pages",
-    "USER_UPDATE": "taco-user-update",
-    "TOUCH": "taco-touch-element",
-    "MOUSE_MOVE": "taco-mouse-move",
-    "QUERY_PARAMS": "taco-query-params",
-    "TACO_EVENT": "taco-event-received"
-};
 
 /***/ }),
 /* 2 */
@@ -928,9 +928,9 @@ exports.default = Clock1;
 
 var _messenger = __webpack_require__(3);
 
-var _events = __webpack_require__(1);
+var _events = __webpack_require__(0);
 
-var _tacodata = __webpack_require__(0);
+var _tacodata = __webpack_require__(1);
 
 var _api = __webpack_require__(9);
 
@@ -1011,6 +1011,9 @@ taco.onEvent = function (template, cb) {
         }
     });
 };
+taco.send = function (type, payload) {
+    (0, _messenger.send)(type, payload);
+};
 
 module.exports = taco;
 
@@ -1050,9 +1053,9 @@ module.exports = g;
 
 var _messenger = __webpack_require__(3);
 
-var _events = __webpack_require__(1);
+var _events = __webpack_require__(0);
 
-var _tacodata = __webpack_require__(0);
+var _tacodata = __webpack_require__(1);
 
 function noop() {}
 
@@ -1125,7 +1128,7 @@ var _pagesHandler = __webpack_require__(13);
 
 var _queryParamsHandler = __webpack_require__(14);
 
-var events = __webpack_require__(1);
+var events = __webpack_require__(0);
 
 
 var handlers = {};
@@ -1144,11 +1147,11 @@ module.exports = handlers;
 
 var _helpers = __webpack_require__(2);
 
-var _tacodata = __webpack_require__(0);
+var _tacodata = __webpack_require__(1);
 
 var _consts = __webpack_require__(4);
 
-var _events = __webpack_require__(1);
+var _events = __webpack_require__(0);
 
 function update(data) {
     var isDataChanged = false;
@@ -1202,7 +1205,7 @@ module.exports = {
 "use strict";
 
 
-var _tacodata = __webpack_require__(0);
+var _tacodata = __webpack_require__(1);
 
 function pages(data) {
     _tacodata.tacoData.addPages(data);
@@ -1219,7 +1222,7 @@ module.exports = {
 "use strict";
 
 
-var _tacodata = __webpack_require__(0);
+var _tacodata = __webpack_require__(1);
 
 function queryParams(data) {
     _tacodata.tacoData.addQueryParams(data);
