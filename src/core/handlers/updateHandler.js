@@ -1,9 +1,12 @@
 import {findKey, setByPath} from '../../utils/helpers.js';
 import {tacoData} from '../tacodata.js';
 import {EXPOSE_DELIMITER} from '../consts';
+import {TACO_EVENT} from '../../utils/events';
 
 function update(data){
     let isDataChanged = false;
+
+    document.dispatchEvent(new CustomEvent(TACO_EVENT, { detail: data }));
     for(let template in tacoData._main) {
         let key = findKey(data, template);
         for(let item in data[key]){

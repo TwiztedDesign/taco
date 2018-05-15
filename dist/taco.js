@@ -103,6 +103,20 @@ var TacoData = function () {
         this._proxy = {};
         this._pages = [];
         var self = this;
+
+        this._onChangeFunc = function (templateName) {
+            return {
+                set: function set(target, prop, value) {
+                    target[prop] = value;
+                    var payload = {};
+                    payload[templateName] = {};
+                    payload[templateName][prop] = value;
+                    (0, _messenger.send)(_events.USER_UPDATE, payload);
+                    return true;
+                }
+            };
+        };
+
         this._onChange = {
             set: function set(target, prop, value) {
                 target[prop] = value;
@@ -158,7 +172,7 @@ var TacoData = function () {
                 // Object.assign(this._proxy[name], data);
             } else {
                 this._main[name] = data;
-                this._proxy[name] = new Proxy(data, this._onChange);
+                this._proxy[name] = new Proxy(data, this._onChangeFunc(name));
             }
 
             (0, _messenger.send)(_events.ADD, {
@@ -249,7 +263,8 @@ module.exports = {
     "USER_UPDATE": "taco-user-update",
     "TOUCH": "taco-touch-element",
     "MOUSE_MOVE": "taco-mouse-move",
-    "QUERY_PARAMS": "taco-query-params"
+    "QUERY_PARAMS": "taco-query-params",
+    "TACO_EVENT": "taco-event-received"
 };
 
 /***/ }),
@@ -933,6 +948,8 @@ __webpack_require__(18);
 
 __webpack_require__(19);
 
+var _helpers = __webpack_require__(2);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
@@ -980,6 +997,19 @@ taco.getPages = function () {
 };
 taco.getQueryParams = function () {
     return _tacodata.tacoData.getQueryParams();
+};
+taco.onEvent = function (template, cb) {
+    document.addEventListener(_events.TACO_EVENT, function (event) {
+        if (cb) {
+            var key = (0, _helpers.findKey)(event.detail, template);
+            if (key) {
+                cb(event.detail[key]);
+            }
+        } else {
+            cb = template;
+            cb(event.detail);
+        }
+    });
 };
 
 module.exports = taco;
@@ -1118,8 +1148,12 @@ var _tacodata = __webpack_require__(0);
 
 var _consts = __webpack_require__(4);
 
+var _events = __webpack_require__(1);
+
 function update(data) {
     var isDataChanged = false;
+
+    document.dispatchEvent(new CustomEvent(_events.TACO_EVENT, { detail: data }));
     for (var template in _tacodata.tacoData._main) {
         var key = (0, _helpers.findKey)(data, template);
         for (var item in data[key]) {

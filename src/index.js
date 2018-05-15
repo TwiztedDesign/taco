@@ -1,5 +1,5 @@
 import {send} from './utils/messenger.js';
-import {READY, TOUCH, MOUSE_MOVE} from './utils/events.js';
+import {READY, TOUCH, MOUSE_MOVE, TACO_EVENT} from './utils/events.js';
 import {tacoData} from './core/tacodata.js';
 import * as api from './core/api';
 import {start as startListener} from './utils/listener';
@@ -7,7 +7,7 @@ import {init as initTacoDom} from './core/init';
 import tacoElement from './core/tacoElement';
 import './core/defaultExpose';
 import "./components/components.js";
-
+import {findKey} from './utils/helpers';
 startListener();
 initTacoDom();
 
@@ -46,5 +46,18 @@ taco.hide           = api.hide;
 taco.toggle         = api.toggle;
 taco.getPages       = () => {return tacoData.getPages();};
 taco.getQueryParams = () => {return tacoData.getQueryParams();};
+taco.onEvent        = (template, cb) => {
+    document.addEventListener(TACO_EVENT, function(event){
+        if(cb){
+            var key = findKey(event.detail, template);
+            if(key){
+                cb(event.detail[key]);
+            }
+        } else {
+            cb = template;
+            cb(event.detail);
+        }
+    });
+};
 
 module.exports = taco;

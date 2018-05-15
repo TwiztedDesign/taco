@@ -9,5 +9,6 @@ module.exports = {
     "USER_UPDATE"   : "taco-user-update",
     "TOUCH"         : "taco-touch-element",
     "MOUSE_MOVE"    : "taco-mouse-move",
-    "QUERY_PARAMS"  : "taco-query-params"
+    "QUERY_PARAMS"  : "taco-query-params",
+    "TACO_EVENT"    : "taco-event-received"
 };

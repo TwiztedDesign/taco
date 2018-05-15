@@ -9,6 +9,21 @@ class TacoData {
         this._proxy = {};
         this._pages = [];
         let self = this;
+
+        this._onChangeFunc = function(templateName){
+            return {
+                set: function (target, prop, value) {
+                    target[prop] = value;
+                    var payload = {};
+                    payload[templateName] = {};
+                    payload[templateName][prop] = value;
+                    send(USER_UPDATE, payload);
+                    return true;
+                }
+            };
+
+        };
+
         this._onChange = {
             set: function (target, prop, value) {
                 target[prop] = value;
@@ -58,7 +73,7 @@ class TacoData {
             // Object.assign(this._proxy[name], data);
         }else{
             this._main[name] = data;
-            this._proxy[name] = new Proxy(data, this._onChange);
+            this._proxy[name] = new Proxy(data, this._onChangeFunc(name));
         }
 
         send(ADD,{
