@@ -11,16 +11,16 @@ function sendMessage(type, payload){
 }
 
 function request(type, payload, cb){
-    var cid = uuid();
-    payload._cid = cid;
+    var rid = uuid();
+    payload._rid = rid;
     var message = {
-        type : type,
-        payload: payload,
+        type    : type,
+        payload : payload
     };
     var timeout;
     var handler = function(message){
         message = JSON.parse(message.data);
-        if(message.cid === cid){
+        if(message.payload && message.payload._rid === rid){
             removeHandler();
             cb(message);
         }
@@ -31,7 +31,10 @@ function request(type, payload, cb){
     };
 
     window.addEventListener('message', handler, false);
-    timeout = setTimeout(removeHandler, REQUEST_TIMEOUT);
+    timeout = setTimeout(function(){
+        //Request Timeout
+        removeHandler();
+    }, REQUEST_TIMEOUT);
 
     postMessage(message);
 }
