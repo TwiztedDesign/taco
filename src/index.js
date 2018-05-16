@@ -1,4 +1,4 @@
-import {send} from './utils/messenger.js';
+import {send, request} from './utils/messenger.js';
 import {READY, TOUCH, MOUSE_MOVE, TACO_EVENT} from './utils/events.js';
 import {tacoData} from './core/tacodata.js';
 import * as api from './core/api';
@@ -54,14 +54,14 @@ taco.onEvent        = (template, cb) => {
                 cb(event.detail[key]);
             }
         } else {
-            cb = template;
-            cb(event.detail);
+            template(event.detail);
         }
     });
 };
-taco.send           = (type, payload) => {
-    send(type, payload);
-};
+taco.send           = (type, payload) => { send(type, payload); };
+taco.request        = (type, payload, cb) => { request(type, payload, cb); };
+
+
 
 
 module.exports = taco;

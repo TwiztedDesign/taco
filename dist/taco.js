@@ -80,6 +80,91 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 
 
+function findKey(data, keyToFind) {
+    var keys = Object.keys(data);
+    for (var i = 0; i < keys.length; i++) {
+        if (keys[i].toLowerCase() === keyToFind.toLowerCase()) {
+            return keys[i];
+        }
+    }
+}
+function trim(str, charList) {
+    if (charList === undefined) {
+        charList = "\\s";
+    }
+    return str.replace(new RegExp("^[" + charList + "]+"), "").replace(new RegExp("[" + charList + "]+$"), "");
+}
+
+function getByPath(obj, path) {
+    path = path ? trim(path, '.').split('.') : [""];
+
+    var result = obj;
+    for (var i = 0; i < path.length; i++) {
+        result = result[path[i]];
+        if (result === undefined) {
+            return result;
+        }
+    }
+
+    return result;
+}
+function setByPath(obj, path, value) {
+    if (arguments.length !== 3) {
+        throw new Error('Missing Arguments!');
+    }
+    path = path ? trim(path, '.').split('.') : [""];
+    var result = obj;
+    for (var i = 0; i < path.length; i++) {
+        if (i === path.length - 1) {
+            result[path[i]] = value;
+        } else {
+            if (result[path[i]] !== undefined) {
+                result = result[path[i]];
+            } else {
+                return;
+            }
+        }
+    }
+}
+
+function camelize(str) {
+    return str.replace(/\s(.)/g, function ($1) {
+        return $1.toUpperCase();
+    }).replace(/\s/g, '').replace(/^(.)/, function ($1) {
+        return $1.toLowerCase();
+    });
+    // return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(letter, index) {
+    //     return index == 0 ? letter.toLowerCase() : letter.toUpperCase();
+    // }).replace(/\s+/g, '');
+}
+function decamelize(str) {
+    return str.replace(/([A-Z])/g, ' $1');
+}
+
+function uuid() {
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    }
+    return s4() + s4() + s4() + s4() + s4() + s4() + s4() + s4();
+}
+
+module.exports = {
+    findKey: findKey,
+    trim: trim,
+    getByPath: getByPath,
+    setByPath: setByPath,
+    camelize: camelize,
+    decamelize: decamelize,
+    uuid: uuid
+};
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 module.exports = {
     "READY": "taco-ready",
     "GO": "taco-go",
@@ -96,7 +181,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -109,9 +194,9 @@ exports.tacoData = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _events = __webpack_require__(0);
+var _events = __webpack_require__(1);
 
-var _helpers = __webpack_require__(2);
+var _helpers = __webpack_require__(0);
 
 var _messenger = __webpack_require__(3);
 
@@ -268,100 +353,61 @@ var TacoData = function () {
 var tacoData = exports.tacoData = new TacoData();
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-function findKey(data, keyToFind) {
-    var keys = Object.keys(data);
-    for (var i = 0; i < keys.length; i++) {
-        if (keys[i].toLowerCase() === keyToFind.toLowerCase()) {
-            return keys[i];
-        }
-    }
-}
-function trim(str, charList) {
-    if (charList === undefined) {
-        charList = "\\s";
-    }
-    return str.replace(new RegExp("^[" + charList + "]+"), "").replace(new RegExp("[" + charList + "]+$"), "");
-}
-
-function getByPath(obj, path) {
-    path = path ? trim(path, '.').split('.') : [""];
-
-    var result = obj;
-    for (var i = 0; i < path.length; i++) {
-        result = result[path[i]];
-        if (result === undefined) {
-            return result;
-        }
-    }
-
-    return result;
-}
-function setByPath(obj, path, value) {
-    if (arguments.length !== 3) {
-        throw new Error('Missing Arguments!');
-    }
-    path = path ? trim(path, '.').split('.') : [""];
-    var result = obj;
-    for (var i = 0; i < path.length; i++) {
-        if (i === path.length - 1) {
-            result[path[i]] = value;
-        } else {
-            if (result[path[i]] !== undefined) {
-                result = result[path[i]];
-            } else {
-                return;
-            }
-        }
-    }
-}
-
-function camelize(str) {
-    return str.replace(/\s(.)/g, function ($1) {
-        return $1.toUpperCase();
-    }).replace(/\s/g, '').replace(/^(.)/, function ($1) {
-        return $1.toLowerCase();
-    });
-    // return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(letter, index) {
-    //     return index == 0 ? letter.toLowerCase() : letter.toUpperCase();
-    // }).replace(/\s+/g, '');
-}
-function decamelize(str) {
-    return str.replace(/([A-Z])/g, ' $1');
-}
-
-module.exports = {
-    findKey: findKey,
-    trim: trim,
-    getByPath: getByPath,
-    setByPath: setByPath,
-    camelize: camelize,
-    decamelize: decamelize
-};
-
-/***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global) {
 
+var _helpers = __webpack_require__(0);
+
 var window = window || global.window;
+var REQUEST_TIMEOUT = 20000;
 
 function sendMessage(type, payload) {
+    var message = {
+        type: type,
+        payload: payload
+    };
+    postMessage(message);
+}
+
+function request(type, payload, cb) {
+    var cid = (0, _helpers.uuid)();
+    payload._cid = cid;
+    var message = {
+        type: type,
+        payload: payload
+    };
+    var timeout;
+    var handler = function handler(message) {
+        message = JSON.parse(message.data);
+        if (message.cid === cid) {
+            removeHandler();
+            cb(message);
+        }
+    };
+    var removeHandler = function removeHandler() {
+        clearTimeout(timeout);
+        window.removeEventListener('message', handler, false);
+    };
+
+    window.addEventListener('message', handler, false);
+    timeout = setTimeout(removeHandler, REQUEST_TIMEOUT);
+
+    postMessage(message);
+}
+
+function postMessage(message) {
     var w = window || global.window;
     if (w && w.parent) {
-        w.parent.postMessage(JSON.stringify({ type: type, payload: payload }), '*');
+        w.parent.postMessage(JSON.stringify(message), '*');
     }
 }
 
 module.exports = {
-    send: sendMessage
+    send: sendMessage,
+    request: request
 };
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
@@ -928,9 +974,9 @@ exports.default = Clock1;
 
 var _messenger = __webpack_require__(3);
 
-var _events = __webpack_require__(0);
+var _events = __webpack_require__(1);
 
-var _tacodata = __webpack_require__(1);
+var _tacodata = __webpack_require__(2);
 
 var _api = __webpack_require__(9);
 
@@ -948,7 +994,7 @@ __webpack_require__(18);
 
 __webpack_require__(19);
 
-var _helpers = __webpack_require__(2);
+var _helpers = __webpack_require__(0);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1006,13 +1052,15 @@ taco.onEvent = function (template, cb) {
                 cb(event.detail[key]);
             }
         } else {
-            cb = template;
-            cb(event.detail);
+            template(event.detail);
         }
     });
 };
 taco.send = function (type, payload) {
     (0, _messenger.send)(type, payload);
+};
+taco.request = function (type, payload, cb) {
+    (0, _messenger.request)(type, payload, cb);
 };
 
 module.exports = taco;
@@ -1053,9 +1101,9 @@ module.exports = g;
 
 var _messenger = __webpack_require__(3);
 
-var _events = __webpack_require__(0);
+var _events = __webpack_require__(1);
 
-var _tacodata = __webpack_require__(1);
+var _tacodata = __webpack_require__(2);
 
 function noop() {}
 
@@ -1128,7 +1176,7 @@ var _pagesHandler = __webpack_require__(13);
 
 var _queryParamsHandler = __webpack_require__(14);
 
-var events = __webpack_require__(0);
+var events = __webpack_require__(1);
 
 
 var handlers = {};
@@ -1145,13 +1193,13 @@ module.exports = handlers;
 "use strict";
 
 
-var _helpers = __webpack_require__(2);
+var _helpers = __webpack_require__(0);
 
-var _tacodata = __webpack_require__(1);
+var _tacodata = __webpack_require__(2);
 
 var _consts = __webpack_require__(4);
 
-var _events = __webpack_require__(0);
+var _events = __webpack_require__(1);
 
 function update(data) {
     var isDataChanged = false;
@@ -1205,7 +1253,7 @@ module.exports = {
 "use strict";
 
 
-var _tacodata = __webpack_require__(1);
+var _tacodata = __webpack_require__(2);
 
 function pages(data) {
     _tacodata.tacoData.addPages(data);
@@ -1222,7 +1270,7 @@ module.exports = {
 "use strict";
 
 
-var _tacodata = __webpack_require__(1);
+var _tacodata = __webpack_require__(2);
 
 function queryParams(data) {
     _tacodata.tacoData.addQueryParams(data);
@@ -1241,7 +1289,7 @@ module.exports = {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _helpers = __webpack_require__(2);
+var _helpers = __webpack_require__(0);
 
 var _consts = __webpack_require__(4);
 
@@ -1418,7 +1466,7 @@ exports.default = TacoElement;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _helpers = __webpack_require__(2);
+var _helpers = __webpack_require__(0);
 
 function getExposed(provider, prop) {
     if (provider.expose) {
