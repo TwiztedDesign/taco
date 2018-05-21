@@ -7,7 +7,7 @@ import {init as initTacoDom} from './core/init';
 import tacoElement from './core/tacoElement';
 import './core/defaultExpose';
 import "./components/components.js";
-import {findKey} from './utils/helpers';
+import {findKey, isMobile, isController} from './utils/helpers';
 startListener();
 initTacoDom();
 
@@ -60,6 +60,8 @@ taco.onEvent        = (template, cb) => {
 };
 taco.send           = (type, payload) => { send(type, payload); };
 taco.request        = (type, payload, cb) => { request(type, payload, cb); };
+taco.isMobile       = isMobile;
+taco.isController   = isController;
 
 
 

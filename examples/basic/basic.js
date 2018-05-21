@@ -48,6 +48,8 @@ app.controller("Ctrl", ['$scope',function($scope){
             // console.log("some value changed: ", prop, val, path);
         });
 
+        console.log("mobile: ", taco.isMobile);
+        console.log("controller: ", taco.isController);
     };
 
 }]);
