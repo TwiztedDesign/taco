@@ -52,6 +52,25 @@ app.controller("Ctrl", ['$scope',function($scope){
         console.log("controller: ", taco.isController);
     };
 
+
+    taco.onEvent2('test',function(e){
+        console.log('Event received: ', e);
+    }, {consolidate : true});
+
+    setTimeout(function(){
+        document.dispatchEvent(new CustomEvent("taco-event-received", { detail: {test: {a:1}} }));
+        document.dispatchEvent(new CustomEvent("taco-event-received", { detail: {test: {a:1}} }));
+        document.dispatchEvent(new CustomEvent("taco-event-received", { detail: {test: {a:1}} }));
+        document.dispatchEvent(new CustomEvent("taco-event-received", { detail: {test: {a:1}} }));
+        document.dispatchEvent(new CustomEvent("taco-event-received", { detail: {test: {a:1}} }));
+        document.dispatchEvent(new CustomEvent("taco-event-received", { detail: {test: {a:1}} }));
+        document.dispatchEvent(new CustomEvent("taco-event-received", { detail: {test: {a:1}} }));
+        document.dispatchEvent(new CustomEvent("taco-event-received", { detail: {test: {a:1}} }));
+        document.dispatchEvent(new CustomEvent("taco-event-received", { detail: {test: {a:1}} }));
+        document.dispatchEvent(new CustomEvent("taco-event-received", { detail: {test: {a:1}} }));
+    }, 3000);
+
+
 }]);
 
 

@@ -992,6 +992,8 @@ exports.default = Clock1;
 "use strict";
 
 
+var _arguments = arguments;
+
 var _messenger = __webpack_require__(3);
 
 var _events = __webpack_require__(1);
@@ -1064,7 +1066,7 @@ taco.getPages = function () {
 taco.getQueryParams = function () {
     return _tacodata.tacoData.getQueryParams();
 };
-taco.onEvent = function (template, cb) {
+taco.onEvent2 = function (template, cb) {
     document.addEventListener(_events.TACO_EVENT, function (event) {
         if (cb) {
             var key = (0, _helpers.findKey)(event.detail, template);
@@ -1076,6 +1078,57 @@ taco.onEvent = function (template, cb) {
         }
     });
 };
+
+var timeouts = {};
+
+taco.onEvent = function (arg1, arg2, arg3) {
+
+    var template = void 0,
+        callback = void 0,
+        options = void 0;
+    switch (_arguments.length) {
+        case 0:
+            throw new Error("onEvent was called without arguments");
+        case 1:
+            callback = arg1;
+            break;
+        default:
+            if (typeof arg1 === 'string') {
+                template = arg1;
+                callback = arg2;
+                options = arg3 || {};
+            } else if (typeof arg1 === 'function') {
+                callback = arg1;
+                options = arg2 || {};
+            }
+            break;
+    }
+
+    function runCB(data) {
+        if (options.consolidate) {
+            clearTimeout(timeouts[template || '__global_event__']);
+            timeouts[template || '__global_event__'] = setTimeout(function () {
+                callback(data);
+            }, 50);
+        } else {
+            callback(data);
+        }
+    }
+
+    function listener(event) {
+        if (template) {
+            var key = (0, _helpers.findKey)(event.detail, template);
+            if (key) {
+                runCB(event.detail[key]);
+            }
+        } else {
+            runCB(event.detail);
+        }
+    }
+
+    document.addEventListener(_events.TACO_EVENT, listener);
+};
+
 taco.send = function (type, payload) {
     (0, _messenger.send)(type, payload);
 };
