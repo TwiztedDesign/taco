@@ -388,7 +388,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Interval = __webpack_require__(32);
+var Interval = __webpack_require__(31);
 
 var BasicClock = function (_HTMLElement) {
     _inherits(BasicClock, _HTMLElement);
@@ -1223,23 +1223,19 @@ var _telestratorElement = __webpack_require__(22);
 
 var _telestratorElement2 = _interopRequireDefault(_telestratorElement);
 
-var _videoStream = __webpack_require__(28);
-
-var _videoStream2 = _interopRequireDefault(_videoStream);
-
-var _clockSimple = __webpack_require__(29);
+var _clockSimple = __webpack_require__(28);
 
 var _clockSimple2 = _interopRequireDefault(_clockSimple);
 
-var _systemClock = __webpack_require__(31);
+var _systemClock = __webpack_require__(30);
 
 var _systemClock2 = _interopRequireDefault(_systemClock);
 
-var _countdown = __webpack_require__(33);
+var _countdown = __webpack_require__(32);
 
 var _countdown2 = _interopRequireDefault(_countdown);
 
-var _stopwatch = __webpack_require__(34);
+var _stopwatch = __webpack_require__(33);
 
 var _stopwatch2 = _interopRequireDefault(_stopwatch);
 
@@ -1256,7 +1252,6 @@ function define(name, element) {
 define('drag-area', _dragArea2.default);
 define('my-element', _emoji2.default);
 define('telestrator-element', _telestratorElement2.default);
-define('video-stream', _videoStream2.default);
 define('clock-element', _clockSimple2.default);
 define('system-clock', _systemClock2.default);
 define('countdown-clock', _countdown2.default);
@@ -2412,76 +2407,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var VideoStream = function (_HTMLElement) {
-    _inherits(VideoStream, _HTMLElement);
-
-    function VideoStream() {
-        _classCallCheck(this, VideoStream);
-
-        return _possibleConstructorReturn(this, (VideoStream.__proto__ || Object.getPrototypeOf(VideoStream)).call(this));
-    }
-
-    _createClass(VideoStream, [{
-        key: 'connectedCallback',
-        value: function connectedCallback() {
-            this.innerHTML = '<video></video>';
-        }
-    }, {
-        key: 'disconnectedCallback',
-        value: function disconnectedCallback() {}
-    }, {
-        key: 'attributeChangedCallback',
-        value: function attributeChangedCallback() {}
-    }, {
-        key: 'expose',
-        value: function expose() {
-            return {
-                group: 'groupId',
-                stream: 'streamId'
-            };
-        }
-    }, {
-        key: 'group',
-        get: function get() {
-            return this.getAttribute("group");
-        }
-    }, {
-        key: 'stream',
-        get: function get() {
-            return this._streamId;
-        }
-    }], [{
-        key: 'observedAttributes',
-        get: function get() {
-            return ['result', 'mode', 'minValueX', 'minValueY', 'maxValueX', 'maxValueY', 'precision'];
-        }
-    }]);
-
-    return VideoStream;
-}(HTMLElement);
-
-exports.default = VideoStream;
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var work = __webpack_require__(30);
+var work = __webpack_require__(29);
 
 function createWorker() {
     var blobURL = URL.createObjectURL(new Blob(['(', work.toString(), ')()'], { type: 'application/javascript' }));
@@ -2700,7 +2626,7 @@ var Clock = function (_HTMLElement) {
 exports.default = Clock;
 
 /***/ }),
-/* 30 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2763,7 +2689,7 @@ function worker() {
 module.exports = worker;
 
 /***/ }),
-/* 31 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2836,7 +2762,7 @@ var Countdown = function (_BasicClock) {
 exports.default = Countdown;
 
 /***/ }),
-/* 32 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2920,7 +2846,7 @@ var Interval = function () {
 module.exports = Interval;
 
 /***/ }),
-/* 33 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2983,7 +2909,7 @@ var Countdown = function (_BasicClock) {
 exports.default = Countdown;
 
 /***/ }),
-/* 34 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
