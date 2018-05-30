@@ -7,6 +7,7 @@ import Clock from "./clocks/clock-simple";
 import SystemClock from "./clocks/system-clock";
 import Countdown from "./clocks/countdown";
 import Stopwatch from "./clocks/stopwatch";
+import BasicClock from "./clocks/basic-clock";
 
 
 function define(name, element) {
@@ -22,6 +23,7 @@ define('clock-element', Clock);
 define('system-clock', SystemClock);
 define('countdown-clock', Countdown);
 define('stopwatch-clock', Stopwatch);
+define('basic-clock', BasicClock);
 
 
 // function isDefined(name) {

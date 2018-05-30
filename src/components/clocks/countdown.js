@@ -1,17 +1,25 @@
-import Clock from "./clock";
+import BasicClock from "./basic-clock";
 
-export default class Countdown extends Clock {
+
+export default class Countdown extends BasicClock {
     constructor() {
         super();
-    }
 
+    }
     connectedCallback() {
-        this.type = 'countdown';
         super.connectedCallback();
     }
 
-    formatTime(){
-        return Math.max(this.countFrom - this._time, 0);
+    init(){
+        return 15000;
     }
 
+    onInterval(i){
+        if(this.get() - i > 0){
+            this.set(this.get() - i);
+        } else {
+            this.set(0);
+            this.stop();
+        }
+    }
 }

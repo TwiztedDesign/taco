@@ -113,6 +113,12 @@ taco.send           = (type, payload) => { send(type, payload); };
 taco.request        = (type, payload, cb) => { request(type, payload, cb); };
 taco.isMobile       = isMobile;
 taco.isController   = isController;
+taco.extend         = (name, extension) => {
+    taco[name] = extension;
+};
+taco.define         = (name, element) => {
+    customElements.define(name, element);
+};
 
 
 

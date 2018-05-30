@@ -1,23 +1,30 @@
-import Clock from "./clock-simple";
+import BasicClock from "./basic-clock";
 
-export default class Stopwatch extends Clock {
+export default class Stopwatch extends BasicClock {
     constructor() {
         super();
     }
 
     connectedCallback() {
-        this.type = 'stopwatch';
         super.connectedCallback();
     }
 
-    formatTime(){
-        var seconds         = parseInt((this._time / 1000) % 60),
-            minutes         = parseInt((this._time / (1000 * 60)));
-            // hours           = parseInt((this._time / (1000 * 60 * 60)) % 24),
-            // milliseconds    = parseInt((this._time % 1000) / 100);
-
-        return this.pad(minutes) + ":" + this.pad(seconds);
-
+    _pad(num) {
+        return ('0' + num).slice(-2);
     }
+
+    format(timecode){
+        var seconds         = parseInt((timecode / 1000) % 60),
+            minutes         = parseInt((timecode / (1000 * 60)));
+
+        return this._pad(minutes) + ":" + this._pad(seconds);
+    }
+
+    expose(){
+        var exposed = super.expose();
+        exposed.inharit = "inharit";
+        return exposed;
+    }
+
 
 }

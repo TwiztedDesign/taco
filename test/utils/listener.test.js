@@ -7,7 +7,7 @@ describe("listener", () =>{
             const spy = jest.spyOn(window, 'addEventListener');
             listener.start();
             expect(spy).toHaveBeenCalledTimes(1);
-            expect(spy).toHaveBeenCalledWith('message', expect.any(Function));
+            expect(spy).toHaveBeenCalledWith('message', expect.any(Function), false);
 
 
         });
