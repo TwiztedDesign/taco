@@ -163,6 +163,18 @@ function controllerCheck() {
     }
 }
 
+function deepExtend(destination, source) {
+    for (var property in source) {
+        if (source[property] && source[property].constructor && source[property].constructor === Object && !source[property].__isProxy) {
+            destination[property] = destination[property] || {};
+            deepExtend(destination[property], source[property]);
+        } else {
+            destination[property] = source[property];
+        }
+    }
+    return destination;
+}
+
 module.exports = {
     findKey: findKey,
     trim: trim,
@@ -171,6 +183,7 @@ module.exports = {
     camelize: camelize,
     decamelize: decamelize,
     uuid: uuid,
+    deepExtend: deepExtend,
     isMobile: mobilecheck(),
     isController: controllerCheck()
 };
@@ -948,12 +961,16 @@ var _helpers = __webpack_require__(0);
 var _consts = __webpack_require__(5);
 
 function _init() {
+    var untitledTemplateCount = 0;
+    var templates = {};
     var controls = document.querySelectorAll('[taco-name]');
     controls.forEach(function (control) {
         if (control.expose) {
-            var template = control.closest('[taco-template]');
-            var templateName = template ? template.getAttribute('taco-template') : 'Untitled Template';
-            // templateName = templateName.toLowerCase();
+            var _template = control.closest('[taco-template]');
+            if (!_template) {
+                control.setAttribute('taco-template', 'Untitled Template ' + ++untitledTemplateCount);
+            }
+            var templateName = (_template || control).getAttribute('taco-template');
             var controlName = control.getAttribute('taco-name');
             var exposed = control.expose();
 
@@ -978,47 +995,17 @@ function _init() {
                 }
             }
 
-            window.taco.addTemplate(templateName, data);
+            if (!templates[templateName]) {
+                templates[templateName] = data;
+            } else {
+                (0, _helpers.deepExtend)(templates[templateName], data);
+            }
         }
     });
+    for (var template in templates) {
+        window.taco.addTemplate(template, templates[template]);
+    }
 }
-
-// function init_dep(){
-//     let templates = document.querySelectorAll('[taco-template]');
-//     for (let i = 0; i < templates.length; i++) {
-//         let template = templates[i];
-//         let templateName = template.getAttribute('taco-template');
-//         let controls = template.querySelectorAll('[taco-name]');
-//         let data = {};
-//         for (let j = 0; j < controls.length; j++) {
-//             let control = controls[j];
-//             let controlName = control.getAttribute('taco-name');
-//             if(control.expose){
-//
-//                 let exposed = control.expose();
-//                 for (let prop in exposed) {
-//                     if (exposed.hasOwnProperty(prop)) {
-//                         let path = typeof exposed[prop] === 'object'? exposed[prop].path : exposed[prop];
-//                         data[controlName + ' ' + prop] = getByPath(control, path);
-//
-//                         Object.defineProperty(control, prop, {
-//                             get (){
-//                                 return getByPath(this, path);
-//                             },
-//                             set (newVal){
-//                                 setByPath(this, path, newVal);
-//                             },
-//                             configurable : true,
-//                         });
-//                     }
-//                 }
-//             }
-//         }
-//         window.taco.addTemplate(templateName, data);
-//
-//     }
-// }
-
 
 module.exports = {
     init: function init() {
