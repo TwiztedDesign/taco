@@ -1,3 +1,4 @@
+import "../../scripts/custom-elements.min";
 import "../../scripts/custom-elements-es5-adapter.exec";
 import Emoji from "./emoji.js";
 import DragArea from "./drag-area";
