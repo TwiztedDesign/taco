@@ -41,7 +41,7 @@ function init(){
         }
 
     });
-    for (var template in templates) {
+    for (let template in templates) {
         window.taco.addTemplate(template, templates[template]);
     }
 }

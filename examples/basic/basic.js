@@ -53,9 +53,9 @@ app.controller("Ctrl", ['$scope',function($scope){
     };
 
 
-    taco.onEvent2('test',function(e){
+    taco.onEvent('test',function(e){
         console.log('Event received: ', e);
-    }, {consolidate : true});
+    }, {consolidate : false});
 
     setTimeout(function(){
         document.dispatchEvent(new CustomEvent("taco-event-received", { detail: {test: {a:1}} }));
@@ -68,6 +68,10 @@ app.controller("Ctrl", ['$scope',function($scope){
         document.dispatchEvent(new CustomEvent("taco-event-received", { detail: {test: {a:1}} }));
         document.dispatchEvent(new CustomEvent("taco-event-received", { detail: {test: {a:1}} }));
         document.dispatchEvent(new CustomEvent("taco-event-received", { detail: {test: {a:1}} }));
+
+
+        taco.emit({test: 3});
+
     }, 3000);
 
 

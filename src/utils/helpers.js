@@ -87,6 +87,13 @@ function controllerCheck(){
 
 }
 
+function extend(a, b){
+    for(var key in b)
+        if(b.hasOwnProperty(key))
+            a[key] = b[key];
+    return a;
+}
+
 function deepExtend(destination, source) {
     for (let property in source) {
         if (source[property] && source[property].constructor &&
@@ -100,6 +107,8 @@ function deepExtend(destination, source) {
     return destination;
 }
 
+function noop(){}
+
 
 
 module.exports = {
@@ -110,7 +119,9 @@ module.exports = {
     camelize    : camelize,
     decamelize  : decamelize,
     uuid        : uuid,
+    extend      : extend,
     deepExtend  : deepExtend,
     isMobile    : mobilecheck(),
-    isController: controllerCheck()
+    isController: controllerCheck(),
+    noop        : noop
 };

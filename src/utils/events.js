@@ -7,8 +7,15 @@ module.exports = {
     "UPDATE"        : "taco-update",
     "PAGES"         : "taco-pages",
     "USER_UPDATE"   : "taco-user-update",
+    "QUERY_PARAMS"  : "taco-query-params",
+    "OUTGOING_EVENT": "taco-event-sent",
+    "TACO_EVENT"    : "taco-event-received",
+
+
     "TOUCH"         : "taco-touch-element",
     "MOUSE_MOVE"    : "taco-mouse-move",
-    "QUERY_PARAMS"  : "taco-query-params",
-    "TACO_EVENT"    : "taco-event-received"
+    "SWIPE_UP"      : "taco-swipe-up",
+    "SWIPE_DOWN"      : "taco-swipe-down",
+    "SWIPE_LEFT"      : "taco-swipe-left",
+    "SWIPE_RIGHT"      : "taco-swipe-right",
 };
