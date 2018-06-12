@@ -205,6 +205,96 @@ module.exports = {
 "use strict";
 
 
+module.exports = {
+    "READY": "taco-ready",
+    "GO": "taco-go",
+    "NEXT": "taco-next",
+    "PREV": "taco-previous",
+    "ADD": "taco-addtemplate",
+    "UPDATE": "taco-update",
+    "PAGES": "taco-pages",
+    "USER_UPDATE": "taco-user-update",
+    "QUERY_PARAMS": "taco-query-params",
+    "OUTGOING_EVENT": "taco-event-sent",
+    "TACO_EVENT": "taco-event-received",
+
+    "TOUCH": "taco-touch-element",
+    "MOUSE_MOVE": "taco-mouse-move",
+    "SWIPE_UP": "taco-swipe-up",
+    "SWIPE_DOWN": "taco-swipe-down",
+    "SWIPE_LEFT": "taco-swipe-left",
+    "SWIPE_RIGHT": "taco-swipe-right"
+};
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+
+var _helpers = __webpack_require__(0);
+
+var window = window || global.window;
+var REQUEST_TIMEOUT = 20000;
+
+function sendMessage(type, payload) {
+    var message = {
+        type: type,
+        payload: payload
+    };
+    postMessage(message);
+}
+
+function request(type, payload, cb) {
+    var rid = (0, _helpers.uuid)();
+    payload._rid = rid;
+    var message = {
+        type: type,
+        payload: payload
+    };
+    var timeout;
+    var handler = function handler(message) {
+        message = JSON.parse(message.data);
+        if (message.payload && message.payload._rid === rid) {
+            removeHandler();
+            cb(message);
+        }
+    };
+    var removeHandler = function removeHandler() {
+        clearTimeout(timeout);
+        window.removeEventListener('message', handler, false);
+    };
+
+    window.addEventListener('message', handler, false);
+    timeout = setTimeout(function () {
+        //Request Timeout
+        removeHandler();
+    }, REQUEST_TIMEOUT);
+
+    postMessage(message);
+}
+
+function postMessage(message) {
+    var w = window || global.window;
+    if (w && w.parent) {
+        w.parent.postMessage(JSON.stringify(message), '*');
+    }
+}
+
+module.exports = {
+    send: sendMessage,
+    request: request
+};
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -212,11 +302,11 @@ exports.tacoData = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _events = __webpack_require__(2);
+var _events = __webpack_require__(1);
 
 var _helpers = __webpack_require__(0);
 
-var _messenger = __webpack_require__(3);
+var _messenger = __webpack_require__(2);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -371,96 +461,6 @@ var TacoData = function () {
 var tacoData = exports.tacoData = new TacoData();
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = {
-    "READY": "taco-ready",
-    "GO": "taco-go",
-    "NEXT": "taco-next",
-    "PREV": "taco-previous",
-    "ADD": "taco-addtemplate",
-    "UPDATE": "taco-update",
-    "PAGES": "taco-pages",
-    "USER_UPDATE": "taco-user-update",
-    "QUERY_PARAMS": "taco-query-params",
-    "OUTGOING_EVENT": "taco-event-sent",
-    "TACO_EVENT": "taco-event-received",
-
-    "TOUCH": "taco-touch-element",
-    "MOUSE_MOVE": "taco-mouse-move",
-    "SWIPE_UP": "taco-swipe-up",
-    "SWIPE_DOWN": "taco-swipe-down",
-    "SWIPE_LEFT": "taco-swipe-left",
-    "SWIPE_RIGHT": "taco-swipe-right"
-};
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(global) {
-
-var _helpers = __webpack_require__(0);
-
-var window = window || global.window;
-var REQUEST_TIMEOUT = 20000;
-
-function sendMessage(type, payload) {
-    var message = {
-        type: type,
-        payload: payload
-    };
-    postMessage(message);
-}
-
-function request(type, payload, cb) {
-    var rid = (0, _helpers.uuid)();
-    payload._rid = rid;
-    var message = {
-        type: type,
-        payload: payload
-    };
-    var timeout;
-    var handler = function handler(message) {
-        message = JSON.parse(message.data);
-        if (message.payload && message.payload._rid === rid) {
-            removeHandler();
-            cb(message);
-        }
-    };
-    var removeHandler = function removeHandler() {
-        clearTimeout(timeout);
-        window.removeEventListener('message', handler, false);
-    };
-
-    window.addEventListener('message', handler, false);
-    timeout = setTimeout(function () {
-        //Request Timeout
-        removeHandler();
-    }, REQUEST_TIMEOUT);
-
-    postMessage(message);
-}
-
-function postMessage(message) {
-    var w = window || global.window;
-    if (w && w.parent) {
-        w.parent.postMessage(JSON.stringify(message), '*');
-    }
-}
-
-module.exports = {
-    send: sendMessage,
-    request: request
-};
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
-
-/***/ }),
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -594,11 +594,11 @@ module.exports = {
 "use strict";
 
 
-var _messenger = __webpack_require__(3);
+var _messenger = __webpack_require__(2);
 
-var _events = __webpack_require__(2);
+var _events = __webpack_require__(1);
 
-var _tacodata = __webpack_require__(1);
+var _tacodata = __webpack_require__(3);
 
 var _listener = __webpack_require__(8);
 
@@ -626,11 +626,13 @@ var _visibility = __webpack_require__(36);
 
 var visibilityApi = _interopRequireWildcard(_visibility);
 
+var _gestures = __webpack_require__(37);
+
+var gestureApi = _interopRequireWildcard(_gestures);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-__webpack_require__(37);
 
 (0, _listener.start)();
 (0, _init.init)();
@@ -670,6 +672,8 @@ taco.define = function (name, element) {
     customElements.define(name, element);
 };
 
+taco.gesture = {};
+(0, _helpers.extend)(taco.gesture, gestureApi);
 (0, _helpers.extend)(taco, playerApi);
 (0, _helpers.extend)(taco, visibilityApi);
 (0, _helpers.extend)(taco, eventsApi);
@@ -749,7 +753,7 @@ var _pagesHandler = __webpack_require__(11);
 
 var _queryParamsHandler = __webpack_require__(12);
 
-var events = __webpack_require__(2);
+var events = __webpack_require__(1);
 
 
 var handlers = {};
@@ -768,11 +772,11 @@ module.exports = handlers;
 
 var _helpers = __webpack_require__(0);
 
-var _tacodata = __webpack_require__(1);
+var _tacodata = __webpack_require__(3);
 
 var _consts = __webpack_require__(5);
 
-var _events = __webpack_require__(2);
+var _events = __webpack_require__(1);
 
 function update(data) {
     var isDataChanged = false;
@@ -826,7 +830,7 @@ module.exports = {
 "use strict";
 
 
-var _tacodata = __webpack_require__(1);
+var _tacodata = __webpack_require__(3);
 
 function pages(data) {
     _tacodata.tacoData.addPages(data);
@@ -843,7 +847,7 @@ module.exports = {
 "use strict";
 
 
-var _tacodata = __webpack_require__(1);
+var _tacodata = __webpack_require__(3);
 
 function queryParams(data) {
     _tacodata.tacoData.addQueryParams(data);
@@ -2923,11 +2927,11 @@ exports.default = Stopwatch;
 
 var _arguments = arguments;
 
-var _events = __webpack_require__(2);
+var _events = __webpack_require__(1);
 
 var _helpers = __webpack_require__(0);
 
-var _messenger = __webpack_require__(3);
+var _messenger = __webpack_require__(2);
 
 var timeouts = {};
 
@@ -2994,9 +2998,9 @@ module.exports = {
 "use strict";
 
 
-var _messenger = __webpack_require__(3);
+var _messenger = __webpack_require__(2);
 
-var _events = __webpack_require__(2);
+var _events = __webpack_require__(1);
 
 var _helpers = __webpack_require__(0);
 
@@ -3021,7 +3025,7 @@ module.exports = {
 "use strict";
 
 
-var _tacodata = __webpack_require__(1);
+var _tacodata = __webpack_require__(3);
 
 module.exports = {
     show: function show(template) {
@@ -3042,9 +3046,11 @@ module.exports = {
 "use strict";
 
 
-var _messenger = __webpack_require__(3);
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _events = __webpack_require__(2);
+var _messenger = __webpack_require__(2);
+
+var _events = __webpack_require__(1);
 
 var Hammer = __webpack_require__(38);
 
@@ -3061,31 +3067,87 @@ function onMouseMove() {
     lastMouseMoveTime = mouseMoveTime;
 }
 
-function onSwipeUp() {
-    (0, _messenger.send)(_events.SWIPE_UP);
-}
-function onSwipeDown() {
-    (0, _messenger.send)(_events.SWIPE_DOWN);
-}
-function onSwipeLeft() {
-    (0, _messenger.send)(_events.SWIPE_LEFT);
-}
-function onSwipeRight() {
-    (0, _messenger.send)(_events.SWIPE_RIGHT);
-}
+var gestureListeners = {
+    swipe: {
+        swipeup: function swipeup() {
+            (0, _messenger.send)(_events.SWIPE_UP);
+        },
+        swipedown: function swipedown() {
+            (0, _messenger.send)(_events.SWIPE_DOWN);
+        },
+        swipeleft: function swipeleft() {
+            (0, _messenger.send)(_events.SWIPE_LEFT);
+        },
+        swiperight: function swiperight() {
+            (0, _messenger.send)(_events.SWIPE_RIGHT);
+        }
+    }
+};
+var activeListeners = {};
+
+var gesture = void 0;
 
 window.addEventListener('load', function () {
 
-    var gesture = new Hammer(document.body);
+    gesture = new Hammer(document.body);
     gesture.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
 
     document.body.addEventListener('touchstart', onTouch);
     document.body.addEventListener('mousemove', onMouseMove);
-    gesture.on('swipeup', onSwipeUp);
-    gesture.on('swipedown', onSwipeDown);
-    gesture.on('swipeleft', onSwipeLeft);
-    gesture.on('swiperight', onSwipeRight);
+
+    listen();
 });
+
+function listen() {
+    for (var category in gestureListeners) {
+        if (typeof gestureListeners[category] === 'function' && !activeListeners[category]) {
+            gesture.on(category, gestureListeners[category]);
+            activeListeners[category] = true;
+        } else if (_typeof(gestureListeners[category]) === 'object') {
+            for (var listener in gestureListeners[category]) {
+                if (!activeListeners[category] || !activeListeners[category][listener]) {
+                    gesture.on(listener, gestureListeners[category][listener]);
+                    activeListeners[category] = activeListeners[category] || {};
+                    activeListeners[category][listener] = true;
+                }
+            }
+        }
+    }
+}
+
+function stop(event) {
+    if (Array.isArray(event)) {
+        event.forEach(function (e) {
+            stop(e);
+        });
+    } else {
+        var split = event.split(/\s+/);
+        if (split.length > 1) {
+            stop(split);
+        }
+    }
+    for (var category in gestureListeners) {
+        if (typeof gestureListeners[category] === 'function') {
+            if (!event || event === category) {
+                gesture.off(category, gestureListeners[category]);
+                activeListeners[category] = false;
+            }
+        } else if (_typeof(gestureListeners[category]) === 'object') {
+            for (var listener in gestureListeners[category]) {
+                if (!event || category === event || listener === event) {
+                    gesture.off(listener, gestureListeners[category][listener]);
+                    activeListeners[category] = activeListeners[category] || {};
+                    activeListeners[category][listener] = false;
+                }
+            }
+        }
+    }
+}
+
+module.exports = {
+    listen: listen,
+    stop: stop
+};
 
 /***/ }),
 /* 38 */
