@@ -3145,8 +3145,8 @@ function stop(event) {
 }
 
 module.exports = {
-    listen: listen,
-    stop: stop
+    on: listen,
+    off: stop
 };
 
 /***/ }),
