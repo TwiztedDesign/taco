@@ -3099,6 +3099,7 @@ window.addEventListener('load', function () {
 });
 
 function listen() {
+    if (!gesture) return;
     for (var category in gestureListeners) {
         if (typeof gestureListeners[category] === 'function' && !activeListeners[category]) {
             gesture.on(category, gestureListeners[category]);
@@ -3116,6 +3117,7 @@ function listen() {
 }
 
 function stop(event) {
+    if (!gesture) return;
     if (Array.isArray(event)) {
         event.forEach(function (e) {
             stop(e);
