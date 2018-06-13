@@ -10,7 +10,7 @@ import {isMobile, isController, extend} from './utils/helpers';
 import * as eventsApi from './core/api/events';
 import * as playerApi from './core/api/player';
 import * as visibilityApi from './core/api/visibility';
-require('./core/interactionListeners');
+import * as gestureApi from './core/api/gestures';
 
 startListener();
 initTacoDom();
@@ -35,6 +35,8 @@ taco.isController   = isController;
 taco.extend         = (name, extension) => { taco[name] = extension; };
 taco.define         = (name, element) => { customElements.define(name, element); };
 
+taco.gesture        = {};
+extend(taco.gesture , gestureApi);
 extend(taco, playerApi);
 extend(taco, visibilityApi);
 extend(taco, eventsApi);

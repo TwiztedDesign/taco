@@ -626,11 +626,13 @@ var _visibility = __webpack_require__(36);
 
 var visibilityApi = _interopRequireWildcard(_visibility);
 
+var _gestures = __webpack_require__(37);
+
+var gestureApi = _interopRequireWildcard(_gestures);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-__webpack_require__(37);
 
 (0, _listener.start)();
 (0, _init.init)();
@@ -670,6 +672,8 @@ taco.define = function (name, element) {
     customElements.define(name, element);
 };
 
+taco.gesture = {};
+(0, _helpers.extend)(taco.gesture, gestureApi);
 (0, _helpers.extend)(taco, playerApi);
 (0, _helpers.extend)(taco, visibilityApi);
 (0, _helpers.extend)(taco, eventsApi);
@@ -3042,6 +3046,8 @@ module.exports = {
 "use strict";
 
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _messenger = __webpack_require__(2);
 
 var _events = __webpack_require__(1);
@@ -3061,31 +3067,89 @@ function onMouseMove() {
     lastMouseMoveTime = mouseMoveTime;
 }
 
-function onSwipeUp() {
-    (0, _messenger.send)(_events.SWIPE_UP);
-}
-function onSwipeDown() {
-    (0, _messenger.send)(_events.SWIPE_DOWN);
-}
-function onSwipeLeft() {
-    (0, _messenger.send)(_events.SWIPE_LEFT);
-}
-function onSwipeRight() {
-    (0, _messenger.send)(_events.SWIPE_RIGHT);
-}
+var gestureListeners = {
+    swipe: {
+        swipeup: function swipeup() {
+            (0, _messenger.send)(_events.SWIPE_UP);
+        },
+        swipedown: function swipedown() {
+            (0, _messenger.send)(_events.SWIPE_DOWN);
+        },
+        swipeleft: function swipeleft() {
+            (0, _messenger.send)(_events.SWIPE_LEFT);
+        },
+        swiperight: function swiperight() {
+            (0, _messenger.send)(_events.SWIPE_RIGHT);
+        }
+    }
+};
+var activeListeners = {};
+
+var gesture = void 0;
 
 window.addEventListener('load', function () {
 
-    var gesture = new Hammer(document.body);
+    gesture = new Hammer(document.body);
     gesture.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
 
     document.body.addEventListener('touchstart', onTouch);
     document.body.addEventListener('mousemove', onMouseMove);
-    gesture.on('swipeup', onSwipeUp);
-    gesture.on('swipedown', onSwipeDown);
-    gesture.on('swipeleft', onSwipeLeft);
-    gesture.on('swiperight', onSwipeRight);
+
+    listen();
 });
+
+function listen() {
+    if (!gesture) return;
+    for (var category in gestureListeners) {
+        if (typeof gestureListeners[category] === 'function' && !activeListeners[category]) {
+            gesture.on(category, gestureListeners[category]);
+            activeListeners[category] = true;
+        } else if (_typeof(gestureListeners[category]) === 'object') {
+            for (var listener in gestureListeners[category]) {
+                if (!activeListeners[category] || !activeListeners[category][listener]) {
+                    gesture.on(listener, gestureListeners[category][listener]);
+                    activeListeners[category] = activeListeners[category] || {};
+                    activeListeners[category][listener] = true;
+                }
+            }
+        }
+    }
+}
+
+function stop(event) {
+    if (!gesture) return;
+    if (Array.isArray(event)) {
+        event.forEach(function (e) {
+            stop(e);
+        });
+    } else {
+        var split = event.split(/\s+/);
+        if (split.length > 1) {
+            stop(split);
+        }
+    }
+    for (var category in gestureListeners) {
+        if (typeof gestureListeners[category] === 'function') {
+            if (!event || event === category) {
+                gesture.off(category, gestureListeners[category]);
+                activeListeners[category] = false;
+            }
+        } else if (_typeof(gestureListeners[category]) === 'object') {
+            for (var listener in gestureListeners[category]) {
+                if (!event || category === event || listener === event) {
+                    gesture.off(listener, gestureListeners[category][listener]);
+                    activeListeners[category] = activeListeners[category] || {};
+                    activeListeners[category][listener] = false;
+                }
+            }
+        }
+    }
+}
+
+module.exports = {
+    on: listen,
+    off: stop
+};
 
 /***/ }),
 /* 38 */
