@@ -205,6 +205,96 @@ module.exports = {
 "use strict";
 
 
+module.exports = {
+    "READY": "taco-ready",
+    "GO": "taco-go",
+    "NEXT": "taco-next",
+    "PREV": "taco-previous",
+    "ADD": "taco-addtemplate",
+    "UPDATE": "taco-update",
+    "PAGES": "taco-pages",
+    "USER_UPDATE": "taco-user-update",
+    "QUERY_PARAMS": "taco-query-params",
+    "OUTGOING_EVENT": "taco-event-sent",
+    "TACO_EVENT": "taco-event-received",
+
+    "TOUCH": "taco-touch-element",
+    "MOUSE_MOVE": "taco-mouse-move",
+    "SWIPE_UP": "taco-swipe-up",
+    "SWIPE_DOWN": "taco-swipe-down",
+    "SWIPE_LEFT": "taco-swipe-left",
+    "SWIPE_RIGHT": "taco-swipe-right"
+};
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+
+var _helpers = __webpack_require__(0);
+
+var window = window || global.window;
+var REQUEST_TIMEOUT = 20000;
+
+function sendMessage(type, payload) {
+    var message = {
+        type: type,
+        payload: payload
+    };
+    postMessage(message);
+}
+
+function request(type, payload, cb) {
+    var rid = (0, _helpers.uuid)();
+    payload._rid = rid;
+    var message = {
+        type: type,
+        payload: payload
+    };
+    var timeout;
+    var handler = function handler(message) {
+        message = JSON.parse(message.data);
+        if (message.payload && message.payload._rid === rid) {
+            removeHandler();
+            cb(message);
+        }
+    };
+    var removeHandler = function removeHandler() {
+        clearTimeout(timeout);
+        window.removeEventListener('message', handler, false);
+    };
+
+    window.addEventListener('message', handler, false);
+    timeout = setTimeout(function () {
+        //Request Timeout
+        removeHandler();
+    }, REQUEST_TIMEOUT);
+
+    postMessage(message);
+}
+
+function postMessage(message) {
+    var w = window || global.window;
+    if (w && w.parent) {
+        w.parent.postMessage(JSON.stringify(message), '*');
+    }
+}
+
+module.exports = {
+    send: sendMessage,
+    request: request
+};
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -212,11 +302,11 @@ exports.tacoData = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _events = __webpack_require__(2);
+var _events = __webpack_require__(1);
 
 var _helpers = __webpack_require__(0);
 
-var _messenger = __webpack_require__(3);
+var _messenger = __webpack_require__(2);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -371,96 +461,6 @@ var TacoData = function () {
 var tacoData = exports.tacoData = new TacoData();
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = {
-    "READY": "taco-ready",
-    "GO": "taco-go",
-    "NEXT": "taco-next",
-    "PREV": "taco-previous",
-    "ADD": "taco-addtemplate",
-    "UPDATE": "taco-update",
-    "PAGES": "taco-pages",
-    "USER_UPDATE": "taco-user-update",
-    "QUERY_PARAMS": "taco-query-params",
-    "OUTGOING_EVENT": "taco-event-sent",
-    "TACO_EVENT": "taco-event-received",
-
-    "TOUCH": "taco-touch-element",
-    "MOUSE_MOVE": "taco-mouse-move",
-    "SWIPE_UP": "taco-swipe-up",
-    "SWIPE_DOWN": "taco-swipe-down",
-    "SWIPE_LEFT": "taco-swipe-left",
-    "SWIPE_RIGHT": "taco-swipe-right"
-};
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(global) {
-
-var _helpers = __webpack_require__(0);
-
-var window = window || global.window;
-var REQUEST_TIMEOUT = 20000;
-
-function sendMessage(type, payload) {
-    var message = {
-        type: type,
-        payload: payload
-    };
-    postMessage(message);
-}
-
-function request(type, payload, cb) {
-    var rid = (0, _helpers.uuid)();
-    payload._rid = rid;
-    var message = {
-        type: type,
-        payload: payload
-    };
-    var timeout;
-    var handler = function handler(message) {
-        message = JSON.parse(message.data);
-        if (message.payload && message.payload._rid === rid) {
-            removeHandler();
-            cb(message);
-        }
-    };
-    var removeHandler = function removeHandler() {
-        clearTimeout(timeout);
-        window.removeEventListener('message', handler, false);
-    };
-
-    window.addEventListener('message', handler, false);
-    timeout = setTimeout(function () {
-        //Request Timeout
-        removeHandler();
-    }, REQUEST_TIMEOUT);
-
-    postMessage(message);
-}
-
-function postMessage(message) {
-    var w = window || global.window;
-    if (w && w.parent) {
-        w.parent.postMessage(JSON.stringify(message), '*');
-    }
-}
-
-module.exports = {
-    send: sendMessage,
-    request: request
-};
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
-
-/***/ }),
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -594,11 +594,11 @@ module.exports = {
 "use strict";
 
 
-var _messenger = __webpack_require__(3);
+var _messenger = __webpack_require__(2);
 
-var _events = __webpack_require__(2);
+var _events = __webpack_require__(1);
 
-var _tacodata = __webpack_require__(1);
+var _tacodata = __webpack_require__(3);
 
 var _listener = __webpack_require__(8);
 
@@ -749,7 +749,7 @@ var _pagesHandler = __webpack_require__(11);
 
 var _queryParamsHandler = __webpack_require__(12);
 
-var events = __webpack_require__(2);
+var events = __webpack_require__(1);
 
 
 var handlers = {};
@@ -768,11 +768,11 @@ module.exports = handlers;
 
 var _helpers = __webpack_require__(0);
 
-var _tacodata = __webpack_require__(1);
+var _tacodata = __webpack_require__(3);
 
 var _consts = __webpack_require__(5);
 
-var _events = __webpack_require__(2);
+var _events = __webpack_require__(1);
 
 function update(data) {
     var isDataChanged = false;
@@ -826,7 +826,7 @@ module.exports = {
 "use strict";
 
 
-var _tacodata = __webpack_require__(1);
+var _tacodata = __webpack_require__(3);
 
 function pages(data) {
     _tacodata.tacoData.addPages(data);
@@ -843,7 +843,7 @@ module.exports = {
 "use strict";
 
 
-var _tacodata = __webpack_require__(1);
+var _tacodata = __webpack_require__(3);
 
 function queryParams(data) {
     _tacodata.tacoData.addQueryParams(data);
@@ -2923,11 +2923,11 @@ exports.default = Stopwatch;
 
 var _arguments = arguments;
 
-var _events = __webpack_require__(2);
+var _events = __webpack_require__(1);
 
 var _helpers = __webpack_require__(0);
 
-var _messenger = __webpack_require__(3);
+var _messenger = __webpack_require__(2);
 
 var timeouts = {};
 
@@ -2994,9 +2994,9 @@ module.exports = {
 "use strict";
 
 
-var _messenger = __webpack_require__(3);
+var _messenger = __webpack_require__(2);
 
-var _events = __webpack_require__(2);
+var _events = __webpack_require__(1);
 
 var _helpers = __webpack_require__(0);
 
@@ -3021,7 +3021,7 @@ module.exports = {
 "use strict";
 
 
-var _tacodata = __webpack_require__(1);
+var _tacodata = __webpack_require__(3);
 
 module.exports = {
     show: function show(template) {
@@ -3042,9 +3042,9 @@ module.exports = {
 "use strict";
 
 
-var _messenger = __webpack_require__(3);
+var _messenger = __webpack_require__(2);
 
-var _events = __webpack_require__(2);
+var _events = __webpack_require__(1);
 
 var Hammer = __webpack_require__(38);
 
