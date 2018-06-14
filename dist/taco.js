@@ -3103,16 +3103,16 @@ function onMouseMove(e) {
             if (d) {
                 switch (d) {
                     case "l":
-                        (0, _messenger.send)(_events.SWIPE_LEFT, e);
+                        (0, _messenger.send)(_events.SWIPE_LEFT, { x: e.clientX, y: e.clientY });
                         break;
                     case "r":
-                        (0, _messenger.send)(_events.SWIPE_RIGHT, e);
+                        (0, _messenger.send)(_events.SWIPE_RIGHT, { x: e.clientX, y: e.clientY });
                         break;
                     case "u":
-                        (0, _messenger.send)(_events.SWIPE_UP, e);
+                        (0, _messenger.send)(_events.SWIPE_UP, { x: e.clientX, y: e.clientY });
                         break;
                     case "d":
-                        (0, _messenger.send)(_events.SWIPE_DOWN, e);
+                        (0, _messenger.send)(_events.SWIPE_DOWN, { x: e.clientX, y: e.clientY });
                         break;
                 }
             }

@@ -49,16 +49,16 @@ function onMouseMove(e){
             if(d){
                 switch (d){
                     case "l":
-                        send(SWIPE_LEFT, e);
+                        send(SWIPE_LEFT, {x : e.clientX, y : e.clientY});
                         break;
                     case "r":
-                        send(SWIPE_RIGHT, e);
+                        send(SWIPE_RIGHT, {x : e.clientX, y : e.clientY});
                         break;
                     case "u":
-                        send(SWIPE_UP, e);
+                        send(SWIPE_UP, {x : e.clientX, y : e.clientY});
                         break;
                     case "d":
-                        send(SWIPE_DOWN, e);
+                        send(SWIPE_DOWN, {x : e.clientX, y : e.clientY});
                         break;
                 }
             }
