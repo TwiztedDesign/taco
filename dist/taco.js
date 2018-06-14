@@ -224,7 +224,8 @@ module.exports = {
     "SWIPE_UP": "taco-swipe-up",
     "SWIPE_DOWN": "taco-swipe-down",
     "SWIPE_LEFT": "taco-swipe-left",
-    "SWIPE_RIGHT": "taco-swipe-right"
+    "SWIPE_RIGHT": "taco-swipe-right",
+    "BUBBLE_UP": "taco-bubble-up"
 };
 
 /***/ }),
@@ -3093,6 +3094,15 @@ function onTouchEnd() {
 
 var lastMouseMoveTime = 0;
 function onMouseMove(e) {
+    (0, _messenger.send)(_events.BUBBLE_UP, {
+        event: 'mouseup',
+        data: {
+            pageX: e.pageX,
+            pageY: e.pageY,
+            clientX: e.clientX,
+            clientY: e.clientY
+        }
+    });
     var mouseMoveTime = Date.now();
     if (mouseMoveTime - lastMouseMoveTime < 100) {
         (0, _messenger.send)(_events.MOUSE_MOVE);
@@ -3122,12 +3132,30 @@ function onMouseMove(e) {
 }
 
 var drag = false;
-function onMouseDown() {
+function onMouseDown(e) {
     drag = true;
+    (0, _messenger.send)(_events.BUBBLE_UP, {
+        event: 'mousedown',
+        data: {
+            pageX: e.pageX,
+            pageY: e.pageY,
+            clientX: e.clientX,
+            clientY: e.clientY
+        }
+    });
 }
-function onMouseUp() {
+function onMouseUp(e) {
     drag = false;
     direction.clear();
+    (0, _messenger.send)(_events.BUBBLE_UP, {
+        event: 'mouseup',
+        data: {
+            pageX: e.pageX,
+            pageY: e.pageY,
+            clientX: e.clientX,
+            clientY: e.clientY
+        }
+    });
 }
 
 var gestureListeners = {

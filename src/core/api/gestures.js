@@ -1,5 +1,5 @@
 import {send} from '../../utils/messenger';
-import {TOUCH, MOUSE_MOVE, SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT, MOUSE_DRAG} from '../../utils/events';
+import {TOUCH, MOUSE_MOVE, SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT, MOUSE_DRAG, BUBBLE_UP} from '../../utils/events';
 
 const Hammer = require('hammerjs');
 
@@ -39,6 +39,15 @@ function onTouchEnd(){
 
 let lastMouseMoveTime = 0;
 function onMouseMove(e){
+    send(BUBBLE_UP,{
+        event : 'mouseup',
+        data  : {
+            pageX : e.pageX,
+            pageY : e.pageY,
+            clientX : e.clientX,
+            clientY : e.clientY,
+        }
+    });
     let mouseMoveTime = Date.now();
     if(mouseMoveTime - lastMouseMoveTime < 100) {
         send(MOUSE_MOVE);
@@ -69,12 +78,30 @@ function onMouseMove(e){
 
 
 let drag = false;
-function onMouseDown(){
+function onMouseDown(e){
     drag = true;
+    send(BUBBLE_UP,{
+        event : 'mousedown',
+        data  : {
+            pageX : e.pageX,
+            pageY : e.pageY,
+            clientX : e.clientX,
+            clientY : e.clientY,
+        }
+    });
 }
-function onMouseUp(){
+function onMouseUp(e){
     drag = false;
     direction.clear();
+    send(BUBBLE_UP,{
+        event : 'mouseup',
+        data  : {
+            pageX : e.pageX,
+            pageY : e.pageY,
+            clientX : e.clientX,
+            clientY : e.clientY,
+        }
+    });
 }
 
 const gestureListeners = {
