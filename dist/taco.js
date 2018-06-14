@@ -3095,7 +3095,7 @@ function onTouchEnd() {
 var lastMouseMoveTime = 0;
 function onMouseMove(e) {
     (0, _messenger.send)(_events.BUBBLE_UP, {
-        event: 'mouseup',
+        event: 'mousemove',
         data: {
             pageX: e.pageX,
             pageY: e.pageY,
