@@ -40,7 +40,7 @@ function onTouchEnd(){
 let lastMouseMoveTime = 0;
 function onMouseMove(e){
     send(BUBBLE_UP,{
-        event : 'mouseup',
+        event : 'mousemove',
         data  : {
             pageX : e.pageX,
             pageY : e.pageY,
