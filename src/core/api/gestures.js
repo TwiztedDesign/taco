@@ -32,6 +32,9 @@ function onTouchMove(e) {
     }
     lastMouseMoveTime = mouseMoveTime;
 }
+function onTouchEnd(){
+    direction.clear();
+}
 
 
 let lastMouseMoveTime = 0;
@@ -71,6 +74,7 @@ function onMouseDown(){
 }
 function onMouseUp(){
     drag = false;
+    direction.clear();
 }
 
 const gestureListeners = {
@@ -99,6 +103,7 @@ window.addEventListener('load', () => {
     gesture.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
 
     document.body.addEventListener('touchstart', onTouchStart);
+    document.body.addEventListener('touchend', onTouchEnd);
     document.body.addEventListener('touchmove', onTouchMove);
     
     document.body.addEventListener('mousemove', onMouseMove);
@@ -176,6 +181,12 @@ class Direction {
         if(this.arr.length > this.threshold){
             this.arr.pop();
         }
+    }
+
+    clear() {
+        this.arr = [];
+        this.lastX = 0;
+        this.lastY = 0;
     }
 
     detect(x, y){

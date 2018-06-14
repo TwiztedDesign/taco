@@ -3087,6 +3087,9 @@ function onTouchMove(e) {
     }
     lastMouseMoveTime = mouseMoveTime;
 }
+function onTouchEnd() {
+    direction.clear();
+}
 
 var lastMouseMoveTime = 0;
 function onMouseMove(e) {
@@ -3124,6 +3127,7 @@ function onMouseDown() {
 }
 function onMouseUp() {
     drag = false;
+    direction.clear();
 }
 
 var gestureListeners = {
@@ -3152,6 +3156,7 @@ window.addEventListener('load', function () {
     gesture.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
 
     document.body.addEventListener('touchstart', onTouchStart);
+    document.body.addEventListener('touchend', onTouchEnd);
     document.body.addEventListener('touchmove', onTouchMove);
 
     document.body.addEventListener('mousemove', onMouseMove);
@@ -3226,6 +3231,13 @@ var Direction = function () {
             if (this.arr.length > this.threshold) {
                 this.arr.pop();
             }
+        }
+    }, {
+        key: 'clear',
+        value: function clear() {
+            this.arr = [];
+            this.lastX = 0;
+            this.lastY = 0;
         }
     }, {
         key: 'detect',
