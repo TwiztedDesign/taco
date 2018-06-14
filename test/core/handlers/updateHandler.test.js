@@ -1,9 +1,11 @@
 import {tacoData} from '../../../src/core/tacodata.js';
 const updateHandler  = require('../../../src/core/handlers/updateHandler.js');
+const helpers = require('../../../src/utils/helpers.js');
 
 /******************************* global spies ********************************/
 
-let updateCB = jest.spyOn(tacoData, 'updateCB');
+const updateCB = jest.spyOn(tacoData, 'updateCB');
+const setByPath = jest.spyOn(helpers, 'setByPath');
 
 
 /****************************************************************************/
@@ -49,7 +51,24 @@ describe('Update Handler', () => {
             // updating an existing template with incorrect template name, case insensitive
             updateHandler.update({'TesT': {visibility: true}});
             expect(tacoData._main['test']['visibility']).toBe(true);
+        });
 
+        it('Should add the passed property with value to the DOM element object', () => {
+            let headerElement = document.createElement('h1');
+            headerElement.setAttribute("taco-template", 'dom-test');
+            headerElement.setAttribute("taco-name", 'taco-title');
+            document.body.appendChild(headerElement);
+
+            tacoData.addTemplate('dom-test', {'taco-title': 'title'});
+            let testElement = document.querySelector('[taco-template="dom-test" i] [taco-name="taco-title" i], [taco-template="dom-test" i][taco-name="taco-title" i]');
+            updateHandler.update({'dom-test': {'taco-title title': 'test title'}});
+            expect(setByPath).toHaveBeenCalledWith(testElement, 'title', 'test title');
+            // console.log('text', testElement.innerText);
+            // expect(testElement.innerHTML).toBe('test title');
+
+            // let date = Date.now();
+            // updateHandler.update({'dom-test': {'__timecode__': date}});
+            // expect(setByPath).toHaveBeenCalledWith(testElement, '__timecode__', date);
 
         });
 

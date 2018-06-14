@@ -117,6 +117,7 @@ class TacoData {
         // return Array.from(this._pages);
     }
     addQueryParams(params){
+        console.log('params', params);
         this._queryParams = params;
         this.updateCB();
     }
