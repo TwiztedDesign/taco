@@ -1,22 +1,85 @@
 import {send} from '../../utils/messenger';
-import {TOUCH, MOUSE_MOVE, SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} from '../../utils/events';
+import {TOUCH, MOUSE_MOVE, SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT, MOUSE_DRAG} from '../../utils/events';
 
 const Hammer = require('hammerjs');
 
-function onTouch(e){
+function onTouchStart(e){
     send(TOUCH, e.target.tagName);
 }
+function onTouchMove(e) {
+    let mouseMoveTime = Date.now();
+    if(mouseMoveTime - lastMouseMoveTime < 100) {
+
+        direction.detect(e.touches[0].clientX, e.touches[0].clientY);
+        var d = direction.getDirection();
+        if(d){
+            switch (d){
+                case "l":
+                    send(SWIPE_LEFT, e);
+                    console.log('Left');
+                    break;
+                case "r":
+                    send(SWIPE_RIGHT, e);
+                    console.log('Right');
+                    break;
+                case "u":
+                    send(SWIPE_UP, e);
+                    console.log('Up');
+                    break;
+                case "d":
+                    send(SWIPE_DOWN, e);
+                    console.log('Down');
+                    break;
+            }
+        }
+
+    }
+    lastMouseMoveTime = mouseMoveTime;
+}
+
 
 let lastMouseMoveTime = 0;
-function onMouseMove(){
+function onMouseMove(e){
     let mouseMoveTime = Date.now();
     if(mouseMoveTime - lastMouseMoveTime < 100) {
         send(MOUSE_MOVE);
+        if(drag){
+            send(MOUSE_DRAG);
+            direction.detect(e.pageX, e.pageY);
+            var d = direction.getDirection();
+            if(d){
+                switch (d){
+                    case "l":
+                        send(SWIPE_LEFT, e);
+                        console.log('Left');
+                        break;
+                    case "r":
+                        send(SWIPE_RIGHT, e);
+                        console.log('Right');
+                        break;
+                    case "u":
+                        send(SWIPE_UP, e);
+                        console.log('Up');
+                        break;
+                    case "d":
+                        send(SWIPE_DOWN, e);
+                        console.log('Down');
+                        break;
+                }
+            }
+        }
     }
     lastMouseMoveTime = mouseMoveTime;
-
 }
 
+
+let drag = false;
+function onMouseDown(){
+    drag = true;
+}
+function onMouseUp(){
+    drag = false;
+}
 
 const gestureListeners = {
     swipe : {
@@ -43,10 +106,14 @@ window.addEventListener('load', () => {
     gesture = new Hammer(document.body);
     gesture.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
 
-    document.body.addEventListener('touchstart', onTouch);
+    document.body.addEventListener('touchstart', onTouchStart);
+    document.body.addEventListener('touchmove', onTouchMove);
+    
     document.body.addEventListener('mousemove', onMouseMove);
+    document.body.addEventListener("mousedown", onMouseDown);
+    document.body.addEventListener("mouseup", onMouseUp);
 
-    listen();
+    // listen();
 
 });
 
@@ -103,6 +170,56 @@ function stop(event){
         }
     }
 }
+
+class Direction {
+    constructor(){
+        this.arr = [];
+        this.threshold = 15;
+        this.lastX = 0;
+        this.lastY = 0;
+    }
+
+    add(direction){
+        this.arr.unshift(direction);
+        if(this.arr.length > this.threshold){
+            this.arr.pop();
+        }
+    }
+
+    detect(x, y){
+        let deltaX = this.lastX - x,
+            deltaY = this.lastY - y;
+
+        //check which direction had the highest amplitude and then figure out direction by checking if the value is greater or less than zero
+        if (Math.abs(deltaX) > Math.abs(deltaY) && deltaX > 0) {
+            this.add('l');
+        } else if (Math.abs(deltaX) > Math.abs(deltaY) && deltaX < 0) {
+            this.add('r');
+        } else if (Math.abs(deltaY) > Math.abs(deltaX) && deltaY > 0) {
+            this.add('u');
+        } else if (Math.abs(deltaY) > Math.abs(deltaX) && deltaY < 0) {
+            this.add('d');
+        }
+        this.lastX = x;
+        this.lastY = y;
+
+    }
+    getDirection(){
+        let dir = null;
+        if(this.arr.length < this.threshold) return null;
+        for(let i = 0 ; i < this.arr.length ; i++){
+            if(dir && dir != this.arr[i]){
+                dir = null;
+                break;
+            } else {
+                dir = this.arr[i];
+            }
+        }
+        return dir;
+    }
+}
+
+const direction = new Direction();
 
 module.exports = {
     on  : listen,

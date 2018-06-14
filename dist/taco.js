@@ -220,6 +220,7 @@ module.exports = {
 
     "TOUCH": "taco-touch-element",
     "MOUSE_MOVE": "taco-mouse-move",
+    "MOUSE_DRAG": "taco-mouse-drag",
     "SWIPE_UP": "taco-swipe-up",
     "SWIPE_DOWN": "taco-swipe-down",
     "SWIPE_LEFT": "taco-swipe-left",
@@ -3046,25 +3047,91 @@ module.exports = {
 "use strict";
 
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _messenger = __webpack_require__(2);
 
 var _events = __webpack_require__(1);
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 var Hammer = __webpack_require__(38);
 
-function onTouch(e) {
+function onTouchStart(e) {
     (0, _messenger.send)(_events.TOUCH, e.target.tagName);
+}
+function onTouchMove(e) {
+    var mouseMoveTime = Date.now();
+    if (mouseMoveTime - lastMouseMoveTime < 100) {
+
+        direction.detect(e.touches[0].clientX, e.touches[0].clientY);
+        var d = direction.getDirection();
+        if (d) {
+            switch (d) {
+                case "l":
+                    (0, _messenger.send)(_events.SWIPE_LEFT, e);
+                    console.log('Left');
+                    break;
+                case "r":
+                    (0, _messenger.send)(_events.SWIPE_RIGHT, e);
+                    console.log('Right');
+                    break;
+                case "u":
+                    (0, _messenger.send)(_events.SWIPE_UP, e);
+                    console.log('Up');
+                    break;
+                case "d":
+                    (0, _messenger.send)(_events.SWIPE_DOWN, e);
+                    console.log('Down');
+                    break;
+            }
+        }
+    }
+    lastMouseMoveTime = mouseMoveTime;
 }
 
 var lastMouseMoveTime = 0;
-function onMouseMove() {
+function onMouseMove(e) {
     var mouseMoveTime = Date.now();
     if (mouseMoveTime - lastMouseMoveTime < 100) {
         (0, _messenger.send)(_events.MOUSE_MOVE);
+        if (drag) {
+            (0, _messenger.send)(_events.MOUSE_DRAG);
+            direction.detect(e.pageX, e.pageY);
+            var d = direction.getDirection();
+            if (d) {
+                switch (d) {
+                    case "l":
+                        (0, _messenger.send)(_events.SWIPE_LEFT, e);
+                        console.log('Left');
+                        break;
+                    case "r":
+                        (0, _messenger.send)(_events.SWIPE_RIGHT, e);
+                        console.log('Right');
+                        break;
+                    case "u":
+                        (0, _messenger.send)(_events.SWIPE_UP, e);
+                        console.log('Up');
+                        break;
+                    case "d":
+                        (0, _messenger.send)(_events.SWIPE_DOWN, e);
+                        console.log('Down');
+                        break;
+                }
+            }
+        }
     }
     lastMouseMoveTime = mouseMoveTime;
+}
+
+var drag = false;
+function onMouseDown() {
+    drag = true;
+}
+function onMouseUp() {
+    drag = false;
 }
 
 var gestureListeners = {
@@ -3092,10 +3159,14 @@ window.addEventListener('load', function () {
     gesture = new Hammer(document.body);
     gesture.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
 
-    document.body.addEventListener('touchstart', onTouch);
-    document.body.addEventListener('mousemove', onMouseMove);
+    document.body.addEventListener('touchstart', onTouchStart);
+    document.body.addEventListener('touchmove', onTouchMove);
 
-    listen();
+    document.body.addEventListener('mousemove', onMouseMove);
+    document.body.addEventListener("mousedown", onMouseDown);
+    document.body.addEventListener("mouseup", onMouseUp);
+
+    // listen();
 });
 
 function listen() {
@@ -3145,6 +3216,65 @@ function stop(event) {
         }
     }
 }
+
+var Direction = function () {
+    function Direction() {
+        _classCallCheck(this, Direction);
+
+        this.arr = [];
+        this.threshold = 15;
+        this.lastX = 0;
+        this.lastY = 0;
+    }
+
+    _createClass(Direction, [{
+        key: 'add',
+        value: function add(direction) {
+            this.arr.unshift(direction);
+            if (this.arr.length > this.threshold) {
+                this.arr.pop();
+            }
+        }
+    }, {
+        key: 'detect',
+        value: function detect(x, y) {
+            var deltaX = this.lastX - x,
+                deltaY = this.lastY - y;
+
+            //check which direction had the highest amplitude and then figure out direction by checking if the value is greater or less than zero
+            if (Math.abs(deltaX) > Math.abs(deltaY) && deltaX > 0) {
+                this.add('l');
+            } else if (Math.abs(deltaX) > Math.abs(deltaY) && deltaX < 0) {
+                this.add('r');
+            } else if (Math.abs(deltaY) > Math.abs(deltaX) && deltaY > 0) {
+                this.add('u');
+            } else if (Math.abs(deltaY) > Math.abs(deltaX) && deltaY < 0) {
+                this.add('d');
+            }
+            this.lastX = x;
+            this.lastY = y;
+        }
+    }, {
+        key: 'getDirection',
+        value: function getDirection() {
+            var dir = null;
+            if (this.arr.length < this.threshold) return null;
+            for (var i = 0; i < this.arr.length; i++) {
+                if (dir && dir != this.arr[i]) {
+                    dir = null;
+                    break;
+                } else {
+                    dir = this.arr[i];
+                }
+            }
+            return dir;
+        }
+    }]);
+
+    return Direction;
+}();
+
+var direction = new Direction();
 
 module.exports = {
     on: listen,
