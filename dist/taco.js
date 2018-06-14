@@ -3072,19 +3072,15 @@ function onTouchMove(e) {
             switch (d) {
                 case "l":
                     (0, _messenger.send)(_events.SWIPE_LEFT, e);
-                    console.log('Left');
                     break;
                 case "r":
                     (0, _messenger.send)(_events.SWIPE_RIGHT, e);
-                    console.log('Right');
                     break;
                 case "u":
                     (0, _messenger.send)(_events.SWIPE_UP, e);
-                    console.log('Up');
                     break;
                 case "d":
                     (0, _messenger.send)(_events.SWIPE_DOWN, e);
-                    console.log('Down');
                     break;
             }
         }
@@ -3105,19 +3101,15 @@ function onMouseMove(e) {
                 switch (d) {
                     case "l":
                         (0, _messenger.send)(_events.SWIPE_LEFT, e);
-                        console.log('Left');
                         break;
                     case "r":
                         (0, _messenger.send)(_events.SWIPE_RIGHT, e);
-                        console.log('Right');
                         break;
                     case "u":
                         (0, _messenger.send)(_events.SWIPE_UP, e);
-                        console.log('Up');
                         break;
                     case "d":
                         (0, _messenger.send)(_events.SWIPE_DOWN, e);
-                        console.log('Down');
                         break;
                 }
             }

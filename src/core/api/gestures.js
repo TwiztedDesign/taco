@@ -16,19 +16,15 @@ function onTouchMove(e) {
             switch (d){
                 case "l":
                     send(SWIPE_LEFT, e);
-                    console.log('Left');
                     break;
                 case "r":
                     send(SWIPE_RIGHT, e);
-                    console.log('Right');
                     break;
                 case "u":
                     send(SWIPE_UP, e);
-                    console.log('Up');
                     break;
                 case "d":
                     send(SWIPE_DOWN, e);
-                    console.log('Down');
                     break;
             }
         }
@@ -51,19 +47,15 @@ function onMouseMove(e){
                 switch (d){
                     case "l":
                         send(SWIPE_LEFT, e);
-                        console.log('Left');
                         break;
                     case "r":
                         send(SWIPE_RIGHT, e);
-                        console.log('Right');
                         break;
                     case "u":
                         send(SWIPE_UP, e);
-                        console.log('Up');
                         break;
                     case "d":
                         send(SWIPE_DOWN, e);
-                        console.log('Down');
                         break;
                 }
             }
