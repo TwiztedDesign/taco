@@ -74,15 +74,6 @@ app.controller("Ctrl", ['$scope',function($scope){
 
     }, 3000);
 
-    setTimeout(function () {
-        console.log('off');
-        taco.gesture.off('swipeleft');
-    },3000);
-    setTimeout(function () {
-        console.log('on');
-        taco.gesture.on();
-    },10000);
-
 
 
 

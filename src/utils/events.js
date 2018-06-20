@@ -14,10 +14,5 @@ module.exports = {
 
     "TOUCH"         : "taco-touch-element",
     "MOUSE_MOVE"    : "taco-mouse-move",
-    "MOUSE_DRAG"    : "taco-mouse-drag",
-    "SWIPE_UP"      : "taco-swipe-up",
-    "SWIPE_DOWN"    : "taco-swipe-down",
-    "SWIPE_LEFT"    : "taco-swipe-left",
-    "SWIPE_RIGHT"   : "taco-swipe-right",
     "BUBBLE_UP"     : "taco-bubble-up"
 };
