@@ -228,6 +228,68 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+
+var _helpers = __webpack_require__(0);
+
+var window = window || global.window;
+var REQUEST_TIMEOUT = 20000;
+
+function sendMessage(type, payload) {
+    var message = {
+        type: type,
+        payload: payload
+    };
+    postMessage(message);
+}
+
+function request(type, payload, cb) {
+    var rid = (0, _helpers.uuid)();
+    payload._rid = rid;
+    var message = {
+        type: type,
+        payload: payload
+    };
+    var timeout;
+    var handler = function handler(message) {
+        message = JSON.parse(message.data);
+        if (message.payload && message.payload._rid === rid) {
+            removeHandler();
+            cb(message);
+        }
+    };
+    var removeHandler = function removeHandler() {
+        clearTimeout(timeout);
+        window.removeEventListener('message', handler, false);
+    };
+
+    window.addEventListener('message', handler, false);
+    timeout = setTimeout(function () {
+        //Request Timeout
+        removeHandler();
+    }, REQUEST_TIMEOUT);
+
+    postMessage(message);
+}
+
+function postMessage(message) {
+    var w = window || global.window;
+    if (w && w.parent) {
+        w.parent.postMessage(JSON.stringify(message), '*');
+    }
+}
+
+module.exports = {
+    send: sendMessage,
+    request: request
+};
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
@@ -241,7 +303,7 @@ var _events = __webpack_require__(1);
 
 var _helpers = __webpack_require__(0);
 
-var _messenger = __webpack_require__(3);
+var _messenger = __webpack_require__(2);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -396,68 +458,6 @@ var TacoData = function () {
 var tacoData = exports.tacoData = new TacoData();
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(global) {
-
-var _helpers = __webpack_require__(0);
-
-var window = window || global.window;
-var REQUEST_TIMEOUT = 20000;
-
-function sendMessage(type, payload) {
-    var message = {
-        type: type,
-        payload: payload
-    };
-    postMessage(message);
-}
-
-function request(type, payload, cb) {
-    var rid = (0, _helpers.uuid)();
-    payload._rid = rid;
-    var message = {
-        type: type,
-        payload: payload
-    };
-    var timeout;
-    var handler = function handler(message) {
-        message = JSON.parse(message.data);
-        if (message.payload && message.payload._rid === rid) {
-            removeHandler();
-            cb(message);
-        }
-    };
-    var removeHandler = function removeHandler() {
-        clearTimeout(timeout);
-        window.removeEventListener('message', handler, false);
-    };
-
-    window.addEventListener('message', handler, false);
-    timeout = setTimeout(function () {
-        //Request Timeout
-        removeHandler();
-    }, REQUEST_TIMEOUT);
-
-    postMessage(message);
-}
-
-function postMessage(message) {
-    var w = window || global.window;
-    if (w && w.parent) {
-        w.parent.postMessage(JSON.stringify(message), '*');
-    }
-}
-
-module.exports = {
-    send: sendMessage,
-    request: request
-};
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
-
-/***/ }),
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -591,11 +591,11 @@ module.exports = {
 "use strict";
 
 
-var _messenger = __webpack_require__(3);
+var _messenger = __webpack_require__(2);
 
 var _events = __webpack_require__(1);
 
-var _tacodata = __webpack_require__(2);
+var _tacodata = __webpack_require__(3);
 
 var _listener = __webpack_require__(8);
 
@@ -765,7 +765,7 @@ module.exports = handlers;
 
 var _helpers = __webpack_require__(0);
 
-var _tacodata = __webpack_require__(2);
+var _tacodata = __webpack_require__(3);
 
 var _consts = __webpack_require__(5);
 
@@ -823,7 +823,7 @@ module.exports = {
 "use strict";
 
 
-var _tacodata = __webpack_require__(2);
+var _tacodata = __webpack_require__(3);
 
 function pages(data) {
     _tacodata.tacoData.addPages(data);
@@ -840,7 +840,7 @@ module.exports = {
 "use strict";
 
 
-var _tacodata = __webpack_require__(2);
+var _tacodata = __webpack_require__(3);
 
 function queryParams(data) {
     _tacodata.tacoData.addQueryParams(data);
@@ -2924,7 +2924,7 @@ var _events = __webpack_require__(1);
 
 var _helpers = __webpack_require__(0);
 
-var _messenger = __webpack_require__(3);
+var _messenger = __webpack_require__(2);
 
 var timeouts = {};
 
@@ -2991,7 +2991,7 @@ module.exports = {
 "use strict";
 
 
-var _messenger = __webpack_require__(3);
+var _messenger = __webpack_require__(2);
 
 var _events = __webpack_require__(1);
 
@@ -3018,7 +3018,7 @@ module.exports = {
 "use strict";
 
 
-var _tacodata = __webpack_require__(2);
+var _tacodata = __webpack_require__(3);
 
 module.exports = {
     show: function show(template) {
@@ -3039,9 +3039,9 @@ module.exports = {
 "use strict";
 
 
-var _messenger = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../../utils/messenger\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+var _messenger = __webpack_require__(2);
 
-var _events = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../../utils/events\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+var _events = __webpack_require__(1);
 
 function touchesToJson(touches) {
     if (!touches) return touches;

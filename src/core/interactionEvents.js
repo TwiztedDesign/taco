@@ -1,5 +1,5 @@
-import {send} from '../../utils/messenger';
-import {TOUCH, MOUSE_MOVE, BUBBLE_UP} from '../../utils/events';
+import {send} from '../utils/messenger';
+import {TOUCH, MOUSE_MOVE, BUBBLE_UP} from '../utils/events';
 
 
 function touchesToJson(touches){
