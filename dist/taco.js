@@ -346,8 +346,10 @@ var TacoData = function () {
             }
             if (window.angular) {
                 var $body = window.angular.element(document.body);
-                var $rootScope = $body.injector().get('$rootScope');
-                $rootScope.$apply();
+                var $injector = $body.injector();
+                if ($injector) {
+                    $injector.get('$rootScope').$apply();
+                }
             }
         }
     }, {
